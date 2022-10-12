@@ -6,7 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace prog3050_game_store.Controllers
+namespace GameStore.Controllers
 {
     public class HomeController : Controller
     {
