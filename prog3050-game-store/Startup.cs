@@ -32,8 +32,8 @@ namespace prog3050_game_store
             var lockoutOptions = new LockoutOptions()
             {
                 AllowedForNewUsers = true,
-                DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2),
-                MaxFailedAccessAttempts = 2
+                DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5),
+                MaxFailedAccessAttempts = 3
 
             };
             services.Configure<CookiePolicyOptions>(options =>
@@ -51,11 +51,11 @@ namespace prog3050_game_store
                options.UseSqlServer(Configuration.GetConnectionString("CvgsConnection")));
             services.Configure<RecaptchaSettings>(Configuration.GetSection("GoogleRecaptcha"));
             services.AddTransient<GoogleCaptchaService>();
-
+            services.AddTransient<EmailSender>();
             services.AddIdentity<User, IdentityRole>(options =>
             {
                 options.Lockout = lockoutOptions;
-                //options.SignIn.RequireConfirmedEmail = true;
+                options.SignIn.RequireConfirmedEmail = true;
 
 
             })

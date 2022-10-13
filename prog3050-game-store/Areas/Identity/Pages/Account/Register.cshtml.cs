@@ -22,26 +22,29 @@ namespace GameStore.Areas.Identity.Pages.Account
         private readonly GoogleCaptchaService _googleCaptchaService;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly EmailSender _sender;
 
         public RegisterModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            GoogleCaptchaService googleCaptchaService)
+            GoogleCaptchaService googleCaptchaService, 
+            EmailSender sender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _googleCaptchaService = googleCaptchaService;
             _emailSender = emailSender;
+            _sender = sender;
         }
 
         [BindProperty]
         public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
-
+        
         public class InputModel
         {
             [Required]
@@ -105,11 +108,11 @@ namespace GameStore.Areas.Identity.Pages.Account
                             values: new { userId = user.Id, code = code },
                             protocol: Request.Scheme);
 
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await _sender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        //TempData["message"] = "Thank you for joining. Please confirm your email, We have sent you email with link.";
+                        return RedirectToPage("./EmailSent");
                     }
                     foreach (var error in result.Errors)
                     {
@@ -121,5 +124,8 @@ namespace GameStore.Areas.Identity.Pages.Account
             // If we got this far, something failed, redisplay form
             return Page();
         }
+        
+
+
     }
 }
