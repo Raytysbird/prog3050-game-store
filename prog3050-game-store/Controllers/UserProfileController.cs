@@ -6,22 +6,28 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameStore.Controllers
 {
     public class UserProfileController : Controller
     {
         private readonly GameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public UserProfileController(GameContext context)
+        public UserProfileController(GameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: UserProfile
         public async Task<IActionResult> Index()
         {
-            return View(await _context.AspNetUsers.ToListAsync());
+            ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
+            var userId= _userManager.GetUserId(HttpContext.User);
+            var user = await _userManager.FindByIdAsync(userId);
+            return View(user);
         }
 
         // GET: UserProfile/Details/5
@@ -67,12 +73,16 @@ namespace GameStore.Controllers
         // GET: UserProfile/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
+           ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
+           id = _userManager.GetUserId(HttpContext.User);
+           ViewBag.Gender = new List<string>() {"Male","Female","Other" };
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var aspNetUsers = await _context.AspNetUsers.FindAsync(id);
+            var aspNetUsers = await _userManager.FindByIdAsync(id);
             if (aspNetUsers == null)
             {
                 return NotFound();
@@ -85,7 +95,7 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] AspNetUsers aspNetUsers)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount,first_name,last_name,gender,dob,receive_promotions")] AspNetUsers aspNetUsers)
         {
             if (id != aspNetUsers.Id)
             {
@@ -112,6 +122,7 @@ namespace GameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
             return View(aspNetUsers);
         }
 

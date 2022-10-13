@@ -109,6 +109,8 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
