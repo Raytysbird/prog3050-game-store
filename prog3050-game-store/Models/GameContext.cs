@@ -122,11 +122,32 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
+                entity.Property(e => e.Dob)
+                    .HasColumnName("dob")
+                    .HasColumnType("date");
+
                 entity.Property(e => e.Email).HasMaxLength(256);
+
+                entity.Property(e => e.FirstName)
+                    .HasColumnName("first_name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Gender)
+                    .HasColumnName("gender")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.LastName)
+                    .HasColumnName("last_name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
                 entity.Property(e => e.UserName).HasMaxLength(256);
             });
