@@ -95,7 +95,7 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount,first_name,last_name,gender,dob,receive_promotions")] AspNetUsers aspNetUsers)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount,first_name,last_name,gender,dob,receive_promotions")] User aspNetUsers)
         {
             if (id != aspNetUsers.Id)
             {
@@ -106,8 +106,13 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                    _context.Update(aspNetUsers);
-                    await _context.SaveChangesAsync();
+                    var stamp = _userManager.GetSecurityStampAsync(aspNetUsers);
+                    aspNetUsers.SecurityStamp = stamp.ToString();
+
+                    IdentityResult result = await _userManager.UpdateAsync(aspNetUsers);
+
+                    //_context.Update(aspNetUsers);
+                    //await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
