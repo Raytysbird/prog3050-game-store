@@ -1,4 +1,5 @@
 ﻿using GameStore.Models;
+using GameStore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -28,20 +29,39 @@ namespace prog3050_game_store
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var lockoutOptions = new LockoutOptions()
+            {
+                AllowedForNewUsers = true,
+                DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2),
+                MaxFailedAccessAttempts = 2
+
+            };
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+          
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<GameContext>(options =>
                options.UseSqlServer(Configuration.GetConnectionString("CvgsConnection")));
-            services.AddDefaultIdentity<IdentityUser>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.Configure<RecaptchaSettings>(Configuration.GetSection("GoogleRecaptcha"));
+            services.AddTransient<GoogleCaptchaService>();
+
+            services.AddIdentity<User, IdentityRole>(options =>
+            {
+                options.Lockout = lockoutOptions;
+                //options.SignIn.RequireConfirmedEmail = true;
+
+
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders()
+                .AddDefaultUI();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

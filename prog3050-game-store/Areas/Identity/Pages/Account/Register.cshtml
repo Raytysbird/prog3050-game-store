@@ -1,5 +1,7 @@
 ﻿@page
 @model RegisterModel
+@using Microsoft.Extensions.Options
+@inject IOptions<GameStore.Models.RecaptchaSettings> captchaVal
 @{
     ViewData["Title"] = "Register";
 }
@@ -12,6 +14,11 @@
             <h4>Create a new account.</h4>
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
+            </div>
             <div class="form-group">
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
@@ -27,6 +34,11 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
+            <div class="form-group">
+                <input id="captchaResponse" asp-for="Input.Token" hidden value="" />
+                <span asp-validation-for="Input.Token" hidden class="text-danger"></span>
+            </div>
+            <div id="recaptchaControl"></div>  
             <button type="submit" class="btn btn-default">Register</button>
         </form>
     </div>
@@ -34,4 +46,26 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit"
+            async defer>
+    </script>
+    <script type="text/javascript">
+        var siteKey = '@Html.Raw(captchaVal.Value.Recaptcha_SiteKey)';
+        var verifyCallback = function (response) {
+
+            $('#captchaResponse').val(response);
+
+        };
+
+        var onloadCallback = function () {
+            // Renders the HTML element with id 'example1' as a reCAPTCHA widget.
+            // The id of the reCAPTCHA widget is assigned to 'widgetId1'.
+
+            grecaptcha.render('recaptchaControl', {
+                'sitekey': siteKey,
+                'callback': verifyCallback,
+                'theme': 'dark'
+            });
+        };
+    </script>
 }
