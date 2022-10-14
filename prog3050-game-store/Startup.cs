@@ -83,8 +83,9 @@ namespace prog3050_game_store
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+           
             app.UseCookiePolicy();
-
+           
             app.UseAuthentication();
 
             app.UseMvc(routes =>
