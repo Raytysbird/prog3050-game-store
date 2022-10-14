@@ -9,8 +9,7 @@
     <ProjectGuid>{51b11c9f-c643-42b2-be7a-31173503edd7}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
+    <RootPath />
     <RootNamespace>GameStoreDB</RootNamespace>
     <AssemblyName>GameStoreDB</AssemblyName>
     <ModelCollation>1033,CI</ModelCollation>
@@ -50,7 +49,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
     <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
     <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
   </PropertyGroup>
@@ -71,12 +69,20 @@
     <Build Include="dbo\Tables\AspNetUsers.sql" />
     <Build Include="dbo\Tables\AspNetUserTokens.sql" />
     <Build Include="dbo\Tables\Category.sql" />
-    <Build Include="dbo\Tables\Credit Card Info.sql" />
     <Build Include="dbo\Tables\Favourite Category.sql" />
     <Build Include="dbo\Tables\Favourite Platform.sql" />
     <Build Include="dbo\Tables\Game.sql" />
     <Build Include="dbo\Tables\Game Category.sql" />
     <Build Include="dbo\Tables\Game Platform.sql" />
     <Build Include="dbo\Tables\Platform.sql" />
+    <Build Include="dbo\Tables\Country.sql" />
+    <Build Include="dbo\Tables\Province.sql" />
+    <Build Include="dbo\Tables\Credit_Card_Info.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="dbo\Script1.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="GameStoreDB.refactorlog" />
   </ItemGroup>
 </Project>

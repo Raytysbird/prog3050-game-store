@@ -23,6 +23,7 @@ namespace GameStore.Models
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
         public virtual DbSet<Category> Category { get; set; }
+        public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<CreditCardInfo> CreditCardInfo { get; set; }
         public virtual DbSet<FavouriteCategory> FavouriteCategory { get; set; }
         public virtual DbSet<FavouritePlatform> FavouritePlatform { get; set; }
@@ -30,6 +31,7 @@ namespace GameStore.Models
         public virtual DbSet<GameCategory> GameCategory { get; set; }
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
+        public virtual DbSet<Province> Province { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -109,7 +111,13 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.Property(e => e.City)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Country)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
@@ -135,6 +143,14 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.PostalCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Province)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -162,6 +178,33 @@ namespace GameStore.Models
                     .IsRequired()
                     .HasColumnName("name")
                     .HasMaxLength(255)
+                    .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Country>(entity =>
+            {
+                entity.HasKey(e => e.CountryCode);
+
+                entity.Property(e => e.CountryCode)
+                    .HasColumnName("countryCode")
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PhonePattern)
+                    .HasColumnName("phonePattern")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.PostalPattern)
+                    .HasColumnName("postalPattern")
+                    .HasMaxLength(120)
                     .IsUnicode(false);
             });
 
@@ -315,6 +358,40 @@ namespace GameStore.Models
                     .HasColumnName("name")
                     .HasMaxLength(255)
                     .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Province>(entity =>
+            {
+                entity.HasKey(e => e.ProvinceCode);
+
+                entity.Property(e => e.ProvinceCode)
+                    .HasColumnName("provinceCode")
+                    .HasMaxLength(2)
+                    .IsUnicode(false)
+                    .ValueGeneratedNever();
+
+                entity.Property(e => e.CountryCode)
+                    .IsRequired()
+                    .HasColumnName("countryCode")
+                    .HasMaxLength(2)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.FirstPostalLetter)
+                    .HasColumnName("firstPostalLetter")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.CountryCodeNavigation)
+                    .WithMany(p => p.Province)
+                    .HasForeignKey(d => d.CountryCode)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("countryCode");
             });
         }
     }

@@ -76,6 +76,15 @@ namespace GameStore.Controllers
            ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
            id = _userManager.GetUserId(HttpContext.User);
            ViewBag.Gender = new List<string>() {"Male","Female","Other" };
+           
+           var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
+           ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
+
+            var gameCategory = _context.Category.OrderBy(x=>x.Name);
+            ViewData["GameCategory"] = new SelectList(gameCategory, "Name", "Name");
+
+            var platformCategory = _context.Platform.OrderBy(x => x.Name);
+            ViewData["PlatformCategory"] = new SelectList(platformCategory, "Name", "Name");
 
             if (id == null)
             {
@@ -83,6 +92,8 @@ namespace GameStore.Controllers
             }
 
             var aspNetUsers = await _userManager.FindByIdAsync(id);
+           
+            //ViewData["CountryCode"] = new SelectList(_context.Country.OrderBy(g => g.Name), "Name", "Name", _context.Province.Select(x => x.CountryCode));
             if (aspNetUsers == null)
             {
                 return NotFound();
@@ -95,7 +106,7 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount,first_name,last_name,gender,dob,receive_promotions")] User aspNetUsers)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,userName,first_name,last_name,gender,dob, address, city, province, postalCode,receive_promotions")] User aspNetUsers)
         {
             if (id != aspNetUsers.Id)
             {
@@ -125,9 +136,11 @@ namespace GameStore.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
+            var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
+            ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
             return View(aspNetUsers);
         }
 

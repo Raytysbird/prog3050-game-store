@@ -9,24 +9,57 @@ namespace GameStore.Models
 {
     public class User:IdentityUser
     {
+        //[Required]
+        //[Display(Name = "Id")]
+        //public string Id { get; set; }
+
+        
+
         [Required]
         [Display(Name = "First Name")]
         public string first_name { get; set; }
+
         [Required]
         [Display(Name = "Last Name")]
         public string last_name { get; set; }
+
         [Required]
         [Display(Name = "Gender")]
         public string gender { get; set; }
+
         [DataType(DataType.Date)]
         [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
         [Required]
         [Display(Name = "Date of Birth")]
         public string dob { get; set; }
+
+        [Required]
+        [Display(Name = "Address")]
+        public string address { get; set; }
+        [Required]
+        [Display(Name = "City")]
+        public string city { get; set; }
+
+        [Required]
+        [Display(Name = "Province")]
+        public string province { get; set; }
+
+        [Required]
+        [Display(Name = "Postal Code")]
+        [RegularExpression(@"([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] ?\d[ABCEGHJKLMNPRSTVWXYZ]\d)")]
+        public string postalCode { get; set; }
+
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
         public bool receive_promotions { get; set; }
-      
+        [Display(Name = "Please select game category preference")]
+        [Required]
+        public int favouriteCategory { get; set; }
+
+        [Display(Name = "Please select gaming platform")]
+        [Required]
+        public int favouritePlatform { get; set; }
+
     }
 
    
