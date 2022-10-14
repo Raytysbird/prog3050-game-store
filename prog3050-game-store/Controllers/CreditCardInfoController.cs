@@ -6,22 +6,26 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameStore.Controllers
 {
     public class CreditCardInfoController : Controller
     {
         private readonly GameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public CreditCardInfoController(GameContext context)
+        public CreditCardInfoController(GameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: CreditCardInfo
         public async Task<IActionResult> Index()
         {
-            var gameContext = _context.CreditCardInfo.Include(c => c.User);
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var gameContext = _context.CreditCardInfo.Where(c => c.UserId == userId);
             return View(await gameContext.ToListAsync());
         }
 
