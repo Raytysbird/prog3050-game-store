@@ -22,7 +22,7 @@ namespace GameStore.Models
         [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
         [Required]
         [Display(Name = "Date of Birth")]
-        public string dob { get; set; }
+        public DateTime dob { get; set; }
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
         public bool receive_promotions { get; set; }
