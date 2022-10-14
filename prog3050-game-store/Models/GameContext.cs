@@ -28,6 +28,7 @@ namespace GameStore.Models
         public virtual DbSet<FavouriteCategory> FavouriteCategory { get; set; }
         public virtual DbSet<FavouritePlatform> FavouritePlatform { get; set; }
         public virtual DbSet<Game> Game { get; set; }
+        public virtual DbSet<User> User { get; set; }
         public virtual DbSet<GameCategory> GameCategory { get; set; }
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
@@ -38,7 +39,7 @@ namespace GameStore.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
             }
         }
 

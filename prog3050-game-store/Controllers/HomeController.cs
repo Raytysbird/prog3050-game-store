@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using GameStore.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using prog3050_game_store.Models;
 using System;
 using System.Collections.Generic;
@@ -10,8 +13,14 @@ namespace GameStore.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly UserManager<User> _userManager;
+        public HomeController(UserManager<User> userManager)
+        {
+            _userManager = userManager;
+        }
         public IActionResult Index()
         {
+            ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
             return View();
         }
 
@@ -21,7 +30,7 @@ namespace GameStore.Controllers
 
             return View();
         }
-
+       
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

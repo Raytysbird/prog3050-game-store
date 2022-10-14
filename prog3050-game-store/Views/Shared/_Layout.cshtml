@@ -1,9 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity;
+@using GameStore.Models;
+@inject SignInManager<User> signingManager;
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - prog3050_game_store</title>
+    <title>@ViewData["Title"] - CVGS</title>
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -18,23 +21,30 @@
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
+
         <div class="container">
             <div class="navbar-header">
+
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">prog3050_game_store</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">CVGS</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
+                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
+                    <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Credit card</a></li>
+                    @if (signingManager.IsSignedIn(User))
+                    {
+                        <li><a asp-area="" asp-controller="UserProfile" asp-action="Edit">Manage Profile</a></li>
 
-                    <li><a asp-area="" asp-controller="UserProfile" asp-action="Edit">Manage Profile</a></li>
-                    <li><a href="~/Identity/Account/Manage/ChangePassword">Change Password</a></li>
-                    
+                    }
+
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
@@ -47,8 +57,13 @@
         <p class="text-center" style="color:red;"><b>@TempData["message"]</b></p>
         @RenderBody()
         <hr />
-        <footer>
-            <p>&copy; 2022 - prog3050_game_store</p>
+
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                <div class="float-left">
+                    <p>&copy; 2022 All Rights Reserved with ActiSoft</p>
+                </div>
+            </div>
         </footer>
     </div>
 
