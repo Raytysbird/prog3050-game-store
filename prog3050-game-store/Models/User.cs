@@ -31,7 +31,7 @@ namespace GameStore.Models
         [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
         [Required]
         [Display(Name = "Date of Birth")]
-        public string dob { get; set; }
+        public DateTime dob { get; set; }
 
         [Required]
         [Display(Name = "Address")]
@@ -40,7 +40,7 @@ namespace GameStore.Models
         [Display(Name = "City")]
         public string city { get; set; }
 
-        [Required]
+        
         [Display(Name = "Province")]
         public string province { get; set; }
 
@@ -52,13 +52,8 @@ namespace GameStore.Models
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
         public bool receive_promotions { get; set; }
-        [Display(Name = "Please select game category preference")]
-        [Required]
-        public int favouriteCategory { get; set; }
-
-        [Display(Name = "Please select gaming platform")]
-        [Required]
-        public int favouritePlatform { get; set; }
+       
+      
 
     }
 
