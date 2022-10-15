@@ -21,7 +21,18 @@ namespace GameStore.Controllers
             _userManager = userManager;
         }
 
+        public async Task<IActionResult> Index()
+        {
 
+            var userId = _userManager.GetUserId(HttpContext.User);
+            var aspNetUsers = await _userManager.FindByIdAsync(userId);
+            if (aspNetUsers==null)
+            {
+
+                return NotFound();
+            }
+            return View(aspNetUsers);
+        }
         // GET: UserProfile/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
@@ -29,20 +40,18 @@ namespace GameStore.Controllers
             id = _userManager.GetUserId(HttpContext.User);
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
 
-            var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
-            ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
+            var aspNetUsers = await _userManager.FindByIdAsync(id);
+
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode", aspNetUsers.province);
+
             if (id == null)
             {
                 return NotFound();
             }
-
-            var aspNetUsers = await _userManager.FindByIdAsync(id);
-
             if (aspNetUsers == null)
             {
                 return NotFound();
             }
-            //_context.Entry(aspNetUsers).State = EntityState.Detached;
             return View(aspNetUsers);
 
         }
@@ -56,7 +65,7 @@ namespace GameStore.Controllers
         {
             id = _userManager.GetUserId(HttpContext.User);
             var user = await _userManager.FindByIdAsync(id);
-            var provinceCode = _context.Province.Where(x => x.Name == aspNetUsers.province).FirstOrDefault().ProvinceCode;
+            var provinceCode = _context.Province.Where(x => x.ProvinceCode == aspNetUsers.province).FirstOrDefault().ProvinceCode;
             user.first_name = aspNetUsers.first_name;
             user.last_name = aspNetUsers.last_name;
             user.gender = aspNetUsers.gender;
@@ -66,6 +75,7 @@ namespace GameStore.Controllers
             user.address = aspNetUsers.address;
             user.postalCode = aspNetUsers.postalCode;
             user.province = provinceCode;
+           
 
             if (id != aspNetUsers.Id)
             {
@@ -90,7 +100,9 @@ namespace GameStore.Controllers
                 }
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
-            return View(aspNetUsers);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "ProvinceCode", aspNetUsers.province);
+
+            return RedirectToAction(nameof(Index));
         }
         
           

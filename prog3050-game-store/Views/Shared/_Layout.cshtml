@@ -38,10 +38,11 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
-                    <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Credit card</a></li>
+
                     @if (signingManager.IsSignedIn(User))
                     {
-                        <li><a asp-area="" asp-controller="UserProfile" asp-action="Edit">Manage Profile</a></li>
+                        <li><a asp-area="" asp-controller="UserProfile" asp-action="Index">Manage Profile</a></li>
+                        <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Manage Credit card</a></li>
 
                     }
 

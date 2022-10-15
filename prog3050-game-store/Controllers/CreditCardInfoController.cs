@@ -131,6 +131,7 @@ namespace GameStore.Controllers
                 {
                     if (isCardValid)
                     {
+                        creditCardInfo.UserId= _userManager.GetUserId(HttpContext.User);
                         TempData["message"] = "Credit card updated!!";
                         _context.Update(creditCardInfo);
                         await _context.SaveChangesAsync();
