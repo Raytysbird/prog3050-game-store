@@ -66,6 +66,7 @@ namespace GameStore.Controllers
                         throw;
                     }
                 }
+                TempData["message"] = "Your profile has been updated!!";
                 return RedirectToAction(nameof(Index));
             }
             ViewData["PlatformId"] = new SelectList(_context.Platform, "PlatforrmId", "Name", favouritePlatform.PlatformId);

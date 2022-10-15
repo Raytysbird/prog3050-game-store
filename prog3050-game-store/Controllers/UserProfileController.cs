@@ -31,13 +31,6 @@ namespace GameStore.Controllers
 
             var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
             ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
-
-            var gameCategory = _context.Category.OrderBy(x => x.Name);
-            ViewData["GameCategory"] = new SelectList(gameCategory, "Name", "Name");
-
-            var platformCategory = _context.Platform.OrderBy(x => x.Name);
-            ViewData["PlatformCategory"] = new SelectList(platformCategory, "Name", "Name");
-
             if (id == null)
             {
                 return NotFound();
@@ -63,11 +56,16 @@ namespace GameStore.Controllers
         {
             id = _userManager.GetUserId(HttpContext.User);
             var user = await _userManager.FindByIdAsync(id);
+            var provinceCode = _context.Province.Where(x => x.Name == aspNetUsers.province).FirstOrDefault().ProvinceCode;
             user.first_name = aspNetUsers.first_name;
             user.last_name = aspNetUsers.last_name;
             user.gender = aspNetUsers.gender;
             user.dob = aspNetUsers.dob;
             user.receive_promotions = aspNetUsers.receive_promotions;
+            user.city = aspNetUsers.city;
+            user.address = aspNetUsers.address;
+            user.postalCode = aspNetUsers.postalCode;
+            user.province = provinceCode;
 
             if (id != aspNetUsers.Id)
             {

@@ -46,7 +46,7 @@ namespace GameStore.Models
 
         [Required]
         [Display(Name = "Postal Code")]
-        [RegularExpression(@"([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ] ?\d[ABCEGHJKLMNPRSTVWXYZ]\d)")]
+        [RegularExpression(@"([A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d)")]
         public string postalCode { get; set; }
 
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
