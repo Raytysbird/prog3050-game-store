@@ -21,22 +21,18 @@ namespace GameStore.Controllers
             _userManager = userManager;
         }
 
-        
+
         // GET: UserProfile/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-           ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
-           id = _userManager.GetUserId(HttpContext.User);
-           ViewBag.Gender = new List<string>() {"Male","Female","Other" };
-           
-           var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
-           ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
+            ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
+            id = _userManager.GetUserId(HttpContext.User);
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
 
-            var gameCategory = _context.Category.OrderBy(x=>x.Name);
-            ViewData["GameCategory"] = new SelectList(gameCategory, "Name", "Name");
+            var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
+            ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
 
-            var platformCategory = _context.Platform.OrderBy(x => x.Name);
-            ViewData["PlatformCategory"] = new SelectList(platformCategory, "Name", "Name");
+            
 
             if (id == null)
             {
@@ -44,14 +40,14 @@ namespace GameStore.Controllers
             }
 
             var aspNetUsers = await _userManager.FindByIdAsync(id);
-           
+
             if (aspNetUsers == null)
             {
                 return NotFound();
             }
             //_context.Entry(aspNetUsers).State = EntityState.Detached;
             return View(aspNetUsers);
-           
+
         }
 
         // POST: UserProfile/Edit/5
@@ -78,7 +74,7 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                  
+
                     await _userManager.UpdateAsync(user);
                     TempData["message"] = "Your profile has been updated!!";
 
@@ -87,34 +83,14 @@ namespace GameStore.Controllers
 
                 catch (DbUpdateConcurrencyException)
                 {
-                   
-                        throw;
-                    }
+
+                    throw;
+
                 }
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
             return View(aspNetUsers);
         }
-
-        // GET: UserProfile/Delete/5
-        public async Task<IActionResult> Delete(string id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var aspNetUsers = await _context.AspNetUsers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (aspNetUsers == null)
-            {
-                return NotFound();
-            }
-            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
-            return View(aspNetUsers);
-        }
-
-       
     }
 }
