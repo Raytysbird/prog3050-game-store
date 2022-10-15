@@ -31,7 +31,7 @@ namespace GameStore.Models
         [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
         [Required]
         [Display(Name = "Date of Birth")]
-        public string dob { get; set; }
+        public DateTime dob { get; set; }
 
         [Required]
         [Display(Name = "Address")]
@@ -40,7 +40,7 @@ namespace GameStore.Models
         [Display(Name = "City")]
         public string city { get; set; }
 
-        [Required]
+        
         [Display(Name = "Province")]
         public string province { get; set; }
 

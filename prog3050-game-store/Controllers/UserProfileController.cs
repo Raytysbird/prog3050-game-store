@@ -32,7 +32,11 @@ namespace GameStore.Controllers
             var provinces = _context.Province.Where(x => x.CountryCode == "CA").ToList();
             ViewData["ProvinceCode"] = new SelectList(provinces, "Name", "Name");
 
-            
+            var gameCategory = _context.Category.OrderBy(x => x.Name);
+            ViewData["GameCategory"] = new SelectList(gameCategory, "Name", "Name");
+
+            var platformCategory = _context.Platform.OrderBy(x => x.Name);
+            ViewData["PlatformCategory"] = new SelectList(platformCategory, "Name", "Name");
 
             if (id == null)
             {
@@ -77,7 +81,7 @@ namespace GameStore.Controllers
 
                     await _userManager.UpdateAsync(user);
                     TempData["message"] = "Your profile has been updated!!";
-
+                    
 
                 }
 
@@ -85,12 +89,83 @@ namespace GameStore.Controllers
                 {
 
                     throw;
-
                 }
-                return RedirectToAction("Index");
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
             return View(aspNetUsers);
         }
+        
+          
+}
+}
+
+      
+
+            {
+                return NotFound();
+            }
+
+            var aspNetUsers = await _context.AspNetUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (aspNetUsers == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
+            return View(aspNetUsers);
+        }
+
+       
+    }
+}
+            {
+                return NotFound();
+            }
+
+            var aspNetUsers = await _context.AspNetUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (aspNetUsers == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
+            return View(aspNetUsers);
+        }
+
+       
+    }
+}
+            {
+                return NotFound();
+            }
+
+            var aspNetUsers = await _context.AspNetUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (aspNetUsers == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
+            return View(aspNetUsers);
+        }
+
+       
+    }
+}
+            {
+                return NotFound();
+            }
+
+            var aspNetUsers = await _context.AspNetUsers
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (aspNetUsers == null)
+            {
+                return NotFound();
+            }
+            ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
+            return View(aspNetUsers);
+        }
+
+       
     }
 }

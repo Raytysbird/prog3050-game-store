@@ -24,6 +24,6 @@
     [PostalCode] VARCHAR(50) NULL, 
     [Province] VARCHAR(50) NULL, 
     [Country] VARCHAR(50) NULL, 
-    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC),
     );
 
