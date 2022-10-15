@@ -24,10 +24,6 @@
     [PostalCode] VARCHAR(50) NULL, 
     [Province] VARCHAR(50) NULL, 
     [Country] VARCHAR(50) NULL, 
-    [favouritePlatform] INT NULL, 
-    [favouriteCategory] INT NULL,
-    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC),
-    CONSTRAINT [favouritePlatform] FOREIGN KEY ([favouritePlatform]) REFERENCES [dbo].[Platform] ([platforrm_id]),
-    CONSTRAINT [favouriteCategory] FOREIGN KEY ([favouriteCategory]) REFERENCES [dbo].[Category] ([category_id])
+    CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC)
     );
 

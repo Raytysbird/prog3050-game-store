@@ -52,13 +52,6 @@ namespace GameStore.Models
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
         public bool receive_promotions { get; set; }
-        [Display(Name = "Please select game category preference")]
-        [Required]
-        public int favouriteCategory { get; set; }
-
-        [Display(Name = "Please select gaming platform")]
-        [Required]
-        public int favouritePlatform { get; set; }
 
     }
 
