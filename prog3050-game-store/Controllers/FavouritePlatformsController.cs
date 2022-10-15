@@ -6,102 +6,43 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameStore.Controllers
 {
     public class FavouritePlatformsController : Controller
     {
         private readonly GameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public FavouritePlatformsController(GameContext context)
+        public FavouritePlatformsController(GameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: FavouritePlatforms
         public async Task<IActionResult> Index()
         {
-            var gameContext = _context.FavouritePlatform.Include(f => f.Platform).Include(f => f.User);
-            var gameCategory = _context.Category.OrderBy(x => x.Name);
-            ViewData["GameCategory"] = new SelectList(gameCategory, "Name", "Name");
-
-            var platformCategory = _context.Platform.OrderBy(x => x.Name);
-            //ViewData["PlatformCategory"] = new SelectList(platformCategory, "Name", "Name", gameContext.);
-            return View(await gameContext.ToListAsync());
+            var userPlatfrom = await _context.FavouritePlatform.Include(x=>x.Platform).FirstOrDefaultAsync() ;
+            var gamePlatfrom = _context.Platform.OrderBy(x => x.Name);
+            ViewData["PlatformId"] = new SelectList(gamePlatfrom, "Name", "Name", userPlatfrom.Platform.Name);
+            return View(userPlatfrom);
         }
 
-        // GET: FavouritePlatforms/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var favouritePlatform = await _context.FavouritePlatform
-                .Include(f => f.Platform)
-                .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.PlatformId == id);
-            if (favouritePlatform == null)
-            {
-                return NotFound();
-            }
-
-            return View(favouritePlatform);
-        }
-
-        // GET: FavouritePlatforms/Create
-        public IActionResult Create()
-        {
-            ViewData["PlatformId"] = new SelectList(_context.Platform, "PlatforrmId", "Name");
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
-            return View();
-        }
-
-        // POST: FavouritePlatforms/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: FavouritePlatforms
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("PlatformId,UserId")] FavouritePlatform favouritePlatform)
+        public async Task<IActionResult> Index(FavouritePlatform favouritePlatform)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(favouritePlatform);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["PlatformId"] = new SelectList(_context.Platform, "PlatforrmId", "Name", favouritePlatform.PlatformId);
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", favouritePlatform.UserId);
-            return View(favouritePlatform);
-        }
-
-        // GET: FavouritePlatforms/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var favouritePlatform = await _context.FavouritePlatform.FindAsync(id);
-            if (favouritePlatform == null)
-            {
-                return NotFound();
-            }
-            ViewData["PlatformId"] = new SelectList(_context.Platform, "PlatforrmId", "Name", favouritePlatform.PlatformId);
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", favouritePlatform.UserId);
-            return View(favouritePlatform);
-        }
-
-        // POST: FavouritePlatforms/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("PlatformId,UserId")] FavouritePlatform favouritePlatform)
-        {
-            if (id != favouritePlatform.PlatformId)
+            var id = _userManager.GetUserId(HttpContext.User);
+            var favePlatform = _context.FavouritePlatform.FirstOrDefault();
+            var platformId = _context.Platform.Where(x => x.Name == favouritePlatform.Platform.Name).FirstOrDefault().PlatforrmId;
+            _context.FavouritePlatform.Remove(favePlatform);
+            _context.SaveChanges();
+            favePlatform.PlatformId = platformId;
+            favePlatform.UserId = id;
+            if (id != favouritePlatform.UserId)
             {
                 return NotFound();
             }
@@ -110,7 +51,8 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                    _context.Update(favouritePlatform);
+                    _context.FavouritePlatform.Add(favePlatform);
+                    //_context.Update(favouritePlatform);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -131,36 +73,7 @@ namespace GameStore.Controllers
             return View(favouritePlatform);
         }
 
-        // GET: FavouritePlatforms/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var favouritePlatform = await _context.FavouritePlatform
-                .Include(f => f.Platform)
-                .Include(f => f.User)
-                .FirstOrDefaultAsync(m => m.PlatformId == id);
-            if (favouritePlatform == null)
-            {
-                return NotFound();
-            }
-
-            return View(favouritePlatform);
-        }
-
-        // POST: FavouritePlatforms/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var favouritePlatform = await _context.FavouritePlatform.FindAsync(id);
-            _context.FavouritePlatform.Remove(favouritePlatform);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+      
 
         private bool FavouritePlatformExists(int id)
         {
