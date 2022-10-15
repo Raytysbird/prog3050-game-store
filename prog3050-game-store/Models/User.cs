@@ -52,8 +52,6 @@ namespace GameStore.Models
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
         public bool receive_promotions { get; set; }
-       
-      
 
     }
 
