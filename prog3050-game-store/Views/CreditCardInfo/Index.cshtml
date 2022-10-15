@@ -1,14 +1,12 @@
 ﻿@model IEnumerable<GameStore.Models.CreditCardInfo>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Credit Card List";
 }
 
-<h2>Index</h2>
+<h2>Registerd Cards</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <table class="table">
     <thead>
         <tr>
@@ -21,10 +19,8 @@
             <th>
                 @Html.DisplayNameFor(model => model.Ccc)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th></th>
+          
+            <th>Manage each</th>
         </tr>
     </thead>
     <tbody>
@@ -39,15 +35,18 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Ccc)
             </td>
+           
             <td>
-                @Html.DisplayFor(modelItem => item.User.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.CreditCardId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CreditCardId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.CreditCardId">Delete</a>
+                <a class="btn btn-info" asp-action="Edit"  asp-route-id="@item.CreditCardId">Edit Card</a> <br />
+                <a class="btn btn-info" asp-action="Details"  asp-route-id="@item.CreditCardId">View Card Details</a> <br />
+                <a class="btn btn-info" asp-action="Delete"  asp-route-id="@item.CreditCardId">Delete Card</a><br />
             </td>
         </tr>
 }
     </tbody>
 </table>
+
+<h4>Add another card from the button bellow.</h4>
+<p>
+    <a type="button" class="btn btn-success" asp-action="Create">Add another Card</a>
+</p>

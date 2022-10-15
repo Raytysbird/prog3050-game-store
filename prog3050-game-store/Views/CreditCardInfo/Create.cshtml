@@ -1,45 +1,46 @@
 ﻿@model GameStore.Models.CreditCardInfo
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Credit Card";
 }
 
-<h2>Create</h2>
+<h2>Add Credit Card</h2>
 
-<h4>CreditCardInfo</h4>
+<h4>Credit Card Details</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
+                <input asp-for="UserId" class="form-control" value=@ViewBag.UserId />
+                
             </div>
             <div class="form-group">
                 <label asp-for="Number" class="control-label"></label>
-                <input asp-for="Number" class="form-control" />
+                <input asp-for="Number" placeholder="XXXX-XXXX-XXXX-XXXX" class="form-control" />
                 <span asp-validation-for="Number" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="ExpDate" class="control-label"></label>
-                <input asp-for="ExpDate" class="form-control" />
+                <input asp-for="ExpDate" placeholder="MM/YY" class="form-control" />
                 <span asp-validation-for="ExpDate" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Ccc" class="control-label"></label>
-                <input asp-for="Ccc" class="form-control" />
+                <input asp-for="Ccc" placeholder="XXX" class="form-control" />
                 <span asp-validation-for="Ccc" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="submit" value="Create" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to Credit Card List</a>
 </div>
 
 @section Scripts {

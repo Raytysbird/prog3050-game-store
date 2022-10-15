@@ -223,17 +223,17 @@ namespace GameStore.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Number).HasColumnName("number");
+                entity.Property(e => e.Number)
+                    .HasColumnName("number")
+                    .HasMaxLength(450);
 
                 entity.Property(e => e.UserId)
-                    .IsRequired()
                     .HasColumnName("user_id")
                     .HasMaxLength(450);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.CreditCardInfo)
                     .HasForeignKey(d => d.UserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKCredit Car111073");
             });
 
