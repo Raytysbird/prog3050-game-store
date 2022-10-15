@@ -7,26 +7,36 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using GameStore.Services;
 
 namespace GameStore.Controllers
 {
+   
     public class CreditCardInfoController : Controller
     {
         private readonly GameContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly CreditCardValidService _validateCard;
 
-        public CreditCardInfoController(GameContext context, UserManager<User> userManager)
+        public CreditCardInfoController(GameContext context, UserManager<User> userManager, CreditCardValidService validateCard)
         {
             _context = context;
             _userManager = userManager;
+            _validateCard = validateCard;
         }
 
         // GET: CreditCardInfo
         public async Task<IActionResult> Index()
         {
+            
             var userId = _userManager.GetUserId(HttpContext.User);
-            var gameContext = _context.CreditCardInfo.Where(c => c.UserId == userId);
-            return View(await gameContext.ToListAsync());
+            var gameContext = await _context.CreditCardInfo.Where(c => c.UserId == userId).ToListAsync();
+            if (gameContext.Count==0)
+            {
+
+                return View("NoCreditCard");
+            }
+            return View(gameContext);
         }
 
         // GET: CreditCardInfo/Details/5
@@ -51,7 +61,7 @@ namespace GameStore.Controllers
         // GET: CreditCardInfo/Create
         public IActionResult Create()
         {
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
+            ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
             return View();
         }
 
@@ -64,11 +74,23 @@ namespace GameStore.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(creditCardInfo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                bool isCardValid = _validateCard.isCardValid(creditCardInfo.Number);
+                if (isCardValid)
+                {
+                    TempData["message"] = "Credit card added!!";
+                    _context.Add(creditCardInfo);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid credit card, Please try again!!");
+                    return View(creditCardInfo);
+                }
+               
             }
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", creditCardInfo.UserId);
+            ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
+           
             return View(creditCardInfo);
         }
 
@@ -85,7 +107,7 @@ namespace GameStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", creditCardInfo.UserId);
+            ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
             return View(creditCardInfo);
         }
 
@@ -96,6 +118,8 @@ namespace GameStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("CreditCardId,UserId,Number,ExpDate,Ccc")] CreditCardInfo creditCardInfo)
         {
+            creditCardInfo.UserId= _userManager.GetUserId(HttpContext.User);
+            bool isCardValid = _validateCard.isCardValid(creditCardInfo.Number);
             if (id != creditCardInfo.CreditCardId)
             {
                 return NotFound();
@@ -105,8 +129,17 @@ namespace GameStore.Controllers
             {
                 try
                 {
-                    _context.Update(creditCardInfo);
-                    await _context.SaveChangesAsync();
+                    if (isCardValid)
+                    {
+                        TempData["message"] = "Credit card updated!!";
+                        _context.Update(creditCardInfo);
+                        await _context.SaveChangesAsync();
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid credit card, Please try again!!");
+                        return View(creditCardInfo);
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -121,7 +154,7 @@ namespace GameStore.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", creditCardInfo.UserId);
+            ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
             return View(creditCardInfo);
         }
 

@@ -52,6 +52,7 @@ namespace prog3050_game_store
             services.Configure<RecaptchaSettings>(Configuration.GetSection("GoogleRecaptcha"));
             services.AddTransient<GoogleCaptchaService>();
             services.AddTransient<EmailSender>();
+            services.AddTransient<CreditCardValidService>();
             services.AddSession();
             services.AddIdentity<User, IdentityRole>(options =>
             {
