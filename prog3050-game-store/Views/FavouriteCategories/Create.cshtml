@@ -1,12 +1,12 @@
 ﻿@model GameStore.Models.FavouriteCategory
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Favorite Category";
 }
 
-<h2>Create</h2>
+<h2>Add Favorite Category</h2>
 
-<h4>FavouriteCategory</h4>
+<h4>Favourite Category</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,12 +14,9 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.CategoryId"></select>
+                <select asp-for="CategoryId" class ="form-control" asp-items="ViewBag.Category"></select>
             </div>
-            <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class ="form-control" asp-items="ViewBag.UserId"></select>
-            </div>
+           
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>

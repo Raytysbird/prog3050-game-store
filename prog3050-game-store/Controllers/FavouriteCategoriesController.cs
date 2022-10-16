@@ -25,57 +25,72 @@ namespace GameStore.Controllers
         // GET: FavouriteCategories
         public async Task<IActionResult> Index()
         {
-            //var gameContext = _context.FavouriteCategory.Include(f => f.Category).Include(f => f.User);
-            var categories = _context.Category;
-            var favCategory = await _context.FavouriteCategory.Include(x=> x.Category).FirstOrDefaultAsync();
-            ViewData["FavouriteCategory"] = new SelectList(categories, "Name", "Name", favCategory.Category.Name);
-            //ViewData["FavouriteCategory"] = new SelectList(categories, "CategoryId", "Name", favCategory.Category.Name);
+
+            var id = _userManager.GetUserId(HttpContext.User);
+            var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(x => x.UserId == id).ToListAsync();
+            if (favCategory.Count == 0)
+            {
+
+                return View("NoFavoriteCategory");
+            }
             return View(favCategory);
         }
+        public IActionResult Create()
+        {
+            ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
+            var user_id = _userManager.GetUserId(HttpContext.User);
+            var currentCategory = _context.FavouriteCategory.Where(c=>c.UserId==user_id).Select(x => x.CategoryId).ToList();
+            var categoryExcludingCurrent = _context.Category.Where(x => !currentCategory.Contains(x.CategoryId)).ToList();
+            if (categoryExcludingCurrent.Count==0)
+            {
+                TempData["message"] = "No more categories available to select. Looks like you love all categories we have!!";
+            }
+            ViewData["Category"] = new SelectList(categoryExcludingCurrent, "CategoryId", "Name");
 
+            return View();
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(FavouriteCategory favouriteCategory)
+        public async Task<IActionResult> Create([Bind("CategoryId,UserId")] FavouriteCategory favouriteCategory)
         {
-            var id = _userManager.GetUserId(HttpContext.User);
-            var faveCategory = _context.FavouriteCategory.FirstOrDefault();
-            var categoryId = _context.Category.Where(x => x.Name == favouriteCategory.Category.Name).FirstOrDefault().CategoryId;
-            _context.FavouriteCategory.Remove(faveCategory);
-            _context.SaveChanges();
-            faveCategory.CategoryId = categoryId;
-            faveCategory.UserId = id;
-            if (id != favouriteCategory.UserId)
+            if (ModelState.IsValid)
+            {
+                favouriteCategory.UserId = _userManager.GetUserId(HttpContext.User);
+                TempData["message"] = "Category added to your favorites";
+                _context.Add(favouriteCategory);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(favouriteCategory);
+        }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            var user_id = _userManager.GetUserId(HttpContext.User);
+            var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(X => X.CategoryId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
+            if (favCategory == null)
             {
-                try
-                {
-                    _context.FavouriteCategory.Add(faveCategory);
-                    //_context.Update(favouriteCategory);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!FavouriteCategoryExists(favouriteCategory.CategoryId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                TempData["message"] = "Your profile has been updated!!";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["FavouriteCategory"] = new SelectList(_context.Platform, "PlatforrmId", "Name", favouriteCategory.CategoryId);
-            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", favouriteCategory.UserId);
-            return View(favouriteCategory);
+
+            return View(favCategory);
         }
 
+        // POST: CreditCardInfo/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var user_id = _userManager.GetUserId(HttpContext.User);
+            var favCategory = await _context.FavouriteCategory.Where(X => X.CategoryId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
+            _context.FavouriteCategory.Remove(favCategory);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
         private bool FavouriteCategoryExists(int id)
         {
             return _context.FavouriteCategory.Any(e => e.CategoryId == id);

@@ -11,24 +11,17 @@
     <h4>FavouriteCategory</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Category)
-        </dt>
+       
         <dd>
             @Html.DisplayFor(model => model.Category.Name)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.User)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.User.Id)
-        </dd>
+        
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="CategoryId" />
         <input type="hidden" asp-for="UserId" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>
     </form>
 </div>
