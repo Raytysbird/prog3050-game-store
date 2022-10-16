@@ -13,7 +13,6 @@ namespace GameStore.Controllers
     public class FavouriteCategoriesController : Controller
     {
         private readonly GameContext _context;
-
         private readonly UserManager<User> _userManager;
 
         public FavouriteCategoriesController(GameContext context, UserManager<User> userManager)
