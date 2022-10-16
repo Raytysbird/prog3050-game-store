@@ -96,6 +96,14 @@ namespace GameStore.Areas.Identity.Pages.Account
                 if (captchaResult.Result.success)
                 {
                     var user = new User { UserName = Input.UserName, Email = Input.Email };
+                    user.dob = DateTime.Today;
+                    var userExists = await _userManager.FindByEmailAsync(Input.Email);
+                    if (userExists!=null)
+                    {
+                        TempData["message"] = "User alredy exist with same email.";
+                        
+                        return RedirectToPage("./Register");
+                    }
                     var result = await _userManager.CreateAsync(user, Input.Password);
                     if (result.Succeeded)
                     {

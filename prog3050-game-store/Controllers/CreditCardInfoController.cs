@@ -77,6 +77,7 @@ namespace GameStore.Controllers
                 bool isCardValid = _validateCard.isCardValid(creditCardInfo.Number);
                 if (isCardValid)
                 {
+                    creditCardInfo.UserId= _userManager.GetUserId(HttpContext.User);
                     TempData["message"] = "Credit card added!!";
                     _context.Add(creditCardInfo);
                     await _context.SaveChangesAsync();
