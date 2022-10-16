@@ -20,7 +20,7 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-inverse navbar-fixed-top">
 
         <div class="container">
             <div class="navbar-header">
@@ -39,10 +39,20 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
 
+
                     @if (signingManager.IsSignedIn(User))
                     {
                         <li><a asp-area="" asp-controller="UserProfile" asp-action="Index">Manage Profile</a></li>
                         <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Manage Credit card</a></li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Our Services <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li role="separator" class="divider"></li>
+                                <li><a asp-area="" asp-controller="FavouritePlatforms" asp-action="Content">Platforms</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a asp-area="" asp-controller="FavouriteCategories" asp-action="Content" >Categories</a></li>
+                            </ul>
+                        </li>
 
                     }
 

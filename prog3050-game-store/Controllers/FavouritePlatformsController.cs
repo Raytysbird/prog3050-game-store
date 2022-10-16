@@ -33,6 +33,10 @@ namespace GameStore.Controllers
             }
             return View(favPlatform);
         }
+        public async Task<IActionResult> Content()
+        {
+            return View();
+        }
         public IActionResult Create()
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
