@@ -3,40 +3,46 @@
 @{
     ViewData["Title"] = "Favourite Categories";
 }
-
 <h2 style="margin-bottom:1em;">Your Favourite Categories</h2>
+<p>We offer games for multiple platforms including, Puzzle, adventure, sports, simulation etc.</p>
 
-<table class="table">
-    <thead>
-        <tr>
-           
-            <th>
-                @Html.DisplayNameFor(model => model.Category.Name)
-            </th>
-           
 
-            <th>Manage</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if (Model.Count() == 0)
+{
+    <strong>You don't have any preferences for categories yet, Please add one.</strong>
+}
+else
+{
+    <table class="table">
+        <thead>
             <tr>
-                
-                <td>
-                    @Html.DisplayFor(modelItem => item.Category.Name)
-                </td>
-                
 
-                <td>
-                    <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.CategoryId">Remove from favorites</a><br />
-                </td>
+                <th>
+                    @Html.DisplayNameFor(model => model.Category.Name)
+                </th>
+
+
+                <th>Manage</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
 
-<h5>Add another category from the button bellow.</h5>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Category.Name)
+                    </td>
+
+                    <td>
+                        <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.CategoryId">Remove from favorites</a><br />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
 <p>
-    <a type="button" class="btn btn-success" asp-action="Create">Add another Category</a>
+    <a type="button" class="btn btn-success" asp-action="Create">Add Category</a>
 </p>

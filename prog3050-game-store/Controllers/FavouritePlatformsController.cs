@@ -26,11 +26,7 @@ namespace GameStore.Controllers
         {
             var id = _userManager.GetUserId(HttpContext.User);
             var favPlatform = await _context.FavouritePlatform.Include(x => x.Platform).Where(x => x.UserId == id).ToListAsync();
-            if (favPlatform.Count == 0)
-            {
-
-                return View("NoFavoritePlatform");
-            }
+           
             return View(favPlatform);
         }
         public async Task<IActionResult> Content()
@@ -66,30 +62,15 @@ namespace GameStore.Controllers
             }
             return View(favouritePlatform);
         }
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var favPlatform = await _context.FavouritePlatform.Include(x => x.Platform).Where(X => X.PlatformId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
-            if (favPlatform == null)
-            {
-                return NotFound();
-            }
-
-            return View(favPlatform);
-        }
+        
 
         // POST: CreditCardInfo/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+       
+        public async Task<IActionResult> Delete(int id)
         {
             var user_id = _userManager.GetUserId(HttpContext.User);
             var favPlatform = await _context.FavouritePlatform.Where(X => X.PlatformId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
+            TempData["message"] = "Platform removed from your favorites";
             _context.FavouritePlatform.Remove(favPlatform);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -27,11 +27,7 @@ namespace GameStore.Controllers
 
             var id = _userManager.GetUserId(HttpContext.User);
             var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(x => x.UserId == id).ToListAsync();
-            if (favCategory.Count == 0)
-            {
-
-                return View("NoFavoriteCategory");
-            }
+           
             return View(favCategory);
         }
         public async Task<IActionResult> Content()
@@ -66,30 +62,12 @@ namespace GameStore.Controllers
             }
             return View(favouriteCategory);
         }
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user_id = _userManager.GetUserId(HttpContext.User);
-            var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(X => X.CategoryId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
-            if (favCategory == null)
-            {
-                return NotFound();
-            }
-
-            return View(favCategory);
-        }
-
-        // POST: CreditCardInfo/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+       
+        public async Task<IActionResult> Delete(int id)
         {
             var user_id = _userManager.GetUserId(HttpContext.User);
             var favCategory = await _context.FavouriteCategory.Where(X => X.CategoryId == id).FirstOrDefaultAsync(x => x.UserId == user_id);
+            TempData["message"] = "Category removed from your favorites";
             _context.FavouriteCategory.Remove(favCategory);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

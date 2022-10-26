@@ -5,7 +5,13 @@
 }
 
 <h2 style="margin-bottom:1em;">Your Favourite Platforms</h2>
-
+<p>We offer games for multiple platforms including, PC,XBOX,Switch etc.  </p>
+@if (Model.Count() == 0)
+{
+    <strong>You don't have any preferences for platforms yet, Please add one.</strong>
+}
+else
+{
 <table class="table">
     <thead>
         <tr>
@@ -35,8 +41,8 @@
         }
     </tbody>
 </table>
+}
 
-<h5>Add another platform from the button bellow.</h5>
 <p>
-    <a type="button" class="btn btn-success" asp-action="Create">Add another Platform</a>
+    <a type="button" class="btn btn-success" asp-action="Create">Add Platform</a>
 </p>
