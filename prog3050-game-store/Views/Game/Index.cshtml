@@ -1,0 +1,97 @@
+﻿@model IEnumerable<GameStore.Models.Game>
+@using GameStore.Services
+@{
+    Pagination pager = new Pagination();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+    <div class="form-group">
+        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter game keyword" style="width:500px;">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <button type="submit" class="btn btn-primary">Clear Search</button>
+</form>
+
+<table class="table" id="gameList">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.GameId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.GameId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.GameId">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+<div class="container">
+    @if (pager.TotalPages > 0)
+    {
+    <ul class="pagination">
+        @if (pager.CurrentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-controller="Game" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="1">First</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" asp-controller="Game" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage-1)">Previous</a>
+            </li>
+        }
+        @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+        {
+            <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                <a class="page-link" asp-controller="Game" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@pge">@pge</a>
+            </li>
+        }
+        @if (pager.CurrentPage<pager.TotalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-controller="Game" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage+1)">Next</a>
+            </li>
+            <li class="page-item">
+                <a class="page-link" asp-controller="Game" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.TotalPages)">Last</a>
+            </li>
+        }
+    </ul>
+    }
+</div>
