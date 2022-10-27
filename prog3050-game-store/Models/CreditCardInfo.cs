@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameStore.CustomValidation;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -16,7 +17,9 @@ namespace GameStore.Models
         [Required]
         [Display(Name = "Expiry Date")]
         [RegularExpression(@"(0[1-9]|1[0-2])\/[0-9]{2}$", ErrorMessage = "Please enter valid expiry date in format MM/YY")]
+        [ExpiryDateAttribute]
         public string ExpDate { get; set; }
+
         [Required]
         [Range(000,999, ErrorMessage = "CCC is invalid. Must be of 3 digits")]
         [Display(Name = "CCC Number")]
