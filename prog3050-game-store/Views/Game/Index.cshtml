@@ -10,20 +10,18 @@
     }
 }
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Our Games";
 }
 
-<h2>Index</h2>
+<h2>Game List</h2>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<p>Below is list of the games.</p>
 <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
     <div class="form-group">
         <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter game keyword" style="width:500px;">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
-    <button type="submit" class="btn btn-primary">Clear Search</button>
+    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
 </form>
 
 <table class="table" id="gameList">
@@ -52,18 +50,19 @@
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    $@Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.GameId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.GameId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.GameId">Delete</a>
-                </td>
+                   
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.GameId">Game Details</a>
+                   
             </tr>
         }
     </tbody>
 
 </table>
+
+
 <div class="container">
     @if (pager.TotalPages > 0)
     {
@@ -95,3 +94,4 @@
     </ul>
     }
 </div>
+

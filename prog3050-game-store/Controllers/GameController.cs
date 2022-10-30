@@ -39,7 +39,7 @@ namespace GameStore.Controllers
             }
             return View(await _context.Game.Skip(rescSkip).Take(pager.PageSize).ToListAsync());
         }
-
+    
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -47,9 +47,23 @@ namespace GameStore.Controllers
             {
                 return NotFound();
             }
+           
+           var game = await _context.Game.Include(x=>x.GameCategory).FirstOrDefaultAsync(m => m.GameId == id);
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.GameId == id);
+            var category = _context.GameCategory.Include(x=>x.Category).FirstOrDefault(x => x.GameId == id);
+            if (category!=null)
+            {
+                ViewBag.CategoryName = category.Category.Name;
+            }
+            
+
+            var platform = _context.GamePlatform.Include(x => x.Platform).FirstOrDefault(x => x.GameId == id);
+            if (platform!=null)
+            {
+                ViewBag.PlatformName = platform.Platform.Name;
+            }
+            
+
             if (game == null)
             {
                 return NotFound();
