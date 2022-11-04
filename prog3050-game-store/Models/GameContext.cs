@@ -32,13 +32,14 @@ namespace GameStore.Models
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
+        public virtual DbSet<Relation> Relation { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
             }
         }
 
@@ -292,6 +293,11 @@ namespace GameStore.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ImagePath)
+                    .HasColumnName("imagePath")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
@@ -392,6 +398,37 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.CountryCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("countryCode");
+            });
+
+            modelBuilder.Entity<Relation>(entity =>
+            {
+                entity.ToTable("relation");
+
+                entity.Property(e => e.RelationId).HasColumnName("relation_id");
+
+                entity.Property(e => e.AreFriends).HasColumnName("areFriends");
+
+                entity.Property(e => e.FromUser)
+                    .IsRequired()
+                    .HasColumnName("from_user")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.ToUser)
+                    .IsRequired()
+                    .HasColumnName("to_user")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.FromUserNavigation)
+                    .WithMany(p => p.RelationFromUserNavigation)
+                    .HasForeignKey(d => d.FromUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKrelation265756");
+
+                entity.HasOne(d => d.ToUserNavigation)
+                    .WithMany(p => p.RelationToUserNavigation)
+                    .HasForeignKey(d => d.ToUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKrelation392934");
             });
         }
     }
