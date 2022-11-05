@@ -1,0 +1,41 @@
+﻿@model GameStore.Models.Relation
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h2>Edit</h2>
+
+<h4>Relation</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="RelationId" />
+            <div class="form-group">
+                <label asp-for="FromUser" class="control-label"></label>
+                <select asp-for="FromUser" class="form-control" asp-items="ViewBag.FromUser"></select>
+                <span asp-validation-for="FromUser" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ToUser" class="control-label"></label>
+                <select asp-for="ToUser" class="form-control" asp-items="ViewBag.ToUser"></select>
+                <span asp-validation-for="ToUser" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreFriends" class="control-label"></label>
+                <input asp-for="AreFriends" class="form-control" />
+                <span asp-validation-for="AreFriends" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

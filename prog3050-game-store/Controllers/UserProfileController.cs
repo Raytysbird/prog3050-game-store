@@ -42,7 +42,7 @@ namespace GameStore.Controllers
 
             var aspNetUsers = await _userManager.FindByIdAsync(id);
 
-            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode", aspNetUsers.province);
+            //ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode", aspNetUsers.province);
 
             if (id == null)
             {
@@ -61,20 +61,16 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("Id,userName,first_name,last_name,gender,dob, address, city, province, postalCode,receive_promotions")] User aspNetUsers)
+        public async Task<IActionResult> Edit(string id, [Bind("Id,userName,first_name,last_name,gender,dob,receive_promotions")] User aspNetUsers)
         {
             id = _userManager.GetUserId(HttpContext.User);
             var user = await _userManager.FindByIdAsync(id);
-            var provinceCode = _context.Province.Where(x => x.ProvinceCode == aspNetUsers.province).FirstOrDefault().ProvinceCode;
+           // var provinceCode = _context.Province.Where(x => x.ProvinceCode == aspNetUsers.province).FirstOrDefault().ProvinceCode;
             user.first_name = aspNetUsers.first_name;
             user.last_name = aspNetUsers.last_name;
             user.gender = aspNetUsers.gender;
             user.dob = aspNetUsers.dob;
             user.receive_promotions = aspNetUsers.receive_promotions;
-            user.city = aspNetUsers.city;
-            user.address = aspNetUsers.address;
-            user.postalCode = aspNetUsers.postalCode;
-            user.province = provinceCode;
            
 
             if (id != aspNetUsers.Id)
@@ -100,7 +96,7 @@ namespace GameStore.Controllers
                 }
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
-            ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "ProvinceCode", aspNetUsers.province);
+            //ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "ProvinceCode", aspNetUsers.province);
 
             return RedirectToAction(nameof(Index));
         }

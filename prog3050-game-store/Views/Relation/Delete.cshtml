@@ -1,0 +1,39 @@
+﻿@model GameStore.Models.Relation
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Relation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AreFriends)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AreFriends)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.FromUserNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FromUserNavigation.Id)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ToUserNavigation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ToUserNavigation.Id)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="RelationId" />
+        <input type="submit" value="Delete" class="btn btn-default" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>
