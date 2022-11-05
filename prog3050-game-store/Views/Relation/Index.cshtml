@@ -1,4 +1,5 @@
-﻿@model IEnumerable<GameStore.Models.Relation>
+﻿@*@model IEnumerable<GameStore.Models.Relation>*@
+
 
 @{
     ViewData["Title"] = "Index";
@@ -9,39 +10,55 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+    <div class="form-group">
+        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter user name" style="width:500px;">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
+</form>
+
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.AreFriends)
+                User Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.FromUserNavigation)
+                Gender
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ToUserNavigation)
-            </th>
+
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AreFriends)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FromUserNavigation.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ToUserNavigation.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.RelationId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.RelationId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.RelationId">Delete</a>
-            </td>
-        </tr>
-}
+        @if (ViewBag.User != null)
+        {
+            @foreach (var item in ViewBag.User)
+            {
+                <tr>
+                    <td>
+                        @item.UserName
+                    </td>
+                    <td>
+                        @item.Gender
+                    </td>
+
+                    <td>
+                        <a asp-action="SendRequest" asp-route-id="@item.Id">Send Request</a>
+                    </td>
+                </tr>
+            }
+        }
     </tbody>
 </table>
+@if (ViewBag.Friends != null)
+{
+    @foreach (var item in ViewBag.Friends)
+    {
+<p>@item.UserName</p>
+<p>@item.Id</p>
+    }
+}

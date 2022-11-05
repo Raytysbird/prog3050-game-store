@@ -7,22 +7,70 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 
+using Microsoft.AspNetCore.Identity;
+using System.Dynamic;
+
 namespace GameStore.Controllers
 {
     public class RelationController : Controller
     {
         private readonly GameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public RelationController(GameContext context)
+        public RelationController(GameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Relation
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string keyword)
         {
-            var gameContext = _context.Relation.Include(r => r.FromUserNavigation).Include(r => r.ToUserNavigation);
-            return View(await gameContext.ToListAsync());
+            if (keyword != null)
+            {
+                var user =  _context.AspNetUsers.Where(x => x.UserName.Contains(keyword));
+                ViewBag.Keyword = keyword;
+                ViewBag.User = user;
+                return View();
+
+            }
+            else
+            {
+                return View();
+            }                   
+        }
+        public async Task<IActionResult> FriendsList()
+        {
+            List<AspNetUsers> lstUserId = new List<AspNetUsers>();
+            List<AspNetUsers> lstFriends = new List<AspNetUsers>();
+            
+            var currentUser = _userManager.GetUserId(HttpContext.User);
+            var friendList = await _context.Relation.Where(x=>(x.ToUser==currentUser || x.FromUser==currentUser)).Where(z=>z.AreFriends==true).ToListAsync();
+            foreach (var item in friendList)
+            {
+                if (item.FromUser!=currentUser)
+                {
+                    AspNetUsers user = new AspNetUsers();
+                    user.Id = item.FromUser;
+                    lstUserId.Add(user);
+                   
+                }
+                if (item.ToUser != currentUser)
+                {
+                    AspNetUsers user = new AspNetUsers();
+                    user.Id = item.ToUser;
+                    lstUserId.Add(user);
+                }
+            }
+
+            foreach (var item in lstUserId)
+            {
+                var userDetails = _context.AspNetUsers.FirstOrDefault(x => x.Id == item.Id);
+                lstFriends.Add(userDetails);
+               
+            }
+            ViewBag.Friends = lstFriends;
+            return View("Index");
         }
 
         // GET: Relation/Details/5
@@ -56,12 +104,15 @@ namespace GameStore.Controllers
         // POST: Relation/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation)
+     
+        public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
         {
             if (ModelState.IsValid)
             {
+                var user= _userManager.GetUserId(HttpContext.User);
+                relation.FromUser= _userManager.GetUserId(HttpContext.User);
+                relation.ToUser = id;
+                relation.AreFriends = false;
                 _context.Add(relation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
