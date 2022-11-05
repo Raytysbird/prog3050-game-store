@@ -32,6 +32,7 @@ namespace GameStore.Models
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -392,6 +393,36 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.CountryCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("countryCode");
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.Review1)
+                    .HasColumnName("review")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .HasColumnName("title")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
             });
         }
     }

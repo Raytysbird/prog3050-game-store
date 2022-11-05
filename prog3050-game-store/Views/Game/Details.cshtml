@@ -36,6 +36,19 @@
             @ViewBag.CategoryName
         </dd>
         <dt>
+            Ratings
+        </dt>
+        <dd>
+            <span class="text-warning">
+                <i class="ratingStar far fa-star"></i>
+                <i class="ratingStar far fa-star"></i>
+                <i class="ratingStar far fa-star"></i>
+                <i class="ratingStar far fa-star"></i>
+                <i class="ratingStar far fa-star"></i>
+            </span>
+        </dd>
+      
+        <dt>
             Platform
         </dt>
         <dd>
@@ -45,4 +58,23 @@
 </div>
 <div>
     <a class="btn btn-info" asp-action="Index">Back to List</a>
+    <a class="btn btn-success" asp-controller="Reviews" asp-action="Create" asp-route-id="@Model.GameId">Add Review</a>
 </div>
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var rating = parseFloat(@ViewBag.Rating);
+            $(".ratingStar").slice(0,rating ).removeClass("far").addClass("fas");
+        });
+    </script>
+}
+
+
+
+
+
+

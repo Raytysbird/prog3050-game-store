@@ -14,6 +14,7 @@ namespace GameStore.Models
             CreditCardInfo = new HashSet<CreditCardInfo>();
             FavouriteCategory = new HashSet<FavouriteCategory>();
             FavouritePlatform = new HashSet<FavouritePlatform>();
+            Review = new HashSet<Review>();
         }
 
         public string Id { get; set; }
@@ -49,5 +50,6 @@ namespace GameStore.Models
         public ICollection<CreditCardInfo> CreditCardInfo { get; set; }
         public ICollection<FavouriteCategory> FavouriteCategory { get; set; }
         public ICollection<FavouritePlatform> FavouritePlatform { get; set; }
+        public ICollection<Review> Review { get; set; }
     }
 }
