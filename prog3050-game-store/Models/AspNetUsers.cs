@@ -7,6 +7,7 @@ namespace GameStore.Models
     {
         public AspNetUsers()
         {
+            AddressNavigation = new HashSet<Address>();
             AspNetUserClaims = new HashSet<AspNetUserClaims>();
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
@@ -39,11 +40,8 @@ namespace GameStore.Models
         public string Gender { get; set; }
         public DateTime? Dob { get; set; }
         public bool? ReceivePromotions { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
-        public string Province { get; set; }
-        public string Country { get; set; }
 
+        public ICollection<Address> AddressNavigation { get; set; }
         public ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }

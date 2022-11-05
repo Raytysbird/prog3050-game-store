@@ -1,0 +1,72 @@
+﻿@model GameStore.Models.Address
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Address</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.StreetAddress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StreetAddress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AptNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AptNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.UnitNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UnitNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Building)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Building)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.IsShipping)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.IsShipping)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PostalCode)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PostalCode)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Province)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Province)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.User)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.User.Id)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.AddressId">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -33,21 +33,21 @@ namespace GameStore.Models
         [Display(Name = "Date of Birth")]
         public DateTime dob { get; set; }
 
-        [Required]
-        [Display(Name = "Address")]
-        public string address { get; set; }
-        [Required]
-        [Display(Name = "City")]
-        public string city { get; set; }
+        //[Required]
+        //[Display(Name = "Address")]
+        //public string address { get; set; }
+        //[Required]
+        //[Display(Name = "City")]
+        //public string city { get; set; }
 
         
-        [Display(Name = "Province")]
-        public string province { get; set; }
+        //[Display(Name = "Province")]
+        //public string province { get; set; }
 
-        [Required]
-        [Display(Name = "Postal Code")]
-        [RegularExpression(@"([A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d)")]
-        public string postalCode { get; set; }
+        //[Required]
+        //[Display(Name = "Postal Code")]
+        //[RegularExpression(@"([A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d)")]
+        //public string postalCode { get; set; }
 
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]
