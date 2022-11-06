@@ -47,6 +47,12 @@ namespace GameStore.Controllers
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var rating = _context.Review.Where(x => x.GameId == id).Average(x => x.Rating);
+            if (rating.HasValue)
+            {
+                ViewBag.Rating = rating.Value;
+            }
+
             if (id == null)
             {
                 return NotFound();
