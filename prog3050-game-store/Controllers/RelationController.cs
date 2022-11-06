@@ -9,6 +9,7 @@ using GameStore.Models;
 
 using Microsoft.AspNetCore.Identity;
 using System.Dynamic;
+using Microsoft.AspNetCore.Http;
 
 namespace GameStore.Controllers
 {
@@ -26,40 +27,36 @@ namespace GameStore.Controllers
         // GET: Relation
         public async Task<IActionResult> Index(string keyword)
         {
-            if (keyword != null)
+            var currentUser = _userManager.GetUserId(HttpContext.User);
+            if (keyword!=null)
             {
-                var user =  _context.AspNetUsers.Where(x => x.UserName.Contains(keyword));
-                ViewBag.Keyword = keyword;
-                ViewBag.User = user;
-                return View();
-
+                HttpContext.Session.SetString("keyword", keyword);
             }
-            else
-            {
-                return View();
-            }                   
-        }
-        public async Task<IActionResult> FriendsList()
-        {
+           
+            ViewBag.User = null;
             List<AspNetUsers> lstUserId = new List<AspNetUsers>();
             List<AspNetUsers> lstFriends = new List<AspNetUsers>();
-            
-            var currentUser = _userManager.GetUserId(HttpContext.User);
-            var friendList = await _context.Relation.Where(x=>(x.ToUser==currentUser || x.FromUser==currentUser)).Where(z=>z.AreFriends==true).ToListAsync();
+            List<AspNetUsers> lstNewFriends = new List<AspNetUsers>();
+            List<String> lstNotInSearch = new List<string>();
+
+            //For current friends of user
+            var friendList = await _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)).Where(z => z.AreFriends == true).ToListAsync();
             foreach (var item in friendList)
             {
-                if (item.FromUser!=currentUser)
+                if (item.FromUser != currentUser)
                 {
                     AspNetUsers user = new AspNetUsers();
                     user.Id = item.FromUser;
                     lstUserId.Add(user);
-                   
+                    lstNotInSearch.Add(user.Id.ToString());
+
                 }
                 if (item.ToUser != currentUser)
                 {
                     AspNetUsers user = new AspNetUsers();
                     user.Id = item.ToUser;
                     lstUserId.Add(user);
+                    lstNotInSearch.Add(user.Id.ToString());
                 }
             }
 
@@ -67,30 +64,59 @@ namespace GameStore.Controllers
             {
                 var userDetails = _context.AspNetUsers.FirstOrDefault(x => x.Id == item.Id);
                 lstFriends.Add(userDetails);
-               
+
+            }        
+                ViewBag.Friends = lstFriends;
+            //Request sent and Search filter
+            var requestSent = await _context.Relation.Include(c=>c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
+            ViewBag.SentRequest = requestSent;
+
+            var pendingRequests = await _context.Relation.Include(c => c.FromUserNavigation).Where(x => x.ToUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
+            ViewBag.PendingRequests = pendingRequests;
+
+            foreach (var item in requestSent)
+            {
+                lstNotInSearch.Add(item.ToUserNavigation.Id);
             }
-            ViewBag.Friends = lstFriends;
+            foreach (var item in pendingRequests)
+            {
+                lstNotInSearch.Add(item.FromUserNavigation.Id);
+            }
+            if (keyword != null)
+            {
+               
+               var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword)).Where(y=>y.Id!=currentUser).ToList();
+                foreach (var item in user)
+                {
+                    if (!lstNotInSearch.Contains(item.Id))
+                    {
+                        lstNewFriends.Add(item);
+
+                    }
+                }
+               
+                ViewBag.Keyword = keyword;
+                ViewBag.User = lstNewFriends;
+            }                     
             return View("Index");
         }
-
+        
         // GET: Relation/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var relation = await _context.Relation
-                .Include(r => r.FromUserNavigation)
-                .Include(r => r.ToUserNavigation)
-                .FirstOrDefaultAsync(m => m.RelationId == id);
-            if (relation == null)
+            var user = await _context.AspNetUsers.FirstOrDefaultAsync(x => x.Id == id);
+            
+            if (user == null)
             {
                 return NotFound();
             }
 
-            return View(relation);
+            return View(user);
         }
 
         // GET: Relation/Create
@@ -112,14 +138,18 @@ namespace GameStore.Controllers
                 var user= _userManager.GetUserId(HttpContext.User);
                 relation.FromUser= _userManager.GetUserId(HttpContext.User);
                 relation.ToUser = id;
-                relation.AreFriends = false;
+                relation.AreFriends = null;
+
+               
                 _context.Add(relation);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                string k=HttpContext.Session.GetString("keyword");
+                
+                return RedirectToAction("Index", "Relation",new {keyword=k });
             }
             ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
             ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
-            return View(relation);
+            return View("Index");
         }
 
         // GET: Relation/Edit/5

@@ -84,7 +84,7 @@ namespace prog3050_game_store
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-           
+            app.UseSession();
             app.UseCookiePolicy();
            
             app.UseAuthentication();

@@ -6,23 +6,32 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameStore.Controllers
 {
     public class AddressController : Controller
     {
         private readonly GameContext _context;
+        private readonly UserManager<User> _userManager;
 
-        public AddressController(GameContext context)
+        public AddressController(GameContext context, UserManager<User> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
 
         // GET: Address
         public async Task<IActionResult> Index()
         {
-            var gameContext = _context.Address.Include(a => a.User);
-            return View(await gameContext.ToListAsync());
+            var currentUser= _userManager.GetUserId(HttpContext.User);
+            var gameContext = await _context.Address.Include(a => a.User).Where(x=>x.UserId==currentUser).ToListAsync();
+            if (gameContext.Count==0)
+            {
+                TempData["message"] = "You have not added any address information. Please add your address!!";
+                return RedirectToAction("Create");
+            }
+            return View(gameContext);
         }
 
         // GET: Address/Details/5
