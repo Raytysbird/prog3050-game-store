@@ -15,9 +15,9 @@ namespace GameStore.Models
             CreditCardInfo = new HashSet<CreditCardInfo>();
             FavouriteCategory = new HashSet<FavouriteCategory>();
             FavouritePlatform = new HashSet<FavouritePlatform>();
-            Review = new HashSet<Review>();
             RelationFromUserNavigation = new HashSet<Relation>();
             RelationToUserNavigation = new HashSet<Relation>();
+            Review = new HashSet<Review>();
         }
 
         public string Id { get; set; }

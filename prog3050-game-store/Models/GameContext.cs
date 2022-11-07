@@ -33,8 +33,8 @@ namespace GameStore.Models
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
-        public virtual DbSet<Review> Review { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -439,36 +439,6 @@ namespace GameStore.Models
                     .HasConstraintName("countryCode");
             });
 
-            modelBuilder.Entity<Review>(entity =>
-            {
-                entity.Property(e => e.ReviewId).HasColumnName("review_id");
-
-                entity.Property(e => e.AspUserId)
-                    .IsRequired()
-                    .HasColumnName("asp_user_id")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.GameId).HasColumnName("game_id");
-
-                entity.Property(e => e.Rating).HasColumnName("rating");
-
-                entity.Property(e => e.Review1)
-                    .HasColumnName("review")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Title)
-                    .HasColumnName("title")
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.HasOne(d => d.AspUser)
-                    .WithMany(p => p.Review)
-                    .HasForeignKey(d => d.AspUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
-            });
-
             modelBuilder.Entity<Relation>(entity =>
             {
                 entity.ToTable("relation");
@@ -498,6 +468,42 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKrelation392934");
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.Review1)
+                    .HasColumnName("review")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .HasColumnName("title")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKreviews 72688");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKreviews 641963");
             });
         }
     }

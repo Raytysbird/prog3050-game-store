@@ -65,8 +65,8 @@ namespace GameStore.Controllers
                 var userDetails = _context.AspNetUsers.FirstOrDefault(x => x.Id == item.Id);
                 lstFriends.Add(userDetails);
 
-            }        
-                ViewBag.Friends = lstFriends;
+            }
+            ViewBag.Friends = lstFriends;
             //Request sent and Search filter
             var requestSent = await _context.Relation.Include(c=>c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
             ViewBag.SentRequest = requestSent;
@@ -94,13 +94,20 @@ namespace GameStore.Controllers
 
                     }
                 }
-               
+                if (lstNewFriends.Count>0)
+                {
+                    ViewBag.User = lstNewFriends;
+                }
+                else
+                {
+                    ViewBag.User = null;
+                }
                 ViewBag.Keyword = keyword;
-                ViewBag.User = lstNewFriends;
+               
             }                     
             return View("Index");
         }
-        
+
         // GET: Relation/Details/5
         public async Task<IActionResult> Details(string id)
         {
@@ -110,7 +117,6 @@ namespace GameStore.Controllers
             }
 
             var user = await _context.AspNetUsers.FirstOrDefaultAsync(x => x.Id == id);
-            
             if (user == null)
             {
                 return NotFound();
@@ -119,19 +125,7 @@ namespace GameStore.Controllers
             return View(user);
         }
 
-        // GET: Relation/Create
-        public IActionResult Create()
-        {
-            ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id");
-            ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id");
-            return View();
-        }
-
-        // POST: Relation/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-     
-        public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
+            public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
         {
             if (ModelState.IsValid)
             {
@@ -139,108 +133,57 @@ namespace GameStore.Controllers
                 relation.FromUser= _userManager.GetUserId(HttpContext.User);
                 relation.ToUser = id;
                 relation.AreFriends = null;
-
-               
                 _context.Add(relation);
                 await _context.SaveChangesAsync();
                 string k=HttpContext.Session.GetString("keyword");
-                
                 return RedirectToAction("Index", "Relation",new {keyword=k });
             }
             ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
             ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
             return View("Index");
         }
-
-        // GET: Relation/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> AcceptRequest(string id, int relId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var relation = await _context.Relation.FindAsync(id);
-            if (relation == null)
-            {
-                return NotFound();
-            }
-            ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
-            ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
-            return View(relation);
-        }
-
-        // POST: Relation/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation)
-        {
-            if (id != relation.RelationId)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(relation);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RelationExists(relation.RelationId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var user = _userManager.GetUserId(HttpContext.User);
+                Relation relation = new Relation();
+                relation.RelationId = relId;
+                relation.FromUser = id;
+                relation.ToUser = user;
+                relation.AreFriends = true;
+                _context.Update(relation);
+                await _context.SaveChangesAsync();
+                string k = HttpContext.Session.GetString("keyword");
+                return RedirectToAction("Index", "Relation", new { keyword = k });
+            }
+            return View("Index");
+        }
+        public async Task<IActionResult> DeleteRequest(string id,int relId)
+        {
+            if (ModelState.IsValid)
+            {
+                var relation = await _context.Relation.FindAsync(relId);
+                _context.Relation.Remove(relation);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
+               
             }
-            ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
-            ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
-            return View(relation);
+            return View("Index");
         }
-
-        // GET: Relation/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> RemoveFriend(string id, int relId)
         {
-            if (id == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var currentUser = _userManager.GetUserId(HttpContext.User);
+                var relation =  _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)&&(x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
+                _context.Relation.Remove(relation);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+               
             }
-
-            var relation = await _context.Relation
-                .Include(r => r.FromUserNavigation)
-                .Include(r => r.ToUserNavigation)
-                .FirstOrDefaultAsync(m => m.RelationId == id);
-            if (relation == null)
-            {
-                return NotFound();
-            }
-
-            return View(relation);
+            return View("Index");
         }
-
-        // POST: Relation/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var relation = await _context.Relation.FindAsync(id);
-            _context.Relation.Remove(relation);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool RelationExists(int id)
-        {
-            return _context.Relation.Any(e => e.RelationId == id);
-        }
+       
     }
 }

@@ -10,7 +10,7 @@ namespace GameStore.Models
         public string AptNumber { get; set; }
         public string UnitNumber { get; set; }
         public string Building { get; set; }
-        public bool IsShipping { get; set; }
+        public bool? IsShipping { get; set; }
         public string UserId { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }

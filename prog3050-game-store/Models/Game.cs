@@ -11,6 +11,7 @@ namespace GameStore.Models
         {
             GameCategory = new HashSet<GameCategory>();
             GamePlatform = new HashSet<GamePlatform>();
+            Review = new HashSet<Review>();
         }
 
         public int GameId { get; set; }
@@ -22,5 +23,6 @@ namespace GameStore.Models
         public IFormFile GameImage { get; set; }
         public ICollection<GameCategory> GameCategory { get; set; }
         public ICollection<GamePlatform> GamePlatform { get; set; }
+        public ICollection<Review> Review { get; set; }
     }
 }
