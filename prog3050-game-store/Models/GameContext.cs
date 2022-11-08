@@ -477,13 +477,13 @@ namespace GameStore.Models
                     .WithMany(p => p.RelationFromUserNavigation)
                     .HasForeignKey(d => d.FromUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("from_user");
+                    .HasConstraintName("FKrelation265756");
 
                 entity.HasOne(d => d.ToUserNavigation)
                     .WithMany(p => p.RelationToUserNavigation)
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("to_user");
+                    .HasConstraintName("FKrelation392934");
             });
 
             modelBuilder.Entity<Review>(entity =>

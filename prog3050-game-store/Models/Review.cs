@@ -13,5 +13,6 @@ namespace GameStore.Models
         public int GameId { get; set; }
 
         public AspNetUsers AspUser { get; set; }
+        public Game Game { get; set; }
     }
 }
