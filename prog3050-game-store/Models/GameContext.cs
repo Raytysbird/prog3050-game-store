@@ -477,13 +477,13 @@ namespace GameStore.Models
                     .WithMany(p => p.RelationFromUserNavigation)
                     .HasForeignKey(d => d.FromUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation265756");
+                    .HasConstraintName("from_user");
 
                 entity.HasOne(d => d.ToUserNavigation)
                     .WithMany(p => p.RelationToUserNavigation)
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation392934");
+                    .HasConstraintName("to_user");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -514,6 +514,11 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Review__asp_user__0F624AF8");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.GameId)
+                    .HasConstraintName("FK__Review__game_id__1EA48E88");
             });
         }
     }

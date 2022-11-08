@@ -28,22 +28,19 @@ namespace GameStore.Controllers
         public async Task<IActionResult> Index(string keyword)
         {
             var currentUser = _userManager.GetUserId(HttpContext.User);
-            if (keyword!=null)
+            if (keyword != null)
             {
                 HttpContext.Session.SetString("keyword", keyword);
             }
-            else
-            {
-                return View();
-            }                   
-        }
-        public async Task<IActionResult> FriendsList()
-        {
+
+            ViewBag.User = null;
             List<AspNetUsers> lstUserId = new List<AspNetUsers>();
             List<AspNetUsers> lstFriends = new List<AspNetUsers>();
-            
-            var currentUser = _userManager.GetUserId(HttpContext.User);
-            var friendList = await _context.Relation.Where(x=>(x.ToUser==currentUser || x.FromUser==currentUser)).Where(z=>z.AreFriends==true).ToListAsync();
+            List<AspNetUsers> lstNewFriends = new List<AspNetUsers>();
+            List<String> lstNotInSearch = new List<string>();
+
+            //For current friends of user
+            var friendList = await _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)).Where(z => z.AreFriends == true).ToListAsync();
             foreach (var item in friendList)
             {
                 if (item.FromUser != currentUser)
@@ -51,7 +48,8 @@ namespace GameStore.Controllers
                     AspNetUsers user = new AspNetUsers();
                     user.Id = item.FromUser;
                     lstUserId.Add(user);
-                   
+                    lstNotInSearch.Add(user.Id.ToString());
+
                 }
                 if (item.ToUser != currentUser)
                 {
@@ -70,7 +68,7 @@ namespace GameStore.Controllers
             }
             ViewBag.Friends = lstFriends;
             //Request sent and Search filter
-            var requestSent = await _context.Relation.Include(c=>c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
+            var requestSent = await _context.Relation.Include(c => c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
             ViewBag.SentRequest = requestSent;
 
             var pendingRequests = await _context.Relation.Include(c => c.FromUserNavigation).Where(x => x.ToUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
@@ -86,8 +84,8 @@ namespace GameStore.Controllers
             }
             if (keyword != null)
             {
-               
-               var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword)).Where(y=>y.Id!=currentUser).ToList();
+
+                var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword)).Where(y => y.Id != currentUser).ToList();
                 foreach (var item in user)
                 {
                     if (!lstNotInSearch.Contains(item.Id))
@@ -96,7 +94,7 @@ namespace GameStore.Controllers
 
                     }
                 }
-                if (lstNewFriends.Count>0)
+                if (lstNewFriends.Count > 0)
                 {
                     ViewBag.User = lstNewFriends;
                 }
@@ -105,8 +103,8 @@ namespace GameStore.Controllers
                     ViewBag.User = null;
                 }
                 ViewBag.Keyword = keyword;
-               
-            }                     
+
+            }
             return View("Index");
         }
 
@@ -127,18 +125,6 @@ namespace GameStore.Controllers
             return View(user);
         }
 
-        // GET: Relation/Create
-        public IActionResult Create()
-        {
-            ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id");
-            ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id");
-            return View();
-        }
-
-        // POST: Relation/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-     
         public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
         {
             if (ModelState.IsValid)
@@ -149,8 +135,8 @@ namespace GameStore.Controllers
                 relation.AreFriends = null;
                 _context.Add(relation);
                 await _context.SaveChangesAsync();
-                string k=HttpContext.Session.GetString("keyword");
-                return RedirectToAction("Index", "Relation",new {keyword=k });
+                string k = HttpContext.Session.GetString("keyword");
+                return RedirectToAction("Index", "Relation", new { keyword = k });
             }
             ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
             ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
@@ -173,7 +159,7 @@ namespace GameStore.Controllers
             }
             return View("Index");
         }
-        public async Task<IActionResult> DeleteRequest(string id,int relId)
+        public async Task<IActionResult> DeleteRequest(string id, int relId)
         {
             if (ModelState.IsValid)
             {
@@ -181,7 +167,7 @@ namespace GameStore.Controllers
                 _context.Relation.Remove(relation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-               
+
             }
             return View("Index");
         }
@@ -190,14 +176,14 @@ namespace GameStore.Controllers
             if (ModelState.IsValid)
             {
                 var currentUser = _userManager.GetUserId(HttpContext.User);
-                var relation =  _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)&&(x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
+                var relation = _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser) && (x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
                 _context.Relation.Remove(relation);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-               
+
             }
             return View("Index");
         }
-       
+
     }
 }
