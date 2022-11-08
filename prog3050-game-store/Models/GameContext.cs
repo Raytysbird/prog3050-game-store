@@ -33,15 +33,15 @@ namespace GameStore.Models
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
-        public virtual DbSet<Review> Review { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
             }
         }
 
@@ -97,7 +97,7 @@ namespace GameStore.Models
                     .WithMany(p => p.AddressNavigation)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKAddress726313");
+                    .HasConstraintName("user_id");
             });
 
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
@@ -167,6 +167,14 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
+                entity.Property(e => e.City)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Country)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
@@ -191,6 +199,14 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.PostalCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Province)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -439,6 +455,37 @@ namespace GameStore.Models
                     .HasConstraintName("countryCode");
             });
 
+            modelBuilder.Entity<Relation>(entity =>
+            {
+                entity.ToTable("relation");
+
+                entity.Property(e => e.RelationId).HasColumnName("relation_id");
+
+                entity.Property(e => e.AreFriends).HasColumnName("areFriends");
+
+                entity.Property(e => e.FromUser)
+                    .IsRequired()
+                    .HasColumnName("from_user")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.ToUser)
+                    .IsRequired()
+                    .HasColumnName("to_user")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.FromUserNavigation)
+                    .WithMany(p => p.RelationFromUserNavigation)
+                    .HasForeignKey(d => d.FromUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("from_user");
+
+                entity.HasOne(d => d.ToUserNavigation)
+                    .WithMany(p => p.RelationToUserNavigation)
+                    .HasForeignKey(d => d.ToUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("to_user");
+            });
+
             modelBuilder.Entity<Review>(entity =>
             {
                 entity.Property(e => e.ReviewId).HasColumnName("review_id");
@@ -467,37 +514,6 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__Review__asp_user__0F624AF8");
-            });
-
-            modelBuilder.Entity<Relation>(entity =>
-            {
-                entity.ToTable("relation");
-
-                entity.Property(e => e.RelationId).HasColumnName("relation_id");
-
-                entity.Property(e => e.AreFriends).HasColumnName("areFriends");
-
-                entity.Property(e => e.FromUser)
-                    .IsRequired()
-                    .HasColumnName("from_user")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.ToUser)
-                    .IsRequired()
-                    .HasColumnName("to_user")
-                    .HasMaxLength(450);
-
-                entity.HasOne(d => d.FromUserNavigation)
-                    .WithMany(p => p.RelationFromUserNavigation)
-                    .HasForeignKey(d => d.FromUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation265756");
-
-                entity.HasOne(d => d.ToUserNavigation)
-                    .WithMany(p => p.RelationToUserNavigation)
-                    .HasForeignKey(d => d.ToUser)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation392934");
             });
         }
     }

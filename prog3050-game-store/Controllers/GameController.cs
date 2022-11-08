@@ -93,15 +93,15 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price,GameImage")] Game game)
+        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price")] Game game)
         {
             if (ModelState.IsValid)
             {
-                if (game.GameImage!= null)
+                if (game.GameImage != null)
                 {
                     string folder = "/images/game/";
-                    folder += Guid.NewGuid().ToString()+game.GameImage.FileName;
-                    string serverFolder =_webHostEnvironment.WebRootPath+folder;
+                    folder += Guid.NewGuid().ToString() + game.GameImage.FileName;
+                    string serverFolder = _webHostEnvironment.WebRootPath + folder;
                     game.ImagePath = folder;
                     await game.GameImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                 }

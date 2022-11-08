@@ -15,9 +15,9 @@ namespace GameStore.Models
             CreditCardInfo = new HashSet<CreditCardInfo>();
             FavouriteCategory = new HashSet<FavouriteCategory>();
             FavouritePlatform = new HashSet<FavouritePlatform>();
-            Review = new HashSet<Review>();
             RelationFromUserNavigation = new HashSet<Relation>();
             RelationToUserNavigation = new HashSet<Relation>();
+            Review = new HashSet<Review>();
         }
 
         public string Id { get; set; }
@@ -41,6 +41,10 @@ namespace GameStore.Models
         public string Gender { get; set; }
         public DateTime? Dob { get; set; }
         public bool? ReceivePromotions { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string Province { get; set; }
+        public string Country { get; set; }
 
         public ICollection<Address> AddressNavigation { get; set; }
         public ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }

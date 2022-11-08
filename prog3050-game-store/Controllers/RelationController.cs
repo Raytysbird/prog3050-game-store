@@ -28,7 +28,7 @@ namespace GameStore.Controllers
         {
             if (keyword != null)
             {
-                var user =  _context.AspNetUsers.Where(x => x.UserName.Contains(keyword));
+                var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword));
                 ViewBag.Keyword = keyword;
                 ViewBag.User = user;
                 return View();
@@ -37,23 +37,23 @@ namespace GameStore.Controllers
             else
             {
                 return View();
-            }                   
+            }
         }
         public async Task<IActionResult> FriendsList()
         {
             List<AspNetUsers> lstUserId = new List<AspNetUsers>();
             List<AspNetUsers> lstFriends = new List<AspNetUsers>();
-            
+
             var currentUser = _userManager.GetUserId(HttpContext.User);
-            var friendList = await _context.Relation.Where(x=>(x.ToUser==currentUser || x.FromUser==currentUser)).Where(z=>z.AreFriends==true).ToListAsync();
+            var friendList = await _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)).Where(z => z.AreFriends == true).ToListAsync();
             foreach (var item in friendList)
             {
-                if (item.FromUser!=currentUser)
+                if (item.FromUser != currentUser)
                 {
                     AspNetUsers user = new AspNetUsers();
                     user.Id = item.FromUser;
                     lstUserId.Add(user);
-                   
+
                 }
                 if (item.ToUser != currentUser)
                 {
@@ -67,7 +67,7 @@ namespace GameStore.Controllers
             {
                 var userDetails = _context.AspNetUsers.FirstOrDefault(x => x.Id == item.Id);
                 lstFriends.Add(userDetails);
-               
+
             }
             ViewBag.Friends = lstFriends;
             return View("Index");
@@ -104,13 +104,13 @@ namespace GameStore.Controllers
         // POST: Relation/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-     
+
         public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
         {
             if (ModelState.IsValid)
             {
-                var user= _userManager.GetUserId(HttpContext.User);
-                relation.FromUser= _userManager.GetUserId(HttpContext.User);
+                var user = _userManager.GetUserId(HttpContext.User);
+                relation.FromUser = _userManager.GetUserId(HttpContext.User);
                 relation.ToUser = id;
                 relation.AreFriends = false;
                 _context.Add(relation);
