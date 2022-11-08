@@ -21,6 +21,7 @@ namespace GameStore.Models
         public string ImagePath { get; set; }
         [NotMapped]
         public IFormFile GameImage { get; set; }
+
         public ICollection<GameCategory> GameCategory { get; set; }
         public ICollection<GamePlatform> GamePlatform { get; set; }
         public ICollection<Review> Review { get; set; }

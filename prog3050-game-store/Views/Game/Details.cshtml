@@ -67,9 +67,10 @@
     {
     <script type="text/javascript">
         $(document).ready(function () {
-
             var rating = parseFloat(@ViewBag.Rating);
-            $(".ratingStar").slice(0,rating ).removeClass("far").addClass("fas");
+            if ($.isNumeric(rating)){
+                $(".ratingStar").slice(0,rating).removeClass("far").addClass("fas");
+            }
         });
     </script>
 }

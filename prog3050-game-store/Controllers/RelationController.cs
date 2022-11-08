@@ -28,11 +28,11 @@ namespace GameStore.Controllers
         public async Task<IActionResult> Index(string keyword)
         {
             var currentUser = _userManager.GetUserId(HttpContext.User);
-            if (keyword!=null)
+            if (keyword != null)
             {
                 HttpContext.Session.SetString("keyword", keyword);
             }
-           
+
             ViewBag.User = null;
             List<AspNetUsers> lstUserId = new List<AspNetUsers>();
             List<AspNetUsers> lstFriends = new List<AspNetUsers>();
@@ -68,7 +68,7 @@ namespace GameStore.Controllers
             }
             ViewBag.Friends = lstFriends;
             //Request sent and Search filter
-            var requestSent = await _context.Relation.Include(c=>c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
+            var requestSent = await _context.Relation.Include(c => c.ToUserNavigation).Where(x => x.FromUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
             ViewBag.SentRequest = requestSent;
 
             var pendingRequests = await _context.Relation.Include(c => c.FromUserNavigation).Where(x => x.ToUser == currentUser).Where(z => z.AreFriends == null).ToListAsync();
@@ -84,8 +84,8 @@ namespace GameStore.Controllers
             }
             if (keyword != null)
             {
-               
-               var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword)).Where(y=>y.Id!=currentUser).ToList();
+
+                var user = _context.AspNetUsers.Where(x => x.UserName.Contains(keyword)).Where(y => y.Id != currentUser).ToList();
                 foreach (var item in user)
                 {
                     if (!lstNotInSearch.Contains(item.Id))
@@ -94,7 +94,7 @@ namespace GameStore.Controllers
 
                     }
                 }
-                if (lstNewFriends.Count>0)
+                if (lstNewFriends.Count > 0)
                 {
                     ViewBag.User = lstNewFriends;
                 }
@@ -103,8 +103,8 @@ namespace GameStore.Controllers
                     ViewBag.User = null;
                 }
                 ViewBag.Keyword = keyword;
-               
-            }                     
+
+            }
             return View("Index");
         }
 
@@ -125,19 +125,19 @@ namespace GameStore.Controllers
             return View(user);
         }
 
-            public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
+        public async Task<IActionResult> SendRequest([Bind("RelationId,FromUser,ToUser,AreFriends")] Relation relation, string id)
         {
             if (ModelState.IsValid)
             {
-                var user= _userManager.GetUserId(HttpContext.User);
-                relation.FromUser= _userManager.GetUserId(HttpContext.User);
+                var user = _userManager.GetUserId(HttpContext.User);
+                relation.FromUser = _userManager.GetUserId(HttpContext.User);
                 relation.ToUser = id;
                 relation.AreFriends = null;
                 _context.Add(relation);
                 TempData["message"] = "Request sent successfully!!";
                 await _context.SaveChangesAsync();
-                string k=HttpContext.Session.GetString("keyword");
-                return RedirectToAction("Index", "Relation",new {keyword=k });
+                string k = HttpContext.Session.GetString("keyword");
+                return RedirectToAction("Index", "Relation", new { keyword = k });
             }
             ViewData["FromUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.FromUser);
             ViewData["ToUser"] = new SelectList(_context.AspNetUsers, "Id", "Id", relation.ToUser);
@@ -161,7 +161,7 @@ namespace GameStore.Controllers
             }
             return View("Index");
         }
-        public async Task<IActionResult> DeleteRequest(string id,int relId)
+        public async Task<IActionResult> DeleteRequest(string id, int relId)
         {
             if (ModelState.IsValid)
             {
@@ -170,7 +170,7 @@ namespace GameStore.Controllers
                 await _context.SaveChangesAsync();
                 TempData["message"] = "Request removed successfully!!";
                 return RedirectToAction(nameof(Index));
-               
+
             }
             return View("Index");
         }
@@ -179,15 +179,15 @@ namespace GameStore.Controllers
             if (ModelState.IsValid)
             {
                 var currentUser = _userManager.GetUserId(HttpContext.User);
-                var relation =  _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser)&&(x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
+                var relation = _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser) && (x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
                 _context.Relation.Remove(relation);
                 await _context.SaveChangesAsync();
                 TempData["message"] = "Removed from your friend list successfully!!";
                 return RedirectToAction(nameof(Index));
-               
+
             }
             return View("Index");
         }
-       
+
     }
 }

@@ -50,20 +50,15 @@ namespace GameStore.Controllers
         // GET: Reviews/Create
         public IActionResult Create(int id)
         {
-            var gameReviewed = _context.Review.Include(r => r.AspUser).Where(x => x.GameId == id).FirstOrDefault();
+            var user = _userManager.GetUserId(HttpContext.User);
+            var gameReviewed = _context.Review.Include(r => r.AspUser).Where(x => x.GameId == id && x.AspUserId == user).FirstOrDefault();
             if (gameReviewed != null)
             {
                 TempData["message"] = "Game Already Reviewed";
-                return RedirectToAction("Details", "Game", new { id });
+                return RedirectToAction("Details", "Game", new { id }); 
             }
-            //gameContext. = id;
-
-            //gameReviewed.GameId = id;
             ViewData["gameId"] = id;
-
-     
-
-            ViewData["AspUserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
+            ViewData["AspUserId"] = user;
             return View();
         }
 
@@ -74,19 +69,21 @@ namespace GameStore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ReviewId,AspUserId,Title,Review1,Rating,GameId")] Review review)
         {
+            var user = _userManager.GetUserId(HttpContext.User);
             if (ModelState.IsValid)
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Game", new { id = review.GameId });
             }
-            ViewData["AspUserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", review.AspUserId);
+            ViewData["AspUserId"] = user;
             return View(review);
         }
 
         // GET: Reviews/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
+            var user = _userManager.GetUserId(HttpContext.User);
             if (id == null)
             {
                 return NotFound();
@@ -97,7 +94,7 @@ namespace GameStore.Controllers
             {
                 return NotFound();
             }
-            ViewData["AspUserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", review.AspUserId);
+            ViewData["AspUserId"] = user;
             return View(review);
         }
 
