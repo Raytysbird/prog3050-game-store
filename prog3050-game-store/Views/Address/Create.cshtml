@@ -1,16 +1,15 @@
 ﻿@model GameStore.Models.Address
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Address";
 }
 
-<h2>Create</h2>
-
-<h4>Address</h4>
+<h2>Add Address</h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <h3>Mailing Address</h3>
+        <form asp-action="Create" method="post" id="frmMailing">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="StreetAddress" class="control-label"></label>
@@ -32,12 +31,7 @@
                 <input asp-for="Building" class="form-control" />
                 <span asp-validation-for="Building" class="text-danger"></span>
             </div>
-            @*<div class="form-group">
-                <label asp-for="IsShipping" class="control-label"></label>
-                <input asp-for="IsShipping" class="form-control" />
-                <span asp-validation-for="IsShipping" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
             </div>
@@ -53,26 +47,25 @@
             </div>
             <div class="form-group">
                 <label asp-for="Province" class="control-label"></label>
-                <input asp-for="Province" class="form-control" />
+                <select asp-for="Province" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
                 <span asp-validation-for="Province" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <div class="checkbox">
                     <label>
-                        <input id="chkShipping" asp-for="IsShipping" onclick="showShipping()"/> @Html.DisplayNameFor(model => model.IsShipping)
+                        <input type="checkbox" id="chkShipping" asp-for="IsShipping" onclick="showShipping()" /> @Html.DisplayNameFor(model => model.IsShipping)
                     </label>
                 </div>
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="button" onclick="submitForm()" value="Create" class="btn btn-default" />
             </div>
         </form>
     </div>
-</div>
-<div class="row hide" id="shippingForm" >
-    <div class="col-md-4">
-        <form asp-action="Create">
+    <div class="col-md-4 hide" id="shippingForm">
+        <h3>Shipping Address</h3>
+        <form asp-action="Create1" method="post" id="frmShipping">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="StreetAddress" class="control-label"></label>
@@ -94,8 +87,8 @@
                 <input asp-for="Building" class="form-control" />
                 <span asp-validation-for="Building" class="text-danger"></span>
             </div>
-         
-            <div class="form-group">
+
+            <div class="form-group" hidden>
                 <label asp-for="UserId" class="control-label"></label>
                 <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
             </div>
@@ -111,18 +104,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Province" class="control-label"></label>
-                <input asp-for="Province" class="form-control" />
+                <select asp-for="Province" class="form-control" asp-items="ViewBag.ProvinceCode"></select>
                 <span asp-validation-for="Province" class="text-danger"></span>
             </div>
-           
+
 
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="button" value="Create" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
@@ -139,6 +131,15 @@
             form.addClass("hide");
         }
     }
+    function submitForm() {
+        $('#frmMailing').submit();
+        var checkBox = document.getElementById("chkShipping");
+        if (checkBox.checked == true) {
+            $('#shippingForm').submit();
+        }
+       
+    }
+
 </script>
 <style>
     .hide{

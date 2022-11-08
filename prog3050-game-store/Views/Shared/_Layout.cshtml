@@ -39,7 +39,8 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="About">About Us</a></li>
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
-                    <li><a asp-area="" asp-controller="Relation" asp-action="Index">Friends</a></li>
+                    <li><a asp-area="" asp-controller="Address" asp-action="Index">Address</a></li>
+
 
 
                     @if (signingManager.IsSignedIn(User))
@@ -54,6 +55,7 @@
                             </ul>
                         </li>
                         <li><a asp-area="" asp-controller="Game" asp-action="Index">Games</a></li>
+                        <li><a asp-area="" asp-controller="Relation" asp-action="Index">Friends</a></li>
 
                     }
 

@@ -25,8 +25,10 @@ namespace GameStore.Controllers
         public async Task<IActionResult> Index()
         {
             var currentUser= _userManager.GetUserId(HttpContext.User);
-            var gameContext = await _context.Address.Include(a => a.User).Where(x=>x.UserId==currentUser).ToListAsync();
-            if (gameContext.Count==0)
+            var gameContext = await _context.Address.Include(a => a.User).FirstOrDefaultAsync(x => x.UserId == currentUser);
+           
+
+            if (gameContext==null)
             {
                 TempData["message"] = "You have not added any address information. Please add your address!!";
                 return RedirectToAction("Create");
@@ -57,6 +59,7 @@ namespace GameStore.Controllers
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
             return View();
         }
 
@@ -66,6 +69,21 @@ namespace GameStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AddressId,StreetAddress,AptNumber,UnitNumber,Building,IsShipping,UserId,City,PostalCode,Province")] Address address)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userManager.GetUserId(HttpContext.User);
+                address.UserId = user;
+                _context.Add(address);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            return View(address);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create1([Bind("AddressId,StreetAddress,AptNumber,UnitNumber,Building,IsShipping,UserId,City,PostalCode,Province")] Address address)
         {
             if (ModelState.IsValid)
             {
