@@ -3,6 +3,18 @@
 @{
     ViewData["Title"] = "Details";
 }
+<style>
+ 
+    .reviewContainer{
+        display: flex;
+        margin-top: 2em;
+        gap: 10em;
+    }
+    h4{
+      font-weight: bold;
+    }
+
+</style>
 
 <h2> Game Details</h2>
 <div>
@@ -60,6 +72,60 @@
 <div>
     <a class="btn btn-info" asp-action="Index">Back to List</a>
     <a class="btn btn-success" asp-controller="Reviews" asp-action="Create" asp-route-id="@Model.GameId">Add Review</a>
+</div>
+<div class="reviewContainer">
+    <div>
+        <h4>Customer Reviews</h4>
+        <p>Stars</p>
+
+    </div>
+
+    <div>
+        <h4>Top Reviews</h4>
+       
+        @if(@ViewBag.ReviewObj.Count > 0){
+            @foreach (var item in @ViewBag.ReviewObj)
+            {
+            <div style="margin: 1.5em 0;">
+                <div>
+                    <span>
+                        <i style="font-size:1.5em;" class="fa-solid fa-circle-user"></i>
+                    </span>
+                    <span>
+                        @item.AspUser.UserName
+                    </span>
+                 </div>
+                 <div>
+                    <span class="text-warning">
+                        @for (int i = 0; i < 5; i++)
+                        {
+                            if (@item.Rating > i)
+                            {
+                                 <i class="ratingStar fas fa-star"></i>
+                            }
+                            else{
+                                <i class="ratingStar far fa-star"></i>
+                            }
+                        }
+                    </span>
+                    <span style="font-weight:bold;">
+                        @item.Title
+                    </span>
+                </div>
+                <p>@item.Review1</p>
+            </div>
+            }
+
+        }else{
+            <div>
+                No Reviews
+            </div>
+        }
+        
+       
+        
+        
+    </div>
 </div>
 
 
