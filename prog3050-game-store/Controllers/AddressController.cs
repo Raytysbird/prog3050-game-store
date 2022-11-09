@@ -24,9 +24,9 @@ namespace GameStore.Controllers
         // GET: Address
         public async Task<IActionResult> Index()
         {
-            var currentUser= _userManager.GetUserId(HttpContext.User);
-            var gameContext = await _context.Address.Include(a => a.User).Where(x=>x.UserId==currentUser).ToListAsync();
-            if (gameContext.Count==0)
+            var currentUser = _userManager.GetUserId(HttpContext.User);
+            var gameContext = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).ToListAsync();
+            if (gameContext.Count == 0)
             {
                 TempData["message"] = "You have not added any address information. Please add your address!!";
                 return RedirectToAction("Create");
@@ -57,6 +57,7 @@ namespace GameStore.Controllers
         public IActionResult Create()
         {
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
             return View();
         }
 
@@ -69,11 +70,34 @@ namespace GameStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                var user = _userManager.GetUserId(HttpContext.User);
+                address.IsShipping = false;
+                address.UserId = user;
                 _context.Add(address);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
+
+            return View(address);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateShipping([Bind("AddressId,StreetAddress,AptNumber,UnitNumber,Building,IsShipping,UserId,City,PostalCode,Province")] Address address)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _userManager.GetUserId(HttpContext.User);
+                address.IsShipping = true;
+                address.UserId = user;
+                _context.Add(address);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
+
             return View(address);
         }
 

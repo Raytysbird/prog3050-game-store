@@ -134,6 +134,7 @@ namespace GameStore.Controllers
                 relation.ToUser = id;
                 relation.AreFriends = null;
                 _context.Add(relation);
+                TempData["message"] = "Request sent successfully!!";
                 await _context.SaveChangesAsync();
                 string k = HttpContext.Session.GetString("keyword");
                 return RedirectToAction("Index", "Relation", new { keyword = k });
@@ -153,6 +154,7 @@ namespace GameStore.Controllers
                 relation.ToUser = user;
                 relation.AreFriends = true;
                 _context.Update(relation);
+                TempData["message"] = "Added to friend list successfully!!";
                 await _context.SaveChangesAsync();
                 string k = HttpContext.Session.GetString("keyword");
                 return RedirectToAction("Index", "Relation", new { keyword = k });
@@ -166,6 +168,7 @@ namespace GameStore.Controllers
                 var relation = await _context.Relation.FindAsync(relId);
                 _context.Relation.Remove(relation);
                 await _context.SaveChangesAsync();
+                TempData["message"] = "Request removed successfully!!";
                 return RedirectToAction(nameof(Index));
 
             }
@@ -179,6 +182,7 @@ namespace GameStore.Controllers
                 var relation = _context.Relation.Where(x => (x.ToUser == currentUser || x.FromUser == currentUser) && (x.ToUser == id || x.FromUser == id)).FirstOrDefault(z => z.AreFriends == true);
                 _context.Relation.Remove(relation);
                 await _context.SaveChangesAsync();
+                TempData["message"] = "Removed from your friend list successfully!!";
                 return RedirectToAction(nameof(Index));
 
             }
