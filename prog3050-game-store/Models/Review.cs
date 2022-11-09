@@ -10,7 +10,7 @@ namespace GameStore.Models
         public string Title { get; set; }
         public string Review1 { get; set; }
         public int? Rating { get; set; }
-        public int? GameId { get; set; }
+        public int GameId { get; set; }
 
         public AspNetUsers AspUser { get; set; }
         public Game Game { get; set; }
