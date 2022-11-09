@@ -24,11 +24,9 @@ namespace GameStore.Controllers
         // GET: Address
         public async Task<IActionResult> Index()
         {
-            var currentUser= _userManager.GetUserId(HttpContext.User);
+            var currentUser = _userManager.GetUserId(HttpContext.User);
             var gameContext = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).ToListAsync();
-           
-
-            if (gameContext.Count==0)
+            if (gameContext.Count == 0)
             {
                 TempData["message"] = "You have not added any address information. Please add your address!!";
                 return RedirectToAction("Create");
@@ -77,7 +75,7 @@ namespace GameStore.Controllers
                 address.UserId = user;
                 _context.Add(address);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
             ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
@@ -95,14 +93,9 @@ namespace GameStore.Controllers
                 address.UserId = user;
                 _context.Add(address);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index");
             }
-            if (!ModelState.IsValid)
-            {
-                return View("Create");
-            }
-
-                ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
             ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
 
             return View(address);
