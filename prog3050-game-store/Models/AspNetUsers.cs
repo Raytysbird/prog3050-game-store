@@ -7,6 +7,7 @@ namespace GameStore.Models
     {
         public AspNetUsers()
         {
+            AddressNavigation = new HashSet<Address>();
             AspNetUserClaims = new HashSet<AspNetUserClaims>();
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
@@ -14,6 +15,9 @@ namespace GameStore.Models
             CreditCardInfo = new HashSet<CreditCardInfo>();
             FavouriteCategory = new HashSet<FavouriteCategory>();
             FavouritePlatform = new HashSet<FavouritePlatform>();
+            RelationFromUserNavigation = new HashSet<Relation>();
+            RelationToUserNavigation = new HashSet<Relation>();
+            Review = new HashSet<Review>();
         }
 
         public string Id { get; set; }
@@ -37,11 +41,8 @@ namespace GameStore.Models
         public string Gender { get; set; }
         public DateTime? Dob { get; set; }
         public bool? ReceivePromotions { get; set; }
-        public string City { get; set; }
-        public string PostalCode { get; set; }
-        public string Province { get; set; }
-        public string Country { get; set; }
 
+        public ICollection<Address> AddressNavigation { get; set; }
         public ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
         public ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
@@ -49,5 +50,8 @@ namespace GameStore.Models
         public ICollection<CreditCardInfo> CreditCardInfo { get; set; }
         public ICollection<FavouriteCategory> FavouriteCategory { get; set; }
         public ICollection<FavouritePlatform> FavouritePlatform { get; set; }
+        public ICollection<Relation> RelationFromUserNavigation { get; set; }
+        public ICollection<Relation> RelationToUserNavigation { get; set; }
+        public ICollection<Review> Review { get; set; }
     }
 }

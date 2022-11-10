@@ -15,6 +15,7 @@ namespace GameStore.Models
         {
         }
 
+        public virtual DbSet<Address> Address { get; set; }
         public virtual DbSet<AspNetRoleClaims> AspNetRoleClaims { get; set; }
         public virtual DbSet<AspNetRoles> AspNetRoles { get; set; }
         public virtual DbSet<AspNetUserClaims> AspNetUserClaims { get; set; }
@@ -32,18 +33,73 @@ namespace GameStore.Models
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
+        public virtual DbSet<Relation> Relation { get; set; }
+        public virtual DbSet<Review> Review { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.Property(e => e.AddressId).HasColumnName("address_id");
+
+                entity.Property(e => e.AptNumber)
+                    .HasColumnName("apt_number")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Building)
+                    .HasColumnName("building")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.City)
+                    .HasColumnName("city")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.IsShipping).HasColumnName("isShipping");
+
+                entity.Property(e => e.PostalCode)
+                    .HasColumnName("postal_code")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Province)
+                    .HasColumnName("province")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StreetAddress)
+                    .HasColumnName("street_address")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UnitNumber)
+                    .HasColumnName("unit_number")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasColumnName("user_id")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.AddressNavigation)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("user_id");
+            });
+
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
             {
                 entity.Property(e => e.RoleId)
@@ -111,13 +167,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
-                entity.Property(e => e.City)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Country)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+              
 
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
@@ -144,13 +194,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
 
-                entity.Property(e => e.PostalCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Province)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
+               
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -292,6 +336,11 @@ namespace GameStore.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.ImagePath)
+                    .HasColumnName("imagePath")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
@@ -392,6 +441,74 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.CountryCode)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("countryCode");
+            });
+
+            modelBuilder.Entity<Relation>(entity =>
+            {
+                entity.ToTable("relation");
+
+                entity.Property(e => e.RelationId).HasColumnName("relation_id");
+
+                entity.Property(e => e.AreFriends).HasColumnName("areFriends");
+
+                entity.Property(e => e.FromUser)
+                    .IsRequired()
+                    .HasColumnName("from_user")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.ToUser)
+                    .IsRequired()
+                    .HasColumnName("to_user")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.FromUserNavigation)
+                    .WithMany(p => p.RelationFromUserNavigation)
+                    .HasForeignKey(d => d.FromUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("from_user");
+
+                entity.HasOne(d => d.ToUserNavigation)
+                    .WithMany(p => p.RelationToUserNavigation)
+                    .HasForeignKey(d => d.ToUser)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("to_user");
+            });
+
+            modelBuilder.Entity<Review>(entity =>
+            {
+                entity.Property(e => e.ReviewId).HasColumnName("review_id");
+
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.Property(e => e.IsApproved).HasColumnName("isApproved");
+
+                entity.Property(e => e.Rating).HasColumnName("rating");
+
+                entity.Property(e => e.Review1)
+                    .HasColumnName("review")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Title)
+                    .HasColumnName("title")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Review__asp_user__3D2915A8");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Review)
+                    .HasForeignKey(d => d.GameId)
+                    .HasConstraintName("FK__Review__game_id__3E1D39E1");
             });
         }
     }

@@ -1,0 +1,118 @@
+﻿@model IEnumerable<GameStore.Models.Address>
+
+@{
+    ViewData["Title"] = "Address Details";
+}
+
+<h2>Address Details</h2>
+
+
+<div class="row">
+
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Mailing Address</h3>
+            </div>
+
+            <div class="panel-body">
+                @if (ViewBag.MailAddress.Count != 0)
+                {
+                    @foreach (var item in ViewBag.MailAddress)
+                    {
+                        <dl class="dl-horizontal">
+                            <dt>
+                                Address
+                            </dt>
+                            <dd>
+                                @item.FullAddress
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.City)
+                            </dt>
+                            <dd>
+                                @item.City
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Province)
+                            </dt>
+                            <dd>
+                                @item.Province
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.PostalCode)
+                            </dt>
+                            <dd>
+                                @item.PostalCode
+                            </dd>
+                        </dl>
+                        <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.AddressId">Edit Mailing Address</a>
+                    }
+
+                }
+                else
+                {
+                    <p>No Mail address added.You can add it. <a class="btn btn-success" asp-action="CreateMailing">Add Mailing address</a> </p>
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="col-md-6">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Shipping Address</h3>
+            </div>
+
+            <div class="panel-body">
+                @if (ViewBag.ShippingAddress != null)
+                {
+                    @foreach (var item in ViewBag.ShippingAddress)
+                    {
+                        <dl class="dl-horizontal">
+                            <dt>
+                                Address
+                            </dt>
+                            <dd>
+                                @item.FullAddress
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.City)
+                            </dt>
+                            <dd>
+                                @item.City
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.Province)
+                            </dt>
+                            <dd>
+                                @item.Province
+                            </dd>
+                            <dt>
+                                @Html.DisplayNameFor(model => model.PostalCode)
+                            </dt>
+                            <dd>
+                                @item.PostalCode
+                            </dd>
+                        </dl>
+                        <a class="btn btn-success" asp-action="Edit" asp-route-id="@item.AddressId">Edit Shipping Address</a>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.AddressId">Delete Shipping Address</a>
+                    }
+
+                }
+                else
+                {
+                    <p>No Shipping address added. If shipping address is not same as mailing address, You can add it. <a class="btn btn-success" asp-action="CreateShipping">Add Shipping address</a> </p>
+                }
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+

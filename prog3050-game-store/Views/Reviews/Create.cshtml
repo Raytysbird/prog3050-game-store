@@ -1,0 +1,116 @@
+﻿@model GameStore.Models.Review
+
+@{
+    ViewData["Title"] = "Create";
+}
+<h2>Create</h2>
+
+<h4>Review</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form id="reviewForm" asp-action="Create">
+            <div class="form-group" hidden>
+                <label asp-for="AspUserId" class="control-label"></label>
+                <input asp-for="AspUserId" class="form-control" value="@ViewBag.AspUserId"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Review1" class="control-label"></label>
+                <input asp-for="Review1" class="form-control" />
+                <span asp-validation-for="Review1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <span class="ratingContainer text-warning form-control">
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                </span>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            
+            <input type="hidden" asp-for="GameId" class="form-control" />
+            <input type="hidden" asp-for="Rating" class="form-control" />
+            <div class="form-group">
+                <input id="btnSubmit" type="submit" value="submit" class="btnSubmit btn btn-default" />
+            </div>
+            
+        </form>
+    
+        @*<form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group" hidden>
+                <label asp-for="AspUserId" class="control-label"></label>
+                <select asp-for="AspUserId" class ="form-control" asp-items="ViewBag.AspUserId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Title" class="control-label"></label>
+                <input asp-for="Title" class="form-control" />
+                <span asp-validation-for="Title" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Review1" class="control-label"></label>
+                <input asp-for="Review1" class="form-control" />
+                <span asp-validation-for="Review1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <span asp-for="Rating" class="ratingContainer text-warning form-control">
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                    <i class="ratingStar far fa-star"></i>
+                </span>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group" >
+                <label asp-for="GameId" class="control-label"></label>
+                <input asp-for="GameId" class="form-control" />
+                <span asp-validation-for="GameId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btnSubmit btn btn-default"  />
+            </div>
+        </form>*@
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript" >
+        $(document).ready(function () {
+            var startIndex = -1;
+            $(".ratingStar").click(function () {
+                startIndex = $(this).index() + 1;
+                $(".ratingStar").removeClass("fas").addClass("far");
+                var starArray = $(".ratingStar").slice(0, startIndex).removeClass("far").addClass("fas");
+                console.log(starArray)
+                document.getElementsByClassName("ratingContainer").value = startIndex;
+                console.log(document.getElementsByClassName("ratingContainer"));
+                //.addClass("fas").removeClass("far");
+            });
+
+            $(".btnSubmit").click(function(){
+                if (startIndex > -1){
+                    var gameId = '@ViewData["gameId"]';
+                    console.log("Game Id: " + gameId);
+                    $("#GameId").val(gameId);
+                    $("#Rating").val(startIndex);
+                }
+            });
+        });
+</script>
+}
+

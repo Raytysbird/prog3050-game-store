@@ -7,16 +7,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using GameStore.Services;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace GameStore.Controllers
 {
     public class GameController : Controller
     {
         private readonly GameContext _context;
+        private readonly IHostingEnvironment _webHostEnvironment;
 
-        public GameController(GameContext context)
+        public GameController(GameContext context, IHostingEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Game
@@ -43,6 +47,14 @@ namespace GameStore.Controllers
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.ReviewObj = _context.Review.Include(x=> x.AspUser).Where(x=> x.GameId == id && x.IsApproved == true).ToList();
+
+            var rating = _context.Review.Where(x => x.GameId == id).Average(x => x.Rating);
+            if (rating.HasValue)
+            {
+                ViewBag.Rating = rating.Value;
+            }
+
             if (id == null)
             {
                 return NotFound();
@@ -62,12 +74,11 @@ namespace GameStore.Controllers
             {
                 ViewBag.PlatformName = platform.Platform.Name;
             }
-            
-
             if (game == null)
             {
                 return NotFound();
             }
+
 
             return View(game);
         }
@@ -87,6 +98,14 @@ namespace GameStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (game.GameImage != null)
+                {
+                    string folder = "/images/game/";
+                    folder += Guid.NewGuid().ToString() + game.GameImage.FileName;
+                    string serverFolder = _webHostEnvironment.WebRootPath + folder;
+                    game.ImagePath = folder;
+                    await game.GameImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
+                }
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

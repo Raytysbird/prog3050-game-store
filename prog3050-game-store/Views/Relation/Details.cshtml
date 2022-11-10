@@ -1,0 +1,36 @@
+﻿@model GameStore.Models.AspNetUsers
+
+
+@{
+    ViewData["Title"] = "Profile Details";
+}
+
+<h2>User Profile Details</h2>
+
+<div>
+    <h4>Profile Details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            User Name
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.UserName)
+        </dd>
+        <dt>
+            Name
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.FirstName) @Html.DisplayFor(model => model.LastName)
+        </dd>
+        <dt>
+            Gender
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Gender)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index">Back to friends list</a>
+</div>
