@@ -47,6 +47,8 @@ namespace GameStore.Controllers
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            ViewBag.ReviewObj = _context.Review.Include(x=> x.AspUser).Where(x=> x.GameId == id && x.IsApproved == true).ToList();
+
             var rating = _context.Review.Where(x => x.GameId == id).Average(x => x.Rating);
             if (rating.HasValue)
             {
@@ -72,12 +74,11 @@ namespace GameStore.Controllers
             {
                 ViewBag.PlatformName = platform.Platform.Name;
             }
-            
-
             if (game == null)
             {
                 return NotFound();
             }
+
 
             return View(game);
         }

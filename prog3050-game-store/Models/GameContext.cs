@@ -481,6 +481,8 @@ namespace GameStore.Models
 
                 entity.Property(e => e.GameId).HasColumnName("game_id");
 
+                entity.Property(e => e.IsApproved).HasColumnName("isApproved");
+
                 entity.Property(e => e.Rating).HasColumnName("rating");
 
                 entity.Property(e => e.Review1)

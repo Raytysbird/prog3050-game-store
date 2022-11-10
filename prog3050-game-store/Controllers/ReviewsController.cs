@@ -72,6 +72,7 @@ namespace GameStore.Controllers
             var user = _userManager.GetUserId(HttpContext.User);
             if (ModelState.IsValid)
             {
+                review.IsApproved = true;
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Game", new { id = review.GameId });
