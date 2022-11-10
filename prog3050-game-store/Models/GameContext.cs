@@ -97,7 +97,7 @@ namespace GameStore.Models
                     .WithMany(p => p.AddressNavigation)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKAddress726313");
+                    .HasConstraintName("user_id");
             });
 
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
@@ -167,6 +167,8 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
+              
+
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
@@ -191,6 +193,8 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+               
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -461,13 +465,13 @@ namespace GameStore.Models
                     .WithMany(p => p.RelationFromUserNavigation)
                     .HasForeignKey(d => d.FromUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation265756");
+                    .HasConstraintName("from_user");
 
                 entity.HasOne(d => d.ToUserNavigation)
                     .WithMany(p => p.RelationToUserNavigation)
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation392934");
+                    .HasConstraintName("to_user");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -499,13 +503,12 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKreviews 72688");
+                    .HasConstraintName("FK__Review__asp_user__3D2915A8");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKreviews 641963");
+                    .HasConstraintName("FK__Review__game_id__3E1D39E1");
             });
         }
     }

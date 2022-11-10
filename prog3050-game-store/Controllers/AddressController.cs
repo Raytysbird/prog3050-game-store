@@ -24,14 +24,45 @@ namespace GameStore.Controllers
         // GET: Address
         public async Task<IActionResult> Index()
         {
+            string fullAddress = "";
             var currentUser = _userManager.GetUserId(HttpContext.User);
-            var gameContext = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).ToListAsync();
-            if (gameContext.Count == 0)
+            var mailingAddress = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).Where(c=>c.IsShipping==false).ToListAsync();
+           
+            if (mailingAddress.Count != 0)
+            {
+                
+                foreach (var item in mailingAddress)
+                {
+                   
+                     fullAddress = string.Join(",", new string[] { item.StreetAddress, item.Building, item.AptNumber, item.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+                    item.FullAddress = fullAddress;
+                    
+                }
+                ViewBag.MailAddress = mailingAddress;
+                
+            }
+                
+
+            var shippingAddress = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).Where(c => c.IsShipping == true).ToListAsync();
+            if (shippingAddress.Count != 0)
+            {
+                foreach (var item in shippingAddress)
+                {
+
+                    fullAddress = string.Join(",", new string[] { item.StreetAddress, item.Building, item.AptNumber, item.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+                    item.FullAddress = fullAddress;
+
+                }
+                ViewBag.ShippingAddress = shippingAddress;
+            }
+
+
+            if (mailingAddress.Count == 0)
             {
                 TempData["message"] = "You have not added any address information. Please add your address!!";
                 return RedirectToAction("Create");
             }
-            return View(gameContext);
+            return View();
         }
 
         // GET: Address/Details/5
@@ -55,6 +86,12 @@ namespace GameStore.Controllers
 
         // GET: Address/Create
         public IActionResult Create()
+        {
+            ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
+            return View();
+        }
+        public IActionResult CreateShipping()
         {
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
             ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
@@ -115,6 +152,7 @@ namespace GameStore.Controllers
                 return NotFound();
             }
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
             return View(address);
         }
 
@@ -151,32 +189,32 @@ namespace GameStore.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);
+            ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
             return View(address);
         }
 
         // GET: Address/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var address = await _context.Address
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.AddressId == id);
-            if (address == null)
-            {
-                return NotFound();
-            }
+        //    var address = await _context.Address
+        //        .Include(a => a.User)
+        //        .FirstOrDefaultAsync(m => m.AddressId == id);
+        //    if (address == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(address);
-        }
+        //    return View(address);
+        //}
 
         // POST: Address/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+       
+        public async Task<IActionResult> Delete(int id)
         {
             var address = await _context.Address.FindAsync(id);
             _context.Address.Remove(address);
