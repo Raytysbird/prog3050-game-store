@@ -26,6 +26,7 @@ namespace GameStore.Models
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<CreditCardInfo> CreditCardInfo { get; set; }
+        public virtual DbSet<Events> Events { get; set; }
         public virtual DbSet<FavouriteCategory> FavouriteCategory { get; set; }
         public virtual DbSet<FavouritePlatform> FavouritePlatform { get; set; }
         public virtual DbSet<Game> Game { get; set; }
@@ -167,8 +168,6 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
-              
-
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
@@ -193,8 +192,6 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-
-               
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -279,6 +276,32 @@ namespace GameStore.Models
                     .WithMany(p => p.CreditCardInfo)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FKCredit Car111073");
+            });
+
+            modelBuilder.Entity<Events>(entity =>
+            {
+                entity.HasKey(e => e.EventId);
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("end_date")
+                    .HasColumnType("date");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnName("start_date")
+                    .HasColumnType("date");
             });
 
             modelBuilder.Entity<FavouriteCategory>(entity =>
