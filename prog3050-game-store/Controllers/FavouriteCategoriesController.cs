@@ -27,13 +27,10 @@ namespace GameStore.Controllers
 
             var id = _userManager.GetUserId(HttpContext.User);
             var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(x => x.UserId == id).ToListAsync();
-           
+            ViewBag.FavoriteCategories = favCategory;
             return View(favCategory);
         }
-        public async Task<IActionResult> Content()
-        {
-            return View();
-        }
+      
         public IActionResult Create()
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
@@ -58,9 +55,9 @@ namespace GameStore.Controllers
                 TempData["message"] = "Category added to your favorites";
                 _context.Add(favouriteCategory);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "FavouritePlatforms");
             }
-            return View(favouriteCategory);
+            return RedirectToAction("Index", "FavouritePlatforms");
         }
        
         public async Task<IActionResult> Delete(int id)
@@ -70,7 +67,7 @@ namespace GameStore.Controllers
             TempData["message"] = "Category removed from your favorites";
             _context.FavouriteCategory.Remove(favCategory);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "FavouritePlatforms");
         }
         private bool FavouriteCategoryExists(int id)
         {

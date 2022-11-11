@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GameStore.Models
 {
@@ -12,6 +13,7 @@ namespace GameStore.Models
         public string AptNumber { get; set; }
         [Display(Name = "Unit Number")]
         public string UnitNumber { get; set; }
+       
         public string Building { get; set; }
         [Display(Name = "Do you have different shipping address?")]
         public bool IsShipping { get; set; }
@@ -26,5 +28,10 @@ namespace GameStore.Models
         public string Province { get; set; }
 
         public AspNetUsers User { get; set; }
+
+        [NotMapped]
+        public string FullAddress { get; set; }
+
+
     }
 }

@@ -1,48 +1,145 @@
-﻿@model IEnumerable<GameStore.Models.FavouritePlatform>
+﻿@*@model IEnumerable<GameStore.Models.FavouritePlatform>*@
+@model GameStore.Models.FavouritePlatform
 
 @{
-    ViewData["Title"] = "Favourite Platforms";
+    ViewData["Title"] = "Preferences";
 }
 
-<h2 style="margin-bottom:1em;">Your Favourite Platforms</h2>
-<p>We offer games for multiple platforms including, PC,XBOX,Switch etc.  </p>
-@if (Model.Count() == 0)
-{
-    <strong>You don't have any preferences for platforms yet, Please add one.</strong>
-}
-else
-{
-<table class="table">
-    <thead>
-        <tr>
+<h2 style="margin-bottom:1em; text-align:center;">Favourite Preferences</h2>
+<p>We offer games for multiple platforms and categories including, PC,XBOX,Switch, Shooting, Sports, Real time simulation etc.  </p>
 
-            <th>
-                @Html.DisplayNameFor(model => model.Platform.Name)
-            </th>
+<div class="row">
 
-
-            <th>Manage</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
+    <div class="col-md-6">
+        <p class="text-center" style="color:blue;"><b>@TempData["platform"]</b></p>
+        <form asp-action="Create" asp-controller="FavouritePlatforms" id="frmPlatform">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="PlatformId" class="control-label"></label>
+                <select onchange="frmPlatform.submit()" asp-for="PlatformId" class="form-control" asp-items="ViewBag.Platform"><option value="">----Select Platform----</option></select>
+            </div>
+        </form>
+        @if (ViewBag.FavouritePlatform.Count == 0)
         {
-            <tr>
-
-                <td>
-                    @Html.DisplayFor(modelItem => item.Platform.Name)
-                </td>
-
-
-                <td>
-                    <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.PlatformId">Remove from favorites</a><br />
-                </td>
-            </tr>
+            <strong>You don't have any preferences for platforms yet, Please add one.</strong>
         }
-    </tbody>
-</table>
-}
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
 
-<p>
-    <a type="button" class="btn btn-success" asp-action="Create">Add Platform</a>
-</p>
+                        <th>
+                            Platforms
+                        </th>
+
+
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.FavouritePlatform)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.Platform.Name
+                            </td>
+
+
+                            <td>
+                                <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.PlatformId">Remove from favorites</a><br />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="col-md-6">
+        <p class="text-center" style="color:blue;"><b>@TempData["category"]</b></p>
+        <form asp-action="Create" asp-controller="FavouriteCategories" id="frmCategory">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select onchange="frmCategory.submit()" asp-for="CategoryId" class="form-control" asp-items="ViewBag.Category"><option value="">----Select Category----</option></select>
+            </div>
+        </form>
+        @if (ViewBag.FavouriteCategory.Count == 0)
+        {
+            <strong>You don't have any preferences for categories yet, Please add one.</strong>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th>
+                            Categories
+                        </th>
+
+
+                        <th>Manage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in ViewBag.FavouriteCategory)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.Category.Name
+                            </td>
+
+                            <td>
+                                <a class="btn btn-danger" asp-action="Delete" asp-controller="FavouriteCategories" asp-route-id="@item.CategoryId">Remove from favorites</a><br />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+
+<script>
+     function submitPlatform() {
+
+            var data1 = $("#frmCategory").serialize();
+            var data = $("#frmPlatform").serialize();
+
+         if (!$("#frmCategory").valid() || !$("#frmPlatform").valid()) {
+                return false;
+            }
+            $.ajax({
+                type: 'POST',
+                data: data1,
+                url: '/FavouriteCategories/Create/',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                success: function (result) {
+                    
+                },
+                error: function () {
+                    console.log("fail");
+                }
+            })
+
+            $.ajax({
+                type: 'POST',
+                data: data,
+                url: '/FavouritePlatforms/Create/',
+                contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                success: function (result) {
+                },
+                error: function () {
+
+                }
+            })
+    }
+
+
+
+
+</script>
