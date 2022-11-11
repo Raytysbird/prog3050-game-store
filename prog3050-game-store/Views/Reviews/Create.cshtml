@@ -1,9 +1,9 @@
 ﻿@model GameStore.Models.Review
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Review";
 }
-<h2>Create</h2>
+<h2>Add Review</h2>
 
 <h4>@ViewData["GameTitle"]</h4>
 <hr />
@@ -39,7 +39,7 @@
             <input type="hidden" value="@ViewData["gameId"]" asp-for="GameId" class="form-control" />
             <input type="hidden" asp-for="Rating" class="form-control" />
             <div class="form-group">
-                <input id="btnSubmit" type="submit" value="submit" class="btnSubmit btn btn-success" />
+                <input id="btnSubmit" type="submit" value="Submit Review" class="btnSubmit btn btn-success" />
             </div>
             
         </form>
@@ -83,9 +83,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts
 {

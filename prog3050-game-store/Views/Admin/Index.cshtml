@@ -19,8 +19,9 @@
         <h1>Admin Panel</h1>
     </div>
     <div class="buttonContainer">
-        <button type="button" class="btnGame btn btn-success">Games</button>
-        <button type="button" class="btnEvent btn btn-secondary">Events</button>
+        <a class="btnGame btn btn-success" asp-area="" asp-controller="Game" asp-action="Index">Games</a>
+        <a class="btnEvent btn btn-secondary" asp-area="" asp-controller="Event" asp-action="Index">Events</a>
+      
         <button type="button" class="btnReview btn btn-info">Review</button>
         <button type="button" class="btnReport btn btn-warning">Reports</button>
     </div>

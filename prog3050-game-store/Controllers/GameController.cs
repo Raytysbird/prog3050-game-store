@@ -94,7 +94,7 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price")] Game game)
+        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price,GameImage")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -106,6 +106,7 @@ namespace GameStore.Controllers
                     game.ImagePath = folder;
                     await game.GameImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                 }
+                TempData["message"] = "Game added to inventory";
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -165,27 +166,26 @@ namespace GameStore.Controllers
         }
 
         // GET: Game/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.GameId == id);
-            if (game == null)
-            {
-                return NotFound();
-            }
+        //    var game = await _context.Game
+        //        .FirstOrDefaultAsync(m => m.GameId == id);
+        //    if (game == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(game);
-        }
+        //    return View(game);
+        //}
 
         // POST: Game/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+      
+        public async Task<IActionResult> Delete(int id)
         {
             var game = await _context.Game.FindAsync(id);
             _context.Game.Remove(game);
