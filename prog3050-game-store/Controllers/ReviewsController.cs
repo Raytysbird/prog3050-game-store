@@ -7,18 +7,24 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameStore.Controllers
 {
+    //[Authorize(Roles = "User")]
     public class ReviewsController : Controller
     {
         private readonly GameContext _context;
         private readonly UserManager<User> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-        public ReviewsController(GameContext context, UserManager<User> userManager)
+ 
+
+        public ReviewsController(GameContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
+            _roleManager = roleManager;
         }
 
         // GET: Reviews
@@ -51,6 +57,7 @@ namespace GameStore.Controllers
         public IActionResult Create(int id)
         {
             var user = _userManager.GetUserId(HttpContext.User);
+            ViewData["GameTitle"] = _context.Game.Where(x => x.GameId == id).Select(x => x.Name).FirstOrDefault();
             var gameReviewed = _context.Review.Include(r => r.AspUser).Where(x => x.GameId == id && x.AspUserId == user).FirstOrDefault();
             if (gameReviewed != null)
             {
@@ -78,6 +85,7 @@ namespace GameStore.Controllers
                 return RedirectToAction("Details", "Game", new { id = review.GameId });
             }
             ViewData["AspUserId"] = user;
+            ViewData["gameId"] = review.GameId;
             return View(review);
         }
 
@@ -96,6 +104,7 @@ namespace GameStore.Controllers
                 return NotFound();
             }
             ViewData["AspUserId"] = user;
+            ViewData["gameId"] = id;
             return View(review);
         }
 

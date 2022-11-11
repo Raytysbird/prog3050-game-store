@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Models
@@ -12,8 +13,10 @@ namespace GameStore.Models
         [Required]
         public string Title { get; set; }
         [Required]
+        [Display(Name = "Review")]
         public string Review1 { get; set; }
         [Required]
+        [Range(1, 5, ErrorMessage = "Please select rating")]
         public int? Rating { get; set; }
         public int? GameId { get; set; }
         public bool? IsApproved { get; set; }
