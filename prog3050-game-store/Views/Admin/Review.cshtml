@@ -5,16 +5,32 @@
 @{
 
 }
-@foreach (var item in Model)
-{
-    <div class="card" style="width: 18rem;">
-        <div class="card-body">
-            <h3 class="card-title">User: ${data.userName}</h3>
-            <p card-text>Title ${data.title}</p>
-            <p card-text>Description${data.review1}</p>
-            <button id="btnApproved" type="button" class="btn btn-primary">Approve</button>
-            <button value="${data.reviewId}" id="btnDeclined" type="button" class="btn btn-danger">Decline</button>
-        </div>
-    </div>
-}
+<h1 style="text-align:center">Pending Reviews</h1>
+<div style="margin-top: 5em; display: grid; grid-template-columns: 1fr 1fr 1fr;">
+ @if(Model.Count() >  0){
+        foreach (var item in Model)
+        {
+            <div style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); padding: 2em; border-radius: 5px; margin:1em">
+                <h2>Game: <span>@item.Game.Name</span></h2>
+                <h4>User: <span>@item.AspUser.UserName</span></h4>
+                <h4>Title: <span>@item.Title</span></h4>
+                <h4>Description: </h4>
+                <p>@item.Review1</p>
+                <a asp-action="CheckReview" asp-route-id="@item.ReviewId" asp-route-isDeclined=@false class="btn btn-primary">Approve</a>
+                <a asp-action="CheckReview" asp-route-id="@item.ReviewId" asp-route-isDeclined=@true class="btn btn-danger">Remove</a>
+            </div>
+        }
+ }
+ else{
+     <h3>No Reviews pending</h3>
+ }
 
+</div>
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+}

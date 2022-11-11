@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GameStore.Controllers
 {
-    //[Authorize(Roles = "User")]
+    [Authorize(Roles = "User")]
     public class ReviewsController : Controller
     {
         private readonly GameContext _context;
@@ -79,7 +79,7 @@ namespace GameStore.Controllers
             var user = _userManager.GetUserId(HttpContext.User);
             if (ModelState.IsValid)
             {
-                review.IsApproved = true;
+                review.IsApproved = false;
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Game", new { id = review.GameId });

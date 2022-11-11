@@ -9,6 +9,7 @@ using GameStore.Models;
 using GameStore.Services;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameStore.Controllers
 {
@@ -16,11 +17,13 @@ namespace GameStore.Controllers
     {
         private readonly GameContext _context;
         private readonly IHostingEnvironment _webHostEnvironment;
+        private readonly UserManager<User> _userManager;
 
-        public GameController(GameContext context, IHostingEnvironment webHostEnvironment)
+        public GameController(GameContext context, IHostingEnvironment webHostEnvironment, UserManager<User> userManager)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
 
         // GET: Game
@@ -47,8 +50,11 @@ namespace GameStore.Controllers
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            ViewBag.ReviewObj = _context.Review.Include(x=> x.AspUser).Where(x=> x.GameId == id && x.IsApproved == true).ToList();
-
+            var user = _userManager.GetUserId(HttpContext.User);
+            var approvedReviews = _context.Review.Include(x=> x.AspUser).Where(x=> x.GameId == id && x.IsApproved == true).ToList();
+            var currentUserPendingReview = _context.Review.Include(x => x.AspUser).Where(x => x.GameId == id && x.IsApproved == false && x.AspUserId == user).ToList();
+            var reviews = approvedReviews.Union(currentUserPendingReview);
+            ViewBag.ReviewObj = reviews.ToList();
             var rating = _context.Review.Where(x => x.GameId == id).Average(x => x.Rating);
             if (rating.HasValue)
             {

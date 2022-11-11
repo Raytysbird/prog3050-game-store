@@ -19,15 +19,11 @@
         <h1>Admin Panel</h1>
     </div>
     <div class="buttonContainer">
-        <button type="button" class="btnGame btn btn-success">Games</button>
-        <button type="button" class="btnEvent btn btn-secondary">Events</button>
-        <button type="button" class="btnReview btn btn-info">Review</button>
-        <button type="button" class="btnReport btn btn-warning">Reports</button>
+        <a class="btnGame btn btn-success">Games</a>
+        <a class="btnEvent btn btn-secondary">Events</a>
+        <a asp-action="Review" class="btnReview btn btn-info">Review</a>
+        <a class="btnReport btn btn-warning">Reports</a>
     </div>
-    <div class="adminToggle">
-       
-    </div>
-
 </div>
 
 
@@ -37,44 +33,6 @@
     {
     <script type="text/javascript">
         $(document).ready(function () {
-
-            //var data = "";
-            //var html = "";
-            //$(".btnReview").click(function () {
-            //    $.ajax({
-            //        url: "/Admin/Review",
-            //        type: 'GET',
-            //        dataType: 'json', // added data type
-            //        success: function (res) {
-            //            data = res[0];
-            //            console.log(data);
-            //            html += 
-            //                `<div class="card" style="width: 18rem;">
-            //                    <div class="card-body">
-            //                        <h3 class="card-title">User: ${data.userName}</h3>
-            //                        <p card-text>Title ${data.title}</p>
-            //                        <p card-text>Description${data.review1}</p>
-            //                                                        <button id="btnApproved"   type="button" class="btn btn-primary">Approve</button>
-            //                                <button value="${data.reviewId}" id="btnDeclined" type="button" class="btn btn-danger">Decline</button>
-            //                    </div>
-            //                </div>`
-            //            $(".adminToggle").html(html);
-            //            //console.log(res);
-            //            //alert(res);
-            //        }
-            //    });
-            //});
-
-
-
-            //$(".adminToggle").on('click', "#btnApproved", function () {
-            //    // your code...
-            //    alert("fer");
-            //});
-
-
-
-
         });
     </script>
 }
