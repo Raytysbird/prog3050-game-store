@@ -62,15 +62,19 @@
                     $@Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.GameId">Game Details</a>
                     @if (User.IsInRole("Employee"))
                     {
                         <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.GameId">Edit Game</a>
                         <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.GameId">Delete Game</a>
                     }
+                   else
+                    {
+                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.GameId">Game Details</a>
+                    }
 
-            </tr>
+
+
+</tr>
         }
     </tbody>
 

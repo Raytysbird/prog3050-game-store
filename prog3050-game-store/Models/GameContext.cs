@@ -292,7 +292,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.EndDate)
                     .HasColumnName("end_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -302,7 +302,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.StartDate)
                     .HasColumnName("start_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<FavouriteCategory>(entity =>
@@ -558,6 +558,10 @@ namespace GameStore.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK__UserEvent__event__245D67DE");
             });
+
+           
+
+           
         }
     }
 }
