@@ -36,6 +36,7 @@ namespace GameStore.Models
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
         public virtual DbSet<Review> Review { get; set; }
+      
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -291,7 +292,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.EndDate)
                     .HasColumnName("end_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
 
                 entity.Property(e => e.Name)
                     .IsRequired()
@@ -301,7 +302,7 @@ namespace GameStore.Models
 
                 entity.Property(e => e.StartDate)
                     .HasColumnName("start_date")
-                    .HasColumnType("date");
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<FavouriteCategory>(entity =>
@@ -533,6 +534,10 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.GameId)
                     .HasConstraintName("FK__Review__game_id__3E1D39E1");
             });
+
+           
+
+           
         }
     }
 }
