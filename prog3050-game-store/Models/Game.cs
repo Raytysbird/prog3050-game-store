@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
+
+
 namespace GameStore.Models
 {
     public partial class Game
@@ -14,6 +16,8 @@ namespace GameStore.Models
             GamePlatform = new HashSet<GamePlatform>();
             Review = new HashSet<Review>();
         }
+
+
 
         public int GameId { get; set; }
         [Required]

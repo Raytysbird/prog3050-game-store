@@ -18,6 +18,7 @@ namespace GameStore.Models
             RelationFromUserNavigation = new HashSet<Relation>();
             RelationToUserNavigation = new HashSet<Relation>();
             Review = new HashSet<Review>();
+            UserEvent = new HashSet<UserEvent>();
         }
 
         public string Id { get; set; }
@@ -53,5 +54,6 @@ namespace GameStore.Models
         public ICollection<Relation> RelationFromUserNavigation { get; set; }
         public ICollection<Relation> RelationToUserNavigation { get; set; }
         public ICollection<Review> Review { get; set; }
+        public ICollection<UserEvent> UserEvent { get; set; }
     }
 }

@@ -1,14 +1,17 @@
 ﻿@model IEnumerable<GameStore.Models.Events>
 
 @{
-    ViewData["Title"] = "Event List";
+    ViewData["Title"] = "Events";
 }
 
-<h2>Event Lists</h2>
+<h2>Event</h2>
 
 @if (User.IsInRole("Employee"))
 {
 <a class="btnGame btn btn-success" asp-area="" asp-controller="Event" asp-action="Create">Create New Event</a>
+}
+else if (User.IsInRole("User")){
+    <a class="btnGame btn btn-primary" asp-area="" asp-controller="Event" asp-action="UserEvents">My Events</a>
 }
 
 <table class="table">
@@ -26,6 +29,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.EndDate)
             </th>
+            <th>Test</th>
             <th></th>
         </tr>
     </thead>
@@ -45,11 +49,17 @@
             <td>
                 @Html.DisplayFor(modelItem => item.EndDate)
             </td>
+
             @if (User.IsInRole("Employee"))
             {
                 <td>
                     <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.EventId">Edit Event</a> 
                     <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.EventId">Delete Event</a>
+                </td>
+            }
+            else if (User.IsInRole("User")){
+                <td>
+                        <a class="btn btn-success" asp-action="Booking" asp-route-id="@item.EventId" asp-route-isRegsiter=@true>Register</a>
                 </td>
             }
             </tr>

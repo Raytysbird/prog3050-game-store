@@ -13,7 +13,7 @@ namespace GameStore.Models
         public string AptNumber { get; set; }
         [Display(Name = "Unit Number")]
         public string UnitNumber { get; set; }
-       
+
         public string Building { get; set; }
         [Display(Name = "Do you have different shipping address?")]
         public bool IsShipping { get; set; }

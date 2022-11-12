@@ -36,13 +36,14 @@ namespace GameStore.Models
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
         public virtual DbSet<Review> Review { get; set; }
+        public virtual DbSet<UserEvent> UserEvent { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
             }
         }
 
@@ -526,12 +527,36 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Review__asp_user__3D2915A8");
+                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
-                    .HasConstraintName("FK__Review__game_id__3E1D39E1");
+                    .HasConstraintName("FK__Review__game_id__1EA48E88");
+            });
+
+            modelBuilder.Entity<UserEvent>(entity =>
+            {
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__asp_u__236943A5");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.EventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__event__245D67DE");
             });
         }
     }
