@@ -6,49 +6,53 @@
 
 <h2>My Events</h2>
 
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Event.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Event.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Event.StartDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Event.EndDate)
-            </th>
-            <th></th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+@if(Model.Count() > 0){
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Event.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Event.Description)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Event.StartDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Event.EndDate)
-                </td>
-                <td>
-                    <a class="btn btn-danger" asp-action="Booking" asp-route-id="@item.EventId" asp-route-isRegsiter=@false>Unregister</a>
-                </td>
-
-                
+                <th>
+                    @Html.DisplayNameFor(model => model.Event.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event.StartDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Event.EndDate)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.Description)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.StartDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Event.EndDate)
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" asp-action="Booking" asp-route-id="@item.EventId" asp-route-isRegsiter=@false>Unregister</a>
+                    </td>
+
+
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else{
+    <h3>No Events Registered</h3>
+}
+
+

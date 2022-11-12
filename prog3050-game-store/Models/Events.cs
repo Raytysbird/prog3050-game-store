@@ -24,7 +24,7 @@ namespace GameStore.Models
         public DateTime? StartDate { get; set; }
         [Required]
         [Display(Name = "End Date")]
-         [PastDateValidation]
+        [PastDateValidation]
         public DateTime? EndDate { get; set; }
 
         public ICollection<UserEvent> UserEvent { get; set; }

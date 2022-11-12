@@ -537,8 +537,6 @@ namespace GameStore.Models
 
             modelBuilder.Entity<UserEvent>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.AspUserId)
                     .IsRequired()
                     .HasColumnName("asp_user_id")
@@ -550,18 +548,14 @@ namespace GameStore.Models
                     .WithMany(p => p.UserEvent)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__asp_u__236943A5");
+                    .HasConstraintName("FK__UserEvent__asp_u__2739D489");
 
                 entity.HasOne(d => d.Event)
                     .WithMany(p => p.UserEvent)
                     .HasForeignKey(d => d.EventId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__event__245D67DE");
+                    .HasConstraintName("FK__UserEvent__event__282DF8C2");
             });
-
-           
-
-           
         }
     }
 }

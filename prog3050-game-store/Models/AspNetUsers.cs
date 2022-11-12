@@ -20,7 +20,6 @@ namespace GameStore.Models
             Review = new HashSet<Review>();
             UserEvent = new HashSet<UserEvent>();
         }
-           
 
         public string Id { get; set; }
         public string UserName { get; set; }

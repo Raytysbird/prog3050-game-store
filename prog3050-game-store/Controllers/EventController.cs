@@ -63,7 +63,7 @@ namespace GameStore.Controllers
 
             var currentEvent = _context.UserEvent.Where(x => x.EventId == id).FirstOrDefault();
             _context.UserEvent.Remove(currentEvent);
-            TempData["message"] = "Cancelled Registeration!";
+            TempData["message"] = "Unregistered Event!";
             _context.SaveChanges();
             return RedirectToAction("UserEvents");
 
