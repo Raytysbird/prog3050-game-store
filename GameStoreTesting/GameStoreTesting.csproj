@@ -57,7 +57,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameStoreTest.cs" />
+    <Compile Include="GameStoreTestItr2.cs" />
+    <Compile Include="GameStoreTestItr1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

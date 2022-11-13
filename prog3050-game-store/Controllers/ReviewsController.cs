@@ -11,14 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace GameStore.Controllers
 {
-    [Authorize(Roles = "User")]
     public class ReviewsController : Controller
     {
         private readonly GameContext _context;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-
- 
 
         public ReviewsController(GameContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -79,7 +76,9 @@ namespace GameStore.Controllers
             var user = _userManager.GetUserId(HttpContext.User);
             if (ModelState.IsValid)
             {
-                review.IsApproved = false;
+
+                review.IsApproved = String.IsNullOrEmpty(review.Title) && String.IsNullOrEmpty(review.Review1);
+                
                 _context.Add(review);
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Details", "Game", new { id = review.GameId });

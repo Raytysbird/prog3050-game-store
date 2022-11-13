@@ -9,9 +9,7 @@ namespace GameStore.Models
     {
         public int ReviewId { get; set; }
         public string AspUserId { get; set; }
-        [Required]
         public string Title { get; set; }
-        [Required]
         [Display(Name = "Review")]
         public string Review1 { get; set; }
         [Required]
