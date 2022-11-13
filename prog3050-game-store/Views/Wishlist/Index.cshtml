@@ -1,0 +1,47 @@
+﻿@model IEnumerable<GameStore.Models.Wishlist>
+@{
+    ViewData["Title"] = "Wish list";
+}
+
+<h2>Wish List</h2>
+
+<table class="table">
+    <thead>
+        @if (ViewBag.WishList.Count > 0)
+        {
+            <tr>
+                <th>
+                    Game Name
+                </th>
+                <th></th>
+            </tr>
+        }
+        </thead>
+    <tbody>
+        @if (ViewBag.WishList.Count > 0)
+        {
+            @foreach (var item in ViewBag.WishList)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <!--<td>-->
+                    @*<a asp-action="Edit" asp-route-id="@item.WishlistId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.WishlistId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.WishlistId">Delete</a>*@
+                    <!--</td>-->
+
+                    <td>
+                        <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.GameId">Remove from Wish List</a><br />
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <strong>You don't have anything added to Wish List yet.</strong>
+        }
+    </tbody>
+</table>

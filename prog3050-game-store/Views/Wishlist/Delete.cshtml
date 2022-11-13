@@ -1,0 +1,28 @@
+﻿@model GameStore.Models.Wishlist
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Remove</h2>
+
+<h3>Are you sure you want to remove this?</h3>
+<div>
+    <h4>Wishlist</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        @foreach (var item in ViewBag.WishList)
+        {
+        <dd>
+            @item.Name
+        </dd>
+        }
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="WishlistId" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

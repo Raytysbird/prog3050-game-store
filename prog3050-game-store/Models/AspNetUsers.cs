@@ -18,6 +18,7 @@ namespace GameStore.Models
             RelationFromUserNavigation = new HashSet<Relation>();
             RelationToUserNavigation = new HashSet<Relation>();
             Review = new HashSet<Review>();
+            Wishlist = new HashSet<Wishlist>();
         }
 
         public string Id { get; set; }
@@ -41,6 +42,10 @@ namespace GameStore.Models
         public string Gender { get; set; }
         public DateTime? Dob { get; set; }
         public bool? ReceivePromotions { get; set; }
+        public string City { get; set; }
+        public string PostalCode { get; set; }
+        public string Province { get; set; }
+        public string Country { get; set; }
 
         public ICollection<Address> AddressNavigation { get; set; }
         public ICollection<AspNetUserClaims> AspNetUserClaims { get; set; }
@@ -53,5 +58,6 @@ namespace GameStore.Models
         public ICollection<Relation> RelationFromUserNavigation { get; set; }
         public ICollection<Relation> RelationToUserNavigation { get; set; }
         public ICollection<Review> Review { get; set; }
+        public ICollection<Wishlist> Wishlist { get; set; }
     }
 }

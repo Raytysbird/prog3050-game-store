@@ -35,13 +35,15 @@ namespace GameStore.Models
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
         public virtual DbSet<Review> Review { get; set; }
+        public virtual DbSet<Wishlist> Wishlist { get; set; }
+        public virtual DbSet<WishlistItem> WishlistItem { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=LAPTOP-LU81MF79;Database=GameStore;Trusted_Connection=True;");
             }
         }
 
@@ -97,7 +99,7 @@ namespace GameStore.Models
                     .WithMany(p => p.AddressNavigation)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKAddress726313");
+                    .HasConstraintName("user_id");
             });
 
             modelBuilder.Entity<AspNetRoleClaims>(entity =>
@@ -167,6 +169,14 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
+                entity.Property(e => e.City)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Country)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
@@ -191,6 +201,14 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
+
+                entity.Property(e => e.PostalCode)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Province)
+                    .HasMaxLength(50)
+                    .IsUnicode(false);
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -441,8 +459,6 @@ namespace GameStore.Models
 
             modelBuilder.Entity<Relation>(entity =>
             {
-                entity.ToTable("relation");
-
                 entity.Property(e => e.RelationId).HasColumnName("relation_id");
 
                 entity.Property(e => e.AreFriends).HasColumnName("areFriends");
@@ -461,13 +477,13 @@ namespace GameStore.Models
                     .WithMany(p => p.RelationFromUserNavigation)
                     .HasForeignKey(d => d.FromUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation265756");
+                    .HasConstraintName("from_user");
 
                 entity.HasOne(d => d.ToUserNavigation)
                     .WithMany(p => p.RelationToUserNavigation)
                     .HasForeignKey(d => d.ToUser)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKrelation392934");
+                    .HasConstraintName("to_user");
             });
 
             modelBuilder.Entity<Review>(entity =>
@@ -497,13 +513,49 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKreviews 72688");
+                    .HasConstraintName("FK__Review__asp_user__5CD6CB2B");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
+                    .HasConstraintName("FK__Review__game_id__5DCAEF64");
+            });
+
+            modelBuilder.Entity<Wishlist>(entity =>
+            {
+                entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasColumnName("user_id")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Wishlist)
+                    .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKreviews 641963");
+                    .HasConstraintName("FKWishlist716680");
+            });
+
+            modelBuilder.Entity<WishlistItem>(entity =>
+            {
+                entity.HasKey(e => new { e.WishlistId, e.GameId });
+
+                entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
+
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.WishlistItem)
+                    .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKWishlistIt626766");
+
+                entity.HasOne(d => d.Wishlist)
+                    .WithMany(p => p.WishlistItem)
+                    .HasForeignKey(d => d.WishlistId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKWishlistIt84529");
             });
         }
     }
