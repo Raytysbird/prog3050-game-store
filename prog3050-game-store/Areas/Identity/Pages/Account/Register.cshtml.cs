@@ -105,6 +105,7 @@ namespace GameStore.Areas.Identity.Pages.Account
                         return RedirectToPage("./Register");
                     }
                     var result = await _userManager.CreateAsync(user, Input.Password);
+                    var addtoRole= await _userManager.AddToRoleAsync(user, "User");
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created a new account with password.");

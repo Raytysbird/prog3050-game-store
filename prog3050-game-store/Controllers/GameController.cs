@@ -17,8 +17,11 @@ namespace GameStore.Controllers
     {
         private readonly GameContext _context;
         private readonly IHostingEnvironment _webHostEnvironment;
+        private readonly UserManager<User> _userManager;
+
 
         private readonly UserManager<User> _userManager;
+
 
         public GameController(GameContext context, IHostingEnvironment webHostEnvironment, UserManager<User> userManager)
         {
@@ -51,6 +54,11 @@ namespace GameStore.Controllers
         // GET: Game/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var user = _userManager.GetUserId(HttpContext.User);
+            var approvedReviews = _context.Review.Include(x=> x.AspUser).Where(x=> x.GameId == id && x.IsApproved == true).ToList();
+            var currentUserPendingReview = _context.Review.Include(x => x.AspUser).Where(x => x.GameId == id && x.IsApproved == false && x.AspUserId == user).ToList();
+            var reviews = approvedReviews.Union(currentUserPendingReview);
+            ViewBag.ReviewObj = reviews.ToList();
             var rating = _context.Review.Where(x => x.GameId == id).Average(x => x.Rating);
             if (rating.HasValue)
             {
@@ -76,6 +84,7 @@ namespace GameStore.Controllers
             {
                 ViewBag.PlatformName = platform.Platform.Name;
             }
+
             
             var user_id = _userManager.GetUserId(HttpContext.User);
            // var wishListId = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
@@ -97,10 +106,12 @@ namespace GameStore.Controllers
                 ViewBag.IsInWishList = false;
             }
 
+
             if (game == null)
             {
                 return NotFound();
             }
+
 
             return View(game);
         }
@@ -116,7 +127,7 @@ namespace GameStore.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price")] Game game)
+        public async Task<IActionResult> Create([Bind("GameId,Name,Description,Price,GameImage")] Game game)
         {
             if (ModelState.IsValid)
             {
@@ -128,6 +139,7 @@ namespace GameStore.Controllers
                     game.ImagePath = folder;
                     await game.GameImage.CopyToAsync(new FileStream(serverFolder, FileMode.Create));
                 }
+                TempData["message"] = "Game added to inventory";
                 _context.Add(game);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -187,27 +199,26 @@ namespace GameStore.Controllers
         }
 
         // GET: Game/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var game = await _context.Game
-                .FirstOrDefaultAsync(m => m.GameId == id);
-            if (game == null)
-            {
-                return NotFound();
-            }
+        //    var game = await _context.Game
+        //        .FirstOrDefaultAsync(m => m.GameId == id);
+        //    if (game == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(game);
-        }
+        //    return View(game);
+        //}
 
         // POST: Game/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+      
+        public async Task<IActionResult> Delete(int id)
         {
             var game = await _context.Game.FindAsync(id);
             _context.Game.Remove(game);

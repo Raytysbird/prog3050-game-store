@@ -1,0 +1,41 @@
+﻿@model IEnumerable<GameStore.Models.AspNetUsers>
+
+@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    h1 {
+        margin-bottom: 0.5em;
+        text-align:center;
+    }
+    .buttonContainer{
+        text-align:center;
+    }
+    .adminToggle {
+        margin-top: 1em;
+    }
+</style>
+
+
+<div>
+    <div>
+        <h1>Admin Panel</h1>
+    </div>
+    <div class="buttonContainer">
+        <a class="btnGame btn btn-success" asp-area="" asp-controller="Game" asp-action="Index">Manage Games</a>
+        <a class="btnEvent btn btn-primary" asp-area="" asp-controller="Event" asp-action="Index"> Manage Events</a>
+        <a asp-action="Review" class="btnReview btn btn-info">Approve Reviews</a>
+        <a class="btnReport btn btn-warning">View Reports</a>
+    </div>
+</div>
+
+
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+        });
+    </script>
+}

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -26,6 +26,7 @@ namespace GameStore.Models
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<CreditCardInfo> CreditCardInfo { get; set; }
+        public virtual DbSet<Events> Events { get; set; }
         public virtual DbSet<FavouriteCategory> FavouriteCategory { get; set; }
         public virtual DbSet<FavouritePlatform> FavouritePlatform { get; set; }
         public virtual DbSet<Game> Game { get; set; }
@@ -35,15 +36,22 @@ namespace GameStore.Models
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
         public virtual DbSet<Review> Review { get; set; }
+
         public virtual DbSet<Wishlist> Wishlist { get; set; }
         public virtual DbSet<WishlistItem> WishlistItem { get; set; }
+        public virtual DbSet<UserEvent> UserEvent { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+
                 optionsBuilder.UseSqlServer("Server=LAPTOP-LU81MF79;Database=GameStore;Trusted_Connection=True;");
+
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
+
             }
         }
 
@@ -295,6 +303,32 @@ namespace GameStore.Models
                     .HasConstraintName("FKCredit Car111073");
             });
 
+            modelBuilder.Entity<Events>(entity =>
+            {
+                entity.HasKey(e => e.EventId);
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnName("end_date")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnName("start_date")
+                    .HasColumnType("datetime");
+            });
+
             modelBuilder.Entity<FavouriteCategory>(entity =>
             {
                 entity.HasKey(e => new { e.CategoryId, e.UserId });
@@ -497,6 +531,8 @@ namespace GameStore.Models
 
                 entity.Property(e => e.GameId).HasColumnName("game_id");
 
+                entity.Property(e => e.IsApproved).HasColumnName("isApproved");
+
                 entity.Property(e => e.Rating).HasColumnName("rating");
 
                 entity.Property(e => e.Review1)
@@ -513,11 +549,16 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
+
                     .HasConstraintName("FK__Review__asp_user__5CD6CB2B");
+
+                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
+
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
+
                     .HasConstraintName("FK__Review__game_id__5DCAEF64");
             });
 
@@ -556,6 +597,31 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.WishlistId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKWishlistIt84529");
+
+                    .HasConstraintName("FK__Review__game_id__1EA48E88");
+            });
+
+            modelBuilder.Entity<UserEvent>(entity =>
+            {
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__asp_u__2739D489");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.EventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__event__282DF8C2");
+
             });
         }
     }

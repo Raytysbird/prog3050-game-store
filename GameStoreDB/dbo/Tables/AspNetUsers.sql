@@ -20,10 +20,6 @@
     [gender]               VARCHAR (255)      NULL,
     [dob]                  DATE               NULL,
     [receive_promotions]   BIT                NULL,
-    [City] VARCHAR(50) NULL, 
-    [PostalCode] VARCHAR(50) NULL, 
-    [Province] VARCHAR(50) NULL, 
-    [Country] VARCHAR(50) NULL, 
     CONSTRAINT [PK_AspNetUsers] PRIMARY KEY CLUSTERED ([Id] ASC),
     );
 

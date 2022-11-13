@@ -24,15 +24,29 @@ namespace GameStore.Controllers
         // GET: FavouritePlatforms
         public async Task<IActionResult> Index()
         {
+            var user_id = _userManager.GetUserId(HttpContext.User);
             var id = _userManager.GetUserId(HttpContext.User);
             var favPlatform = await _context.FavouritePlatform.Include(x => x.Platform).Where(x => x.UserId == id).ToListAsync();
-           
-            return View(favPlatform);
-        }
-        public async Task<IActionResult> Content()
-        {
+            var favCategory = await _context.FavouriteCategory.Include(x => x.Category).Where(x => x.UserId == id).ToListAsync();
+            ViewBag.FavouriteCategory = favCategory;
+            ViewBag.FavouritePlatform = favPlatform;
+            var currentCategory = _context.FavouriteCategory.Where(c => c.UserId == user_id).Select(x => x.CategoryId).ToList();
+            var categoryExcludingCurrent = _context.Category.Where(x => !currentCategory.Contains(x.CategoryId)).ToList();
+            if (categoryExcludingCurrent.Count == 0)
+            {
+                TempData["category"] = "No more categories available to select. Looks like you love all categories we have!!";
+            }
+            var currentPlatform = _context.FavouritePlatform.Where(c => c.UserId == user_id).Select(x => x.PlatformId).ToList();
+            var platformExcludingCurrent = _context.Platform.Where(x => !currentPlatform.Contains(x.PlatforrmId)).ToList();
+            if (platformExcludingCurrent.Count == 0)
+            {
+                TempData["platform"] = "No more platforms available to select. Looks like you love all platforms we have!!";
+            }
+            ViewData["Platform"] = new SelectList(platformExcludingCurrent, "PlatforrmId", "Name");
+            ViewData["Category"] = new SelectList(categoryExcludingCurrent, "CategoryId", "Name");
             return View();
         }
+       
         public IActionResult Create()
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);

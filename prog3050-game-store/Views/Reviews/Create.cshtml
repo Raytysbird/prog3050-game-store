@@ -1,11 +1,11 @@
 ﻿@model GameStore.Models.Review
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Add Review";
 }
-<h2>Create</h2>
+<h2>Add Review</h2>
 
-<h4>Review</h4>
+<h4>@ViewData["GameTitle"]</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -21,7 +21,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Review1" class="control-label"></label>
-                <input asp-for="Review1" class="form-control" />
+                <textarea rows="5" cols="70" asp-for="Review1" class="form-control"></textarea>
                 <span asp-validation-for="Review1" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -36,10 +36,10 @@
                 <span asp-validation-for="Rating" class="text-danger"></span>
             </div>
             
-            <input type="hidden" asp-for="GameId" class="form-control" />
+            <input type="hidden" value="@ViewData["gameId"]" asp-for="GameId" class="form-control" />
             <input type="hidden" asp-for="Rating" class="form-control" />
             <div class="form-group">
-                <input id="btnSubmit" type="submit" value="submit" class="btnSubmit btn btn-default" />
+                <input id="btnSubmit" type="submit" value="Submit Review" class="btnSubmit btn btn-success" />
             </div>
             
         </form>
@@ -83,9 +83,6 @@
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
 
 @section Scripts
 {
