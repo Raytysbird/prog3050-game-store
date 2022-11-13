@@ -29,7 +29,7 @@
                  
 
                     <td>
-                        <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.GameId">Remove from Wish List</a><br />
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.GameId">Remove from Wish List</a><br />
                     </td>
 
                 </tr>
@@ -37,14 +37,13 @@
         }
         else
         {
-
-            @*<alert>No Item added to Wish List!</alert>
-            <br><br>
-            <strong>If you want to add games to wish list then follow the steps below.</strong>
-            <br>
-            <strong><a asp-controller="Game" asp-action="Index">Go to Games</a> > Game Details > Add to Wish List </strong>
-            <br><br>*@
-            
+             <tr>
+                 <td>You don't have games in your wish list. Checkout our game list to view games and add to wish list. <a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a></td>
+                 
+             </tr>
         }
-    </tbody>
+</tbody>
 </table>
+<div>
+    <a asp-action="Index" asp-controller="Game">Back to game List</a>
+</div>
