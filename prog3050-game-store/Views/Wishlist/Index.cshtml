@@ -26,11 +26,7 @@
                     <td>
                         @item.Name
                     </td>
-                    <!--<td>-->
-                    @*<a asp-action="Edit" asp-route-id="@item.WishlistId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.WishlistId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.WishlistId">Delete</a>*@
-                    <!--</td>-->
+                 
 
                     <td>
                         <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.GameId">Remove from Wish List</a><br />
@@ -41,12 +37,13 @@
         }
         else
         {
-            <alert>No Item added to Wish List!</alert>
+
+            @*<alert>No Item added to Wish List!</alert>
             <br><br>
             <strong>If you want to add games to wish list then follow the steps below.</strong>
             <br>
             <strong><a asp-controller="Game" asp-action="Index">Go to Games</a> > Game Details > Add to Wish List </strong>
-            <br><br>
+            <br><br>*@
             
         }
     </tbody>

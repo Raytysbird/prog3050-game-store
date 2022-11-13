@@ -20,8 +20,7 @@ namespace GameStore.Controllers
         private readonly UserManager<User> _userManager;
 
 
-        private readonly UserManager<User> _userManager;
-
+    
 
         public GameController(GameContext context, IHostingEnvironment webHostEnvironment, UserManager<User> userManager)
         {

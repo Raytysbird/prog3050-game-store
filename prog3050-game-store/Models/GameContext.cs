@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 
@@ -36,22 +36,16 @@ namespace GameStore.Models
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
         public virtual DbSet<Review> Review { get; set; }
-
+        public virtual DbSet<UserEvent> UserEvent { get; set; }
         public virtual DbSet<Wishlist> Wishlist { get; set; }
         public virtual DbSet<WishlistItem> WishlistItem { get; set; }
-        public virtual DbSet<UserEvent> UserEvent { get; set; }
-
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-
-                optionsBuilder.UseSqlServer("Server=LAPTOP-LU81MF79;Database=GameStore;Trusted_Connection=True;");
-
-                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
-
+                optionsBuilder.UseSqlServer("Server=KANGPC\\SQLEXPRESS19;Database=GameStore;Trusted_Connection=True;");
             }
         }
 
@@ -177,14 +171,6 @@ namespace GameStore.Models
 
                 entity.Property(e => e.Address).HasMaxLength(256);
 
-                entity.Property(e => e.City)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Country)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
                 entity.Property(e => e.Dob)
                     .HasColumnName("dob")
                     .HasColumnType("date");
@@ -209,14 +195,6 @@ namespace GameStore.Models
                 entity.Property(e => e.NormalizedEmail).HasMaxLength(256);
 
                 entity.Property(e => e.NormalizedUserName).HasMaxLength(256);
-
-                entity.Property(e => e.PostalCode)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Province)
-                    .HasMaxLength(50)
-                    .IsUnicode(false);
 
                 entity.Property(e => e.ReceivePromotions).HasColumnName("receive_promotions");
 
@@ -493,6 +471,8 @@ namespace GameStore.Models
 
             modelBuilder.Entity<Relation>(entity =>
             {
+                entity.ToTable("relation");
+
                 entity.Property(e => e.RelationId).HasColumnName("relation_id");
 
                 entity.Property(e => e.AreFriends).HasColumnName("areFriends");
@@ -549,17 +529,34 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-
-                    .HasConstraintName("FK__Review__asp_user__5CD6CB2B");
-
-                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
-
+                    .HasConstraintName("FK__Review__asp_user__3D2915A8");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
+                    .HasConstraintName("FK__Review__game_id__3E1D39E1");
+            });
 
-                    .HasConstraintName("FK__Review__game_id__5DCAEF64");
+            modelBuilder.Entity<UserEvent>(entity =>
+            {
+                entity.Property(e => e.AspUserId)
+                    .IsRequired()
+                    .HasColumnName("asp_user_id")
+                    .HasMaxLength(450);
+
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+
+                entity.HasOne(d => d.AspUser)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.AspUserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__asp_u__690797E6");
+
+                entity.HasOne(d => d.Event)
+                    .WithMany(p => p.UserEvent)
+                    .HasForeignKey(d => d.EventId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__UserEvent__event__69FBBC1F");
             });
 
             modelBuilder.Entity<Wishlist>(entity =>
@@ -575,7 +572,7 @@ namespace GameStore.Models
                     .WithMany(p => p.Wishlist)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKWishlist716680");
+                    .HasConstraintName("FKWishlist433f461");
             });
 
             modelBuilder.Entity<WishlistItem>(entity =>
@@ -597,31 +594,6 @@ namespace GameStore.Models
                     .HasForeignKey(d => d.WishlistId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKWishlistIt84529");
-
-                    .HasConstraintName("FK__Review__game_id__1EA48E88");
-            });
-
-            modelBuilder.Entity<UserEvent>(entity =>
-            {
-                entity.Property(e => e.AspUserId)
-                    .IsRequired()
-                    .HasColumnName("asp_user_id")
-                    .HasMaxLength(450);
-
-                entity.Property(e => e.EventId).HasColumnName("event_id");
-
-                entity.HasOne(d => d.AspUser)
-                    .WithMany(p => p.UserEvent)
-                    .HasForeignKey(d => d.AspUserId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__asp_u__2739D489");
-
-                entity.HasOne(d => d.Event)
-                    .WithMany(p => p.UserEvent)
-                    .HasForeignKey(d => d.EventId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__event__282DF8C2");
-
             });
         }
     }

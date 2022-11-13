@@ -37,7 +37,7 @@ namespace GameStore.Controllers
                 var eventsExcludingCurrent = _context.Events.Where(x => !userEvents.Contains(x.EventId)).ToList();
                 return View(eventsExcludingCurrent);
             }
-           
+
             var events = await _context.Events.ToListAsync();
             return View(events);
         }
@@ -45,7 +45,7 @@ namespace GameStore.Controllers
         public async Task<IActionResult> UserEvents()
         {
             var user = _userManager.GetUserId(HttpContext.User);
-            var events = await _context.UserEvent.Include(x=> x.Event).Where(x=> x.AspUserId == user).ToListAsync();
+            var events = await _context.UserEvent.Include(x => x.Event).Where(x => x.AspUserId == user).ToListAsync();
             return View(events);
         }
         public async Task<IActionResult> Booking(int id, bool isRegsiter)
