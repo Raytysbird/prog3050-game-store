@@ -27,13 +27,13 @@ namespace GameStore.Controllers
             var id = _userManager.GetUserId(HttpContext.User);
             var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
            
-            if (wishList == null)
-            {
-                Wishlist wishlist = new Wishlist();
-                wishlist.UserId = id;
-                _context.Wishlist.Add(wishlist);
-                _context.SaveChanges();
-            }
+            //if (wishList == null)
+            //{
+            //    Wishlist wishlist = new Wishlist();
+            //    wishlist.UserId = id;
+            //    _context.Wishlist.Add(wishlist);
+            //    _context.SaveChanges();
+            //}
             var wishListItem = _context.WishlistItem.Where(x => x.WishlistId == wishList.WishlistId).Select(x => x.GameId).ToList();
             if (wishListItem == null)
             {

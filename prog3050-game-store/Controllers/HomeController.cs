@@ -14,13 +14,29 @@ namespace GameStore.Controllers
     public class HomeController : Controller
     {
         private readonly UserManager<User> _userManager;
-        public HomeController(UserManager<User> userManager)
+        private readonly GameContext _context;
+        public HomeController(GameContext context,UserManager<User> userManager)
         {
             _userManager = userManager;
+            _context = context;
         }
         public IActionResult Index()
         {
+            var id = _userManager.GetUserId(HttpContext.User);
             ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
+            if (id!=null)
+            {
+                var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
+
+                if (wishList == null)
+                {
+                    Wishlist wishlist = new Wishlist();
+                    wishlist.UserId = id;
+                    _context.Wishlist.Add(wishlist);
+                    _context.SaveChanges();
+                }
+            }
+           
             return View();
         }
 
