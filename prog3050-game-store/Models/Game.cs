@@ -15,6 +15,7 @@ namespace GameStore.Models
             GameCategory = new HashSet<GameCategory>();
             GamePlatform = new HashSet<GamePlatform>();
             Review = new HashSet<Review>();
+            WishlistItem = new HashSet<WishlistItem>();
         }
 
 
@@ -33,5 +34,6 @@ namespace GameStore.Models
         public ICollection<GameCategory> GameCategory { get; set; }
         public ICollection<GamePlatform> GamePlatform { get; set; }
         public ICollection<Review> Review { get; set; }
+        public ICollection<WishlistItem> WishlistItem { get; set; }
     }
 }

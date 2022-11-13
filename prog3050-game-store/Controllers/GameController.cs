@@ -19,6 +19,10 @@ namespace GameStore.Controllers
         private readonly IHostingEnvironment _webHostEnvironment;
         private readonly UserManager<User> _userManager;
 
+
+        private readonly UserManager<User> _userManager;
+
+
         public GameController(GameContext context, IHostingEnvironment webHostEnvironment, UserManager<User> userManager)
         {
             _context = context;
@@ -80,6 +84,29 @@ namespace GameStore.Controllers
             {
                 ViewBag.PlatformName = platform.Platform.Name;
             }
+
+            
+            var user_id = _userManager.GetUserId(HttpContext.User);
+           // var wishListId = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
+
+            var gameId =await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x=>x.GameId==id).ToListAsync();
+            if(gameId.Count!=0)
+            {
+                foreach (var item in gameId)
+                {
+                    if (item.GameId == id)
+                    {
+                        ViewBag.IsInWishList = true;
+                    }
+                   
+                }
+            }
+            else
+            {
+                ViewBag.IsInWishList = false;
+            }
+
+
             if (game == null)
             {
                 return NotFound();
