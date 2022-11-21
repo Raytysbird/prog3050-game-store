@@ -10,6 +10,7 @@ using GameStore.Services;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
 
 namespace GameStore.Controllers
 {
@@ -27,6 +28,43 @@ namespace GameStore.Controllers
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
+        }
+        public IActionResult Print()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Games");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "S.No";
+                worksheet.Cell(currentRow, 2).Value = "Name";
+                worksheet.Cell(currentRow, 3).Value = "Description";
+                worksheet.Cell(currentRow, 4).Value = "Price";
+
+                var games = _context.Game;
+                foreach (var item in games)
+                {
+                    currentRow++;
+                    count++;
+                    worksheet.Cell(currentRow, 1).Value = count;
+                    worksheet.Cell(currentRow, 2).Value = item.Name;
+                    worksheet.Cell(currentRow, 3).Value = item.Description;
+                    worksheet.Cell(currentRow, 4).Value = item.Price;
+                }
+
+                using (var stream=new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "Games.xlsx"
+                        );
+                }
+
+            }
+
         }
 
         // GET: Game

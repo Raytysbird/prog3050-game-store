@@ -83,6 +83,12 @@
     <Build Include="dbo\Tables\Address_1.sql" />
     <Build Include="dbo\Tables\Events.sql" />
     <Build Include="dbo\Tables\UserEvent.sql" />
+    <Build Include="dbo\Tables\Cart.sql" />
+    <Build Include="dbo\Tables\CartGame.sql" />
+    <Build Include="dbo\Tables\CartMerchandise.sql" />
+    <Build Include="dbo\Tables\Merchandise.sql" />
+    <Build Include="dbo\Tables\Wishlist.sql" />
+    <Build Include="dbo\Tables\WishlistItem.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="dbo\Script1.sql" />

@@ -12,6 +12,7 @@ namespace GameStore.Models
             AspNetUserLogins = new HashSet<AspNetUserLogins>();
             AspNetUserRoles = new HashSet<AspNetUserRoles>();
             AspNetUserTokens = new HashSet<AspNetUserTokens>();
+            Cart = new HashSet<Cart>();
             CreditCardInfo = new HashSet<CreditCardInfo>();
             FavouriteCategory = new HashSet<FavouriteCategory>();
             FavouritePlatform = new HashSet<FavouritePlatform>();
@@ -49,6 +50,7 @@ namespace GameStore.Models
         public ICollection<AspNetUserLogins> AspNetUserLogins { get; set; }
         public ICollection<AspNetUserRoles> AspNetUserRoles { get; set; }
         public ICollection<AspNetUserTokens> AspNetUserTokens { get; set; }
+        public ICollection<Cart> Cart { get; set; }
         public ICollection<CreditCardInfo> CreditCardInfo { get; set; }
         public ICollection<FavouriteCategory> FavouriteCategory { get; set; }
         public ICollection<FavouritePlatform> FavouritePlatform { get; set; }

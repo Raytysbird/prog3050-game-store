@@ -12,6 +12,7 @@ namespace GameStore.Models
     {
         public Game()
         {
+            CartGame = new HashSet<CartGame>();
             GameCategory = new HashSet<GameCategory>();
             GamePlatform = new HashSet<GamePlatform>();
             Review = new HashSet<Review>();
@@ -31,6 +32,7 @@ namespace GameStore.Models
         [NotMapped]
         [Display(Name = "Game Image")]
         public IFormFile GameImage { get; set; }
+        public ICollection<CartGame> CartGame { get; set; }
         public ICollection<GameCategory> GameCategory { get; set; }
         public ICollection<GamePlatform> GamePlatform { get; set; }
         public ICollection<Review> Review { get; set; }

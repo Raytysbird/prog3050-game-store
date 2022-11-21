@@ -7,6 +7,11 @@ namespace GameStore.Models
 {
     public partial class CreditCardInfo
     {
+        public CreditCardInfo()
+        {
+            Cart = new HashSet<Cart>();
+        }
+
         [Required]
         public int CreditCardId { get; set; }
         public string UserId { get; set; }
@@ -26,5 +31,6 @@ namespace GameStore.Models
         public int? Ccc { get; set; }
 
         public AspNetUsers User { get; set; }
+        public ICollection<Cart> Cart { get; set; }
     }
 }

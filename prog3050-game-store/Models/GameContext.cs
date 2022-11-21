@@ -23,6 +23,9 @@ namespace GameStore.Models
         public virtual DbSet<AspNetUserRoles> AspNetUserRoles { get; set; }
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<AspNetUserTokens> AspNetUserTokens { get; set; }
+        public virtual DbSet<Cart> Cart { get; set; }
+        public virtual DbSet<CartGame> CartGame { get; set; }
+        public virtual DbSet<CartMerchandise> CartMerchandise { get; set; }
         public virtual DbSet<Category> Category { get; set; }
         public virtual DbSet<Country> Country { get; set; }
         public virtual DbSet<CreditCardInfo> CreditCardInfo { get; set; }
@@ -32,6 +35,7 @@ namespace GameStore.Models
         public virtual DbSet<Game> Game { get; set; }
         public virtual DbSet<GameCategory> GameCategory { get; set; }
         public virtual DbSet<GamePlatform> GamePlatform { get; set; }
+        public virtual DbSet<Merchandise> Merchandise { get; set; }
         public virtual DbSet<Platform> Platform { get; set; }
         public virtual DbSet<Province> Province { get; set; }
         public virtual DbSet<Relation> Relation { get; set; }
@@ -212,6 +216,83 @@ namespace GameStore.Models
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.AspNetUserTokens)
                     .HasForeignKey(d => d.UserId);
+            });
+
+            modelBuilder.Entity<Cart>(entity =>
+            {
+                entity.Property(e => e.CartId).HasColumnName("cart_id");
+
+                entity.Property(e => e.CreditCardId).HasColumnName("credit_card_id");
+
+                entity.Property(e => e.StateOfOrder)
+                    .HasColumnName("state_of_order")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TotalCost).HasColumnName("total_cost");
+
+                entity.Property(e => e.UserId)
+                    .IsRequired()
+                    .HasColumnName("user_id")
+                    .HasMaxLength(450);
+
+                entity.HasOne(d => d.CreditCard)
+                    .WithMany(p => p.Cart)
+                    .HasForeignKey(d => d.CreditCardId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKCredit 786863");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Cart)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKUser 75428");
+            });
+
+            modelBuilder.Entity<CartGame>(entity =>
+            {
+                entity.HasKey(e => new { e.CartId, e.GameId });
+
+                entity.Property(e => e.CartId)
+                    .HasColumnName("cart_id")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.HasOne(d => d.Cart)
+                    .WithMany(p => p.CartGame)
+                    .HasForeignKey(d => d.CartId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKCart 754");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.CartGame)
+                    .HasForeignKey(d => d.GameId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKGame 7868");
+            });
+
+            modelBuilder.Entity<CartMerchandise>(entity =>
+            {
+                entity.HasKey(e => new { e.CartId, e.MerchandiseId });
+
+                entity.Property(e => e.CartId)
+                    .HasColumnName("cart_id")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("merchandise_id");
+
+                entity.HasOne(d => d.Cart)
+                    .WithMany(p => p.CartMerchandise)
+                    .HasForeignKey(d => d.CartId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKCart 75498");
+
+                entity.HasOne(d => d.Merchandise)
+                    .WithMany(p => p.CartMerchandise)
+                    .HasForeignKey(d => d.MerchandiseId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FKMerchandise 7868");
             });
 
             modelBuilder.Entity<Category>(entity =>
@@ -422,6 +503,24 @@ namespace GameStore.Models
                     .HasConstraintName("FKGame Platf260191");
             });
 
+            modelBuilder.Entity<Merchandise>(entity =>
+            {
+                entity.Property(e => e.MerchandiseId).HasColumnName("merchandise_id");
+
+                entity.Property(e => e.Description)
+                    .HasColumnName("description")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasColumnName("name")
+                    .HasMaxLength(255)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Price).HasColumnName("price");
+            });
+
             modelBuilder.Entity<Platform>(entity =>
             {
                 entity.HasKey(e => e.PlatforrmId);
@@ -561,7 +660,9 @@ namespace GameStore.Models
 
             modelBuilder.Entity<Wishlist>(entity =>
             {
-                entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
+                entity.Property(e => e.WishlistId)
+                    .HasColumnName("wishlist_id")
+                    .ValueGeneratedNever();
 
                 entity.Property(e => e.UserId)
                     .IsRequired()
@@ -572,7 +673,7 @@ namespace GameStore.Models
                     .WithMany(p => p.Wishlist)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKWishlist433f461");
+                    .HasConstraintName("FK__Wishlist__user_i__7C1A6C5A");
             });
 
             modelBuilder.Entity<WishlistItem>(entity =>
@@ -587,13 +688,13 @@ namespace GameStore.Models
                     .WithMany(p => p.WishlistItem)
                     .HasForeignKey(d => d.GameId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKWishlistIt626766");
+                    .HasConstraintName("FKGame 754");
 
                 entity.HasOne(d => d.Wishlist)
                     .WithMany(p => p.WishlistItem)
                     .HasForeignKey(d => d.WishlistId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FKWishlistIt84529");
+                    .HasConstraintName("FKWishList 7868");
             });
         }
     }
