@@ -6,11 +6,13 @@
 <style>
     h1 {
         margin-bottom: 0.5em;
-        text-align:center;
+        text-align: center;
     }
-    .buttonContainer{
-        text-align:center;
+
+    .buttonContainer {
+        text-align: center;
     }
+
     .adminToggle {
         margin-top: 1em;
     }
@@ -26,9 +28,11 @@
         <a class="btnEvent btn btn-primary" asp-area="" asp-controller="Event" asp-action="Index"> Manage Events</a>
         <a class="btnEvent btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Index"> Manage Merchandise</a>
         <a asp-action="Review" class="btnReview btn btn-info">Approve Reviews</a>
-        <a class="btnReport btn btn-warning">View Reports</a>
+        <a class="btnReport btn btn-warning" asp-area="" asp-controller="Admin" asp-action="Reports">View Reports</a>
     </div>
 </div>
+
+
 
 
 

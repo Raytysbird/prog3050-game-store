@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace GameStore.Controllers
 {
@@ -100,9 +102,98 @@ namespace GameStore.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        
-          
-}
+        public IActionResult PrintMemberDetails()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Members");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "S.No";
+                worksheet.Cell(currentRow, 2).Value = "Name";
+                worksheet.Cell(currentRow, 3).Value = "User Name";
+                worksheet.Cell(currentRow, 4).Value = "Email";
+                worksheet.Cell(currentRow, 5).Value = "Date of birth";
+                worksheet.Cell(currentRow, 6).Value = "Address";
+                worksheet.Cell(currentRow, 7).Value = "City";
+                worksheet.Cell(currentRow, 8).Value = "Province";
+
+                var user = _context.AspNetUsers;
+                var address = _context.Address;
+                foreach (var item in user)
+                {
+                    currentRow++;
+                    count++;
+                    worksheet.Cell(currentRow, 1).Value = count;
+                    worksheet.Cell(currentRow, 2).Value = item.FirstName+" "+item.LastName;
+                    worksheet.Cell(currentRow, 3).Value = item.UserName;
+                    worksheet.Cell(currentRow, 4).Value = item.Email;
+                    worksheet.Cell(currentRow, 5).Value = item.Dob;
+                }
+                foreach (var item in address)
+                {
+                    currentRow++;
+                    count++;
+                    string fullAddress = string.Join(",", new string[] { item.StreetAddress, item.Building, item.AptNumber, item.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+
+                    worksheet.Cell(currentRow, 6).Value = fullAddress;
+                    worksheet.Cell(currentRow, 7).Value = item.City;
+                    worksheet.Cell(currentRow, 8).Value = item.Province;
+                   
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "MemberDetails.xlsx"
+                        );
+                }
+
+            }
+
+        }
+        public IActionResult PrintMemberList()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Games");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "S.No";
+                worksheet.Cell(currentRow, 2).Value = "Name";
+
+
+                var games = _context.Game;
+                foreach (var item in games)
+                {
+                    currentRow++;
+                    count++;
+                    worksheet.Cell(currentRow, 1).Value = count;
+                    worksheet.Cell(currentRow, 2).Value = item.Name;
+
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "GameList.xlsx"
+                        );
+                }
+
+            }
+
+        }
+
+
+    }
 }
 
       

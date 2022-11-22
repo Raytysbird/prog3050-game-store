@@ -25,7 +25,10 @@ namespace GameStore.Controllers
         {
             return View(await _context.AspNetUsers.ToListAsync());
         }
-
+        public async Task<IActionResult> Reports()
+        {
+            return View();
+        }
         public async Task<IActionResult> Review()
         {
             var pendingReviews = _context.Review.Include(x=> x.AspUser).Include(x=> x.Game).Where(x => x.IsApproved == false);

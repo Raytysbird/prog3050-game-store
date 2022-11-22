@@ -29,7 +29,7 @@ namespace GameStore.Controllers
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
         }
-        public IActionResult Print()
+        public IActionResult PrintGameDetails()
         {
             using (var workbook = new XLWorkbook())
             {
@@ -59,7 +59,42 @@ namespace GameStore.Controllers
                     return File(
                         content,
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "Games.xlsx"
+                        "GameDetails.xlsx"
+                        );
+                }
+
+            }
+
+        }
+        public IActionResult PrintGameList()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Games");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "S.No";
+                worksheet.Cell(currentRow, 2).Value = "Name";
+               
+
+                var games = _context.Game;
+                foreach (var item in games)
+                {
+                    currentRow++;
+                    count++;
+                    worksheet.Cell(currentRow, 1).Value = count;
+                    worksheet.Cell(currentRow, 2).Value = item.Name;
+                    
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "GameList.xlsx"
                         );
                 }
 
