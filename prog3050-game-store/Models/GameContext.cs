@@ -660,9 +660,7 @@ namespace GameStore.Models
 
             modelBuilder.Entity<Wishlist>(entity =>
             {
-                entity.Property(e => e.WishlistId)
-                    .HasColumnName("wishlist_id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
 
                 entity.Property(e => e.UserId)
                     .IsRequired()
@@ -673,7 +671,7 @@ namespace GameStore.Models
                     .WithMany(p => p.Wishlist)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Wishlist__user_i__7C1A6C5A");
+                    .HasConstraintName("FK__Wishlist__user_i__00DF2177");
             });
 
             modelBuilder.Entity<WishlistItem>(entity =>
