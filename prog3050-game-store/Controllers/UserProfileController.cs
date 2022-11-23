@@ -114,9 +114,7 @@ namespace GameStore.Controllers
                 worksheet.Cell(currentRow, 3).Value = "User Name";
                 worksheet.Cell(currentRow, 4).Value = "Email";
                 worksheet.Cell(currentRow, 5).Value = "Date of birth";
-                worksheet.Cell(currentRow, 6).Value = "Address";
-                worksheet.Cell(currentRow, 7).Value = "City";
-                worksheet.Cell(currentRow, 8).Value = "Province";
+               
 
                 var user = _context.AspNetUsers;
                 var address = _context.Address;
@@ -130,17 +128,7 @@ namespace GameStore.Controllers
                     worksheet.Cell(currentRow, 4).Value = item.Email;
                     worksheet.Cell(currentRow, 5).Value = item.Dob;
                 }
-                foreach (var item in address)
-                {
-                    currentRow++;
-                    count++;
-                    string fullAddress = string.Join(",", new string[] { item.StreetAddress, item.Building, item.AptNumber, item.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
-
-                    worksheet.Cell(currentRow, 6).Value = fullAddress;
-                    worksheet.Cell(currentRow, 7).Value = item.City;
-                    worksheet.Cell(currentRow, 8).Value = item.Province;
-                   
-                }
+                
 
                 using (var stream = new MemoryStream())
                 {
@@ -160,21 +148,22 @@ namespace GameStore.Controllers
         {
             using (var workbook = new XLWorkbook())
             {
-                var worksheet = workbook.Worksheets.Add("Games");
+                var worksheet = workbook.Worksheets.Add("Members");
                 var currentRow = 1;
                 int count = 0;
                 worksheet.Cell(currentRow, 1).Value = "S.No";
-                worksheet.Cell(currentRow, 2).Value = "Name";
+                worksheet.Cell(currentRow, 2).Value = "User Name";
 
 
                 var games = _context.Game;
-                foreach (var item in games)
+                var user = _context.AspNetUsers;
+                var address = _context.Address;
+                foreach (var item in user)
                 {
                     currentRow++;
                     count++;
                     worksheet.Cell(currentRow, 1).Value = count;
-                    worksheet.Cell(currentRow, 2).Value = item.Name;
-
+                    worksheet.Cell(currentRow, 2).Value = item.UserName;
                 }
 
                 using (var stream = new MemoryStream())
@@ -184,7 +173,7 @@ namespace GameStore.Controllers
                     return File(
                         content,
                         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "GameList.xlsx"
+                        "MemberList.xlsx"
                         );
                 }
 
