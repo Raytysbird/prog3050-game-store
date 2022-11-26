@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using GameStore.CustomValidation;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,27 +28,12 @@ namespace GameStore.Models
         [Display(Name = "Gender")]
         public string gender { get; set; }
 
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
         [Required]
         [Display(Name = "Date of Birth")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MMMM dd, yyyy}")]
+        [FutureDateValidation]
         public DateTime dob { get; set; }
-
-        //[Required]
-        //[Display(Name = "Address")]
-        //public string address { get; set; }
-        //[Required]
-        //[Display(Name = "City")]
-        //public string city { get; set; }
-
-        
-        //[Display(Name = "Province")]
-        //public string province { get; set; }
-
-        //[Required]
-        //[Display(Name = "Postal Code")]
-        //[RegularExpression(@"([A-Za-z]\d[A-Za-z] ?\d[A-Za-z]\d)")]
-        //public string postalCode { get; set; }
 
         [Display(Name = "I consent for receiving promotional emails from CVGS")]
         [Required]

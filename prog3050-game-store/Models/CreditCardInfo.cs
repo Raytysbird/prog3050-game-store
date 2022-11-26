@@ -26,7 +26,7 @@ namespace GameStore.Models
         public string ExpDate { get; set; }
 
         [Required]
-        [Range(000,999, ErrorMessage = "CCC is invalid. Must be of 3 digits")]
+        [RegularExpression(@"[0-9]{3}", ErrorMessage = "CCC is invalid. Must be of 3 digits")]
         [Display(Name = "CCC Number")]
         public int? Ccc { get; set; }
 

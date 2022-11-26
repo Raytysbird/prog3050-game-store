@@ -67,7 +67,6 @@ namespace GameStore.Controllers
         {
             id = _userManager.GetUserId(HttpContext.User);
             var user = await _userManager.FindByIdAsync(id);
-           // var provinceCode = _context.Province.Where(x => x.ProvinceCode == aspNetUsers.province).FirstOrDefault().ProvinceCode;
             user.first_name = aspNetUsers.first_name;
             user.last_name = aspNetUsers.last_name;
             user.gender = aspNetUsers.gender;
@@ -96,11 +95,12 @@ namespace GameStore.Controllers
 
                     throw;
                 }
+                return RedirectToAction(nameof(Index));
             }
             ViewBag.Gender = new List<string>() { "Male", "Female", "Other" };
             //ViewData["ProvinceCode"] = new SelectList(_context.Province, "ProvinceCode", "ProvinceCode", aspNetUsers.province);
-
-            return RedirectToAction(nameof(Index));
+            aspNetUsers.UserName = user.UserName;
+            return View(aspNetUsers);
         }
         public IActionResult PrintMemberDetails()
         {
@@ -109,11 +109,15 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("Members");
                 var currentRow = 1;
                 int count = 0;
-                worksheet.Cell(currentRow, 1).Value = "S.No";
-                worksheet.Cell(currentRow, 2).Value = "Name";
-                worksheet.Cell(currentRow, 3).Value = "User Name";
-                worksheet.Cell(currentRow, 4).Value = "Email";
-                worksheet.Cell(currentRow, 5).Value = "Date of birth";
+                worksheet.Cell(currentRow, 1).Value = "Name";
+                worksheet.Cell(currentRow, 2).Value = "User Name";
+                worksheet.Cell(currentRow, 3).Value = "Email";
+                worksheet.Cell(currentRow, 4).Value = "Date of birth";
+                worksheet.Cell(currentRow, 5).Value = "Age";
+                worksheet.Cell(currentRow, 6).Value = "Street";
+                worksheet.Cell(currentRow, 7).Value = "City";
+                worksheet.Cell(currentRow, 8).Value = "Province";
+                worksheet.Cell(currentRow, 9).Value = "Postal Code";
                
 
                 var user = _context.AspNetUsers;
@@ -122,11 +126,32 @@ namespace GameStore.Controllers
                 {
                     currentRow++;
                     count++;
-                    worksheet.Cell(currentRow, 1).Value = count;
-                    worksheet.Cell(currentRow, 2).Value = item.FirstName+" "+item.LastName;
-                    worksheet.Cell(currentRow, 3).Value = item.UserName;
-                    worksheet.Cell(currentRow, 4).Value = item.Email;
-                    worksheet.Cell(currentRow, 5).Value = item.Dob;
+                    worksheet.Cell(currentRow, 1).Value = item.FirstName+" "+item.LastName;
+                    worksheet.Cell(currentRow, 2).Value = item.UserName;
+                    worksheet.Cell(currentRow, 3).Value = item.Email;
+                    worksheet.Cell(currentRow, 4).Value = item.Dob;
+                    int age;
+                    if (item.Dob != null)
+                    {
+                        DateTime today = DateTime.Now;
+                        DateTime dob = DateTime.Parse(item.Dob.ToString());
+                        age = today.Year - dob.Year;
+                        worksheet.Cell(currentRow, 5).Value = age;
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, 5).Value = "";
+                    }
+                    foreach (var add in address)
+                    {
+                        if (add.UserId==item.Id)
+                        {
+                            worksheet.Cell(currentRow, 6).Value = add.StreetAddress;
+                            worksheet.Cell(currentRow, 7).Value = add.City;
+                            worksheet.Cell(currentRow, 8).Value = add.Province;
+                            worksheet.Cell(currentRow, 9).Value = add.PostalCode;
+                        }
+                    }
                 }
                 
 
@@ -151,7 +176,6 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("Members");
                 var currentRow = 1;
                 int count = 0;
-                worksheet.Cell(currentRow, 1).Value = "S.No";
                 worksheet.Cell(currentRow, 2).Value = "User Name";
 
 
@@ -162,8 +186,7 @@ namespace GameStore.Controllers
                 {
                     currentRow++;
                     count++;
-                    worksheet.Cell(currentRow, 1).Value = count;
-                    worksheet.Cell(currentRow, 2).Value = item.UserName;
+                    worksheet.Cell(currentRow, 1).Value = item.UserName;
                 }
 
                 using (var stream = new MemoryStream())
