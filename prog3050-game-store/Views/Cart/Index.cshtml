@@ -1,0 +1,78 @@
+﻿@model IEnumerable<GameStore.Models.Cart>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h2>Cart</h2>
+
+<table class="table">
+    <thead>
+        @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
+        {
+            @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
+            {
+                <tr>
+                    <th>
+                       Name
+                    </th>
+                    <th>
+                        Price
+                    </th>
+                    
+                </tr>
+            }
+        }
+
+    </thead>
+    <tbody>
+        @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
+        {
+            @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
+            {
+                @foreach (var item in ViewBag.CartGame)
+                {
+                    <tr>
+                        <td>
+                            @item.Game.Name
+                        </td>
+                        <td>
+                            @item.Game.Price
+                        </td>
+                        
+                        
+                        <td>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Game.GameId">Remove from Cart</a><br />
+                        </td>
+
+                    </tr>
+                }
+                @foreach (var item in ViewBag.CartMerch)
+                {
+                    <tr>
+                        <td>
+                            @item.Merchandise.Name
+                        </td>
+                        <td>
+                            @item.Merchandise.Price
+                        </td>
+                  
+                        <td>
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Merchandise.MerchandiseId">Remove from Cart</a><br />
+                        </td>
+
+                    </tr>
+                }
+            }
+        }
+        else
+        {
+    <tr>
+        <td>You don't have items in your cart. Checkout our games and merchandise to add to cart.<a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a> <a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </td>
+        
+
+
+    </tr>
+        }
+    </tbody>
+</table>

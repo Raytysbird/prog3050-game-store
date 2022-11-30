@@ -1,0 +1,71 @@
+﻿@model IEnumerable<GameStore.Models.Cart>
+
+@{
+    ViewData["Title"] = "Cart";
+}
+
+<h2>Cart</h2>
+
+<table class="table">
+    <thead>
+        @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
+        {
+            @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
+            {
+                <tr>
+                    <th>
+                       Name
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    
+                </tr>
+            }
+        }
+
+    </thead>
+    <tbody>
+        @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
+        {
+            @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
+            {
+                @foreach (var item in ViewBag.CartGame)
+                {
+                    <tr>
+                        <td>
+                            @item.Game.Name
+                        </td>
+                        <td>
+                            @item.Game.Description
+                        </td>
+                        
+                        
+                        <td>
+                            Download Link
+                        </td>
+
+                    </tr>
+                }
+                @foreach (var item in ViewBag.CartMerch)
+                {
+                    <tr>
+                        <td>
+                            @item.Merchandise.Name
+                        </td>
+                        <td>
+                            @item.Merchandise.Price
+                        </td>
+                  
+                        <td>
+                            This item is in process of being shipped. 
+                        </td>
+
+                    </tr>
+                }
+            }
+        }
+  
+        
+    </tbody>
+</table>

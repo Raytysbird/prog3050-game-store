@@ -1,6 +1,6 @@
 ﻿CREATE TABLE [dbo].[CartGame] 
 (
-cart_id int IDENTITY NOT NULL,
+cart_id int  NOT NULL,
 game_id int NOT NULL,
 
 PRIMARY KEY CLUSTERED (cart_id ASC, game_id ASC),
