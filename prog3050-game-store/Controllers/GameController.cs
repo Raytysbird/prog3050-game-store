@@ -36,20 +36,18 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("Games");
                 var currentRow = 1;
                 int count = 0;
-                worksheet.Cell(currentRow, 1).Value = "S.No";
-                worksheet.Cell(currentRow, 2).Value = "Name";
-                worksheet.Cell(currentRow, 3).Value = "Description";
-                worksheet.Cell(currentRow, 4).Value = "Price";
+                worksheet.Cell(currentRow, 1).Value = "Name";
+                worksheet.Cell(currentRow, 2).Value = "Description";
+                worksheet.Cell(currentRow, 3).Value = "Price";
 
                 var games = _context.Game;
                 foreach (var item in games)
                 {
                     currentRow++;
                     count++;
-                    worksheet.Cell(currentRow, 1).Value = count;
-                    worksheet.Cell(currentRow, 2).Value = item.Name;
-                    worksheet.Cell(currentRow, 3).Value = item.Description;
-                    worksheet.Cell(currentRow, 4).Value = item.Price;
+                    worksheet.Cell(currentRow, 1).Value = item.Name;
+                    worksheet.Cell(currentRow, 2).Value = item.Description;
+                    worksheet.Cell(currentRow, 3).Value = item.Price;
                 }
 
                 using (var stream=new MemoryStream())
@@ -73,8 +71,7 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("Games");
                 var currentRow = 1;
                 int count = 0;
-                worksheet.Cell(currentRow, 1).Value = "S.No";
-                worksheet.Cell(currentRow, 2).Value = "Name";
+                worksheet.Cell(currentRow, 1).Value = "Name";
                
 
                 var games = _context.Game;
@@ -82,8 +79,7 @@ namespace GameStore.Controllers
                 {
                     currentRow++;
                     count++;
-                    worksheet.Cell(currentRow, 1).Value = count;
-                    worksheet.Cell(currentRow, 2).Value = item.Name;
+                    worksheet.Cell(currentRow, 1).Value = item.Name;
                     
                 }
 

@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace GameStore.Controllers
 {
@@ -42,7 +44,49 @@ namespace GameStore.Controllers
 
             return View();
         }
+        public IActionResult PrintMemberWishList()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("WishList");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "User Name";
+                worksheet.Cell(currentRow, 2).Value = "Game";
 
+                var wishlist = _context.Wishlist.Include(x => x.User);
+
+
+                foreach (var item in wishlist)
+                {
+                    var userName = item.User.UserName;
+                    var userWish = _context.WishlistItem.Include(x=>x.Game).Where(x => x.WishlistId == item.WishlistId);
+                    count = 0;
+                    foreach (var wish in userWish)
+                    {
+                        currentRow++;
+                        count++;
+                        if (count==1)
+                        {
+                            worksheet.Cell(currentRow, 1).Value = userName;
+
+                        }
+                        worksheet.Cell(currentRow, 2).Value = wish.Game.Name; 
+                    }
+                }
+                
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "WishListDetails.xlsx"
+                        );
+                }
+            }
+        }
         // GET: Wishlist/Details/5
         public async Task<IActionResult> Details(int? id)
         {

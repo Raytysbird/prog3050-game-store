@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace GameStore.Models
 {
@@ -11,8 +12,11 @@ namespace GameStore.Models
         }
 
         public int MerchandiseId { get; set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public string Description { get; set; }
+        [Required]
         public float Price { get; set; }
 
         public ICollection<CartMerchandise> CartMerchandise { get; set; }
