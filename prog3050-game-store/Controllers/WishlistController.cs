@@ -60,30 +60,28 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("WishList");
                 var currentRow = 1;
                 int count = 0;
-                worksheet.Cell(currentRow, 1).Value = "User Name";
-                worksheet.Cell(currentRow, 2).Value = "Game";
+                worksheet.Cell(currentRow, 1).Value = "Game";
+                worksheet.Cell(currentRow, 2).Value = "Wishlist Count";
 
-                var wishlist = _context.Wishlist.Include(x => x.User);
+                var games = _context.Game;
+                var wishlist = _context.WishlistItem;
 
-
-                foreach (var item in wishlist)
+                foreach (var item in games)
                 {
-                    var userName = item.User.UserName;
-                    var userWish = _context.WishlistItem.Include(x=>x.Game).Where(x => x.WishlistId == item.WishlistId);
+                    
                     count = 0;
-                    foreach (var wish in userWish)
+                    currentRow++;
+                    foreach (var wish in wishlist)
                     {
-                        currentRow++;
-                        count++;
-                        if (count==1)
+                        if (item.GameId==wish.GameId)
                         {
-                            worksheet.Cell(currentRow, 1).Value = userName;
-
+                            count += 1;
+                            worksheet.Cell(currentRow, 1).Value = wish.Game.Name;
+                            worksheet.Cell(currentRow, 2).Value = count;
                         }
-                        worksheet.Cell(currentRow, 2).Value = wish.Game.Name; 
                     }
                 }
-                
+
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
