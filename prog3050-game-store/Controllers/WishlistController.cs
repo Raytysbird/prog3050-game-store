@@ -29,17 +29,37 @@ namespace GameStore.Controllers
             var id = _userManager.GetUserId(HttpContext.User);
             var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
 
-            var wishListItem = _context.WishlistItem.Where(x => x.WishlistId == wishList.WishlistId).Select(x => x.GameId).ToList();
-            if (wishListItem == null)
-            {
-                TempData["message"] = "No Game added to Wish List Right now";
-            }
+            var wishGameListItem = _context.WishlistItem.Include(x=> x.Game).Where(x => x.WishlistId == wishList.WishlistId && x.GameId != null).ToList();
+            var wishMerchListItem = _context.WishlistItem.Include(x=> x.Merchandise).Where(x => x.WishlistId == wishList.WishlistId && x.MerchandiseId != null).ToList();
+            ////var alMerch = _context.WishlistItem.Include(x => x.Merchandise).Include(x => x.Game).ToList();
+            //if (wishGameListItem == null)
+            //{
+            //    TempData["message"] = "No Game added to Wish List Right now";
+            //}
 
-            else
-            {
-                var gameName = _context.Game.Where(x => wishListItem.Contains(x.GameId)).ToList();
+            //else
+            //{
+            //    var gameName = _context.Game.Where(x => wishGameListItem.Contains(x.GameId)).ToList();
 
-                ViewBag.WishList = gameName;
+            //    ViewBag.GameWishList = gameName;
+            //}
+            //if (wishMerchListItem == null)
+            //{
+            //    TempData["message"] = "No Merchandise added to Wish List Right now";
+            //}
+
+            //else
+            //{
+            //    var gameName = _context.Merchandise.Where(x => wishGameListItem.Contains(x.MerchandiseId)).ToList();
+
+            //    ViewBag.MerchWishList = gameName;
+            //}
+            if (wishGameListItem != null || wishMerchListItem != null)
+            {
+                ViewBag.WishlistGame = wishGameListItem;
+                ViewBag.WishlistMerch = wishMerchListItem;
+
+
             }
 
             return View();
@@ -66,7 +86,7 @@ namespace GameStore.Controllers
                         currentRow++;
                         worksheet.Cell(currentRow, 1).Value = item.Name;
                         worksheet.Cell(currentRow, 2).Value = count;
-                        
+
                     }
                 }
                 using (var stream = new MemoryStream())
@@ -101,7 +121,7 @@ namespace GameStore.Controllers
         }
 
         // GET: Wishlist/Create
-        public IActionResult Create(int id)
+        public IActionResult Create(int? game_id, int? merch_id)
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
 
@@ -117,7 +137,8 @@ namespace GameStore.Controllers
             }
             var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
             WishlistItem wishlistItem = new WishlistItem();
-            wishlistItem.GameId = id;
+            wishlistItem.GameId = game_id;
+            wishlistItem.MerchandiseId = merch_id;
             wishlistItem.WishlistId = wishList.WishlistId;
 
             _context.WishlistItem.Add(wishlistItem);
@@ -145,15 +166,22 @@ namespace GameStore.Controllers
         }
 
 
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int game_id, int merch_id)
         {
-            var user_id = _userManager.GetUserId(HttpContext.User);
-
-            var gameName = await _context.WishlistItem.FirstOrDefaultAsync(x => x.GameId == id);
-
-            TempData["message"] = "Game removed from your wish list";
-            _context.WishlistItem.Remove(gameName);
-            await _context.SaveChangesAsync();
+            if (game_id != 0)
+            {
+                var wishlistGame = await _context.WishlistItem.FirstOrDefaultAsync(x => x.GameId == game_id);
+                TempData["message"] = "Game removed from wishlist";
+                _context.WishlistItem.Remove(wishlistGame);
+                await _context.SaveChangesAsync();
+            }
+            if (merch_id != 0)
+            {
+                var wishlistMerch = await _context.WishlistItem.FirstOrDefaultAsync(x => x.MerchandiseId == merch_id);
+                TempData["message"] = "Merchandise removed from your wishlist";
+                _context.WishlistItem.Remove(wishlistMerch);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction(nameof(Index));
         }
     }

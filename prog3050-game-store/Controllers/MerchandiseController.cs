@@ -79,6 +79,7 @@ namespace GameStore.Controllers
         // GET: Merchandise/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var user_id = _userManager.GetUserId(HttpContext.User);
             if (id == null)
             {
                 return NotFound();
@@ -86,6 +87,42 @@ namespace GameStore.Controllers
 
             var merchandise = await _context.Merchandise
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
+            var merchId = await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
+
+            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
+
+            if (cartMerchId.Count != 0)
+            {
+                foreach (var item in cartMerchId)
+                {
+                    if (item.MerchandiseId == id)
+                    {
+                        ViewBag.IsInCartList = true;
+                    }
+
+                }
+            }
+            else
+            {
+                ViewBag.IsInCartList = false;
+            }
+
+
+            if (merchId.Count != 0)
+            {
+                foreach (var item in merchId)
+                {
+                    if (item.GameId == id)
+                    {
+                        ViewBag.IsInWishList = true;
+                    }
+
+                }
+            }
+            else
+            {
+                ViewBag.IsInWishList = false;
+            }
             if (merchandise == null)
             {
                 return NotFound();
