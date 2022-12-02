@@ -19,21 +19,7 @@
 {
     <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
 }
-<div class="row">
-   
-    <div class="col-lg-5">
-        <div class="input-group">
-            <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
-                <div class="form-group">
-                    <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:245px;">
-                    <button type="submit" id="btnSearch" class="btn btn-primary">Search</button>
-                    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
 
-                </div>
-            </form>
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
-</div>
 
 
 
@@ -44,13 +30,30 @@
     <p>No Merchandise found. </p>
 }
 else{
-    <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
-        <div class="form-group">
-            <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:500px;">
-        </div>
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
-    </form>
+    <div class="row">
+        <div class="col-lg-5">
+            <div class="input-group">
+                <form class="navbar-form navbar-left" asp-action="Index" asp-controller="Merchandise" id="frmPlatform">
+                    <div class="form-group">
+                        <select id="drpFields" onchange="editWhiteOut();" class="form-control" asp-items="ViewBag.GameId"><option value="">----Please Select Game----</option></select>
+                    </div>
+                    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Filter</a>
+                </form>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+        <div class="col-lg-5">
+            <div class="input-group">
+                <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+                    <div class="form-group">
+                        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:245px;">
+                        <button type="submit" id="btnSearch" class="btn btn-primary">Search</button>
+                        <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
+
+                    </div>
+                </form>
+            </div><!-- /input-group -->
+        </div><!-- /.col-lg-6 -->
+    </div>
 <table class="table">
     <thead>
         <tr>
