@@ -1,20 +1,38 @@
 ﻿@model IEnumerable<GameStore.Models.Merchandise>
-
+@using GameStore.Services
 @{
-    ViewData["Title"] = "Merchandise";
+    Pagination pager = new Pagination();
+    int pageNo = 0;
+    if (ViewBag.Pager != null)
+    {
+        pager = ViewBag.Pager;
+        pageNo = pager.CurrentPage;
+    }
+}
+@{
+    ViewData["Title"] = "Our Merchandise";
 }
 
 <h2>Merchandise List</h2>
-
 @if (User.IsInRole("Employee"))
 {
-    <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
+<a class="btnMerchandise btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
 }
 
-<p>Below is list of the merchandise.</p>
-<table class="table">
+<p>Below is list of the Merchandise.</p>
+<form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+    <div class="form-group">
+        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise keyword" style="width:500px;">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
+</form>
+<table class="table" id="merchandiseList">
     <thead>
         <tr>
+            <th>
+
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -32,13 +50,16 @@
         {
             <tr>
                 <td>
+                    
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Description)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Price)
+                    $@Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
                     @if (User.IsInRole("Employee"))
@@ -50,8 +71,45 @@
                     {
                         <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId">Merchandise Details</a>
                     }
-                </td>
-            </tr>
+
+
+
+</tr>
         }
     </tbody>
+
 </table>
+
+
+<div class="container">
+    @if (pager.TotalPages > 0)
+    {
+        <ul class="pagination">
+            @if (pager.CurrentPage > 1)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="1">First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-controller="MerchandiseId" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage-1)">Previous</a>
+                </li>
+            }
+            @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
+            {
+                <li class="page-item @(pge==pager.CurrentPage?"active":"")">
+                    <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@pge">@pge</a>
+                </li>
+            }
+            @if (pager.CurrentPage < pager.TotalPages)
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage+1)">Next</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.TotalPages)">Last</a>
+                </li>
+            }
+        </ul>
+    }
+</div>
+

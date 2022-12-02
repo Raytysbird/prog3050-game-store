@@ -3,13 +3,26 @@
 @{
     ViewData["Title"] = "Details";
 }
+<style>
 
-<h2>Details</h2>
+    .reviewContainer {
+        display: flex;
+        margin-top: 2em;
+        gap: 10em;
+    }
 
+    h4 {
+        font-weight: bold;
+    }
+</style>
+
+<h2> Merchandise Details</h2>
 <div>
-    <h4>Merchandise</h4>
+    <h4>Merchandise details</h4>
     <hr />
+
     <dl class="dl-horizontal">
+
         <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
@@ -19,6 +32,7 @@
         <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
+
         <dd>
             @Html.DisplayFor(model => model.Description)
         </dd>
@@ -26,11 +40,40 @@
             @Html.DisplayNameFor(model => model.Price)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Price)
+            $@Html.DisplayFor(model => model.Price)
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.MerchandiseId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-info" asp-action="Index">Back to List</a>
+    @if (ViewBag.IsInWishList == false)
+    {
+        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-id="@Model.MerchandiseId"> Add to Wish List ♡ </a>
+
+    }
+    else
+    {
+        <a class="btn btn-primary" asp-controller="WishList" asp-action="Index"> Go to Wish List 💗 </a>
+        <p>*Merchandise already added to wish list*</p>
+    }
+    <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId"> Add to Cart</a>
 </div>
+
+
+@section Scripts
+    {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var rating = parseFloat(@ViewBag.Rating);
+            if ($.isNumeric(rating)){
+                $(".ratingStar").slice(0,rating).removeClass("far").addClass("fas");
+            }
+        });
+    </script>
+}
+
+
+
+
+
+

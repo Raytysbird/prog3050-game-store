@@ -6,16 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
+using GameStore.Services;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
 
 namespace GameStore.Controllers
 {
     public class MerchandiseController : Controller
     {
         private readonly GameContext _context;
+        private readonly IHostingEnvironment _webHostEnvironment;
+        private readonly UserManager<User> _userManager;
 
-        public MerchandiseController(GameContext context)
+        public MerchandiseController(GameContext context, IHostingEnvironment webHostEnvironment, UserManager<User> userManager)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
         }
 
         // GET: Merchandise
