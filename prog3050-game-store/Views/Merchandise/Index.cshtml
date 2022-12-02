@@ -20,16 +20,7 @@
     <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
 }
 <div class="row">
-    <div class="col-lg-5">
-        <div class="input-group">
-            <form class="navbar-form navbar-left" asp-action="Index" asp-controller="Merchandise" id="frmPlatform">
-                <div class="form-group">
-                    <select id="drpFields" onchange="editWhiteOut();" class="form-control" asp-items="ViewBag.GameId"><option value="">----Please Select Game----</option></select>
-                </div>
-                <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Filter</a>
-            </form>
-        </div><!-- /input-group -->
-    </div><!-- /.col-lg-6 -->
+   
     <div class="col-lg-5">
         <div class="input-group">
             <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
