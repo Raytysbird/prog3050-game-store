@@ -32,20 +32,10 @@ namespace GameStore.Controllers
 
             var creditCardInfo = _context.CreditCardInfo.Where(x => x.UserId == id).ToList();
 
-            address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
-
-            ViewBag.Address = address;
-
-
-
-            if (creditCardInfo.Count == 0)
+            if (address!=null)
             {
-                ViewBag.CreditCard = null;
-            }
-            if (creditCardInfo.Count != 0)
-            {
-                ViewBag.CreditCard = new SelectList(creditCardInfo, "CreditCardId", "Number");
-                // ViewBag.CreditCard = creditCardInfo;
+                address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+                ViewBag.Address = address;
             }
             else if (cart == null)
             {
@@ -88,23 +78,21 @@ namespace GameStore.Controllers
             }
             //var priceMerchItem = _context.Merchandise.Where(x => x.CartId == cart.CartId).Select(x => x.Merchandise);
 
-            var cartStatus = _context.Cart.Where(x => x.UserId == id).Select(x => x.StateOfOrder);
-            if (cartStatus != null)
+            var cartStatus = _context.Cart.Where(x => x.UserId == id).Select(x=> x.StateOfOrder);
+            if(cartStatus != null)
             {
                 ViewBag.Status = cartStatus.FirstOrDefault();
             }
-
-
-
-            if (cartGameItems != null || cartMerchItems != null)
+           
+            if (cartGameItems!=null || cartMerchItems !=null )
             {
                 ViewBag.CartGame = cartGameItems;
                 ViewBag.CartMerch = cartMerchItems;
                 ViewBag.Total = total;
-
+                
 
             }
-            var cartModel = _context.Cart.Include(x => x.User).Where(x => x.UserId == id).Include(x => x.CreditCard).FirstOrDefault();
+            var cartModel = _context.Cart.Include(x=> x.User).Where(x => x.UserId == id).Include(x=> x.CreditCard).FirstOrDefault();
 
             return View(cartModel);
         }
@@ -113,9 +101,9 @@ namespace GameStore.Controllers
             var user_id = _userManager.GetUserId(HttpContext.User);
             if (id != null)
             {
+                
 
-
-                var cart = _context.Cart.Where(x => x.UserId == user_id).FirstOrDefault();
+                var cart = _context.Cart.Where(x =>x.UserId == user_id).FirstOrDefault();
                 if (cart.StateOfOrder == null)
                 {
                     cart.StateOfOrder = "In Process";
@@ -147,7 +135,7 @@ namespace GameStore.Controllers
                 //var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
                 //var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
 
-                var total = 0f;
+                var total = 0d;
 
                 foreach (var item in cartGameItems)
                 {
@@ -157,7 +145,7 @@ namespace GameStore.Controllers
                         return NotFound();
                     }
 
-                    total += priceGameItem.Price;
+                    total += Math.Round(priceGameItem.Price);
                 }
 
                 foreach (var item in cartMerchItems)
@@ -168,7 +156,7 @@ namespace GameStore.Controllers
                         return NotFound();
                     }
 
-                    total += cartMerchItem.Price;
+                    total += Math.Round(cartMerchItem.Price,2);
                 }
                 //var priceMerchItem = _context.Merchandise.Where(x => x.CartId == cart.CartId).Select(x => x.Merchandise);
 
@@ -176,9 +164,9 @@ namespace GameStore.Controllers
 
                 //if (cartGameItems != null || cartMerchItems != null)
                 //{
-                ViewBag.CartGame = cartGameItems;
-                ViewBag.CartMerch = cartMerchItems;
-                ViewBag.Total = total;
+                    ViewBag.CartGame = cartGameItems;
+                    ViewBag.CartMerch = cartMerchItems;
+                    ViewBag.Total = total;
 
                 //}
 
@@ -264,7 +252,7 @@ namespace GameStore.Controllers
 
             var cart = _context.Cart.FirstOrDefault(x => x.UserId == user_id);
             var creditCardInfo = _context.CreditCardInfo.FirstOrDefault(x => x.UserId == user_id);
-
+           
             if (cart == null)
             {
                 Cart cartGame = new Cart();

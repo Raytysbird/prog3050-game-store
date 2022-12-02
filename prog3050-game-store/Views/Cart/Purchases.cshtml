@@ -17,7 +17,7 @@
                        Name
                     </th>
                     <th>
-                        Description
+                        Price
                     </th>
                     
                 </tr>
@@ -37,12 +37,14 @@
                             @item.Game.Name
                         </td>
                         <td>
-                            @item.Game.Description
+                            $@item.Game.Price
                         </td>
                         
                         
                         <td>
-                            Download Link
+                            <button onclick="window.location.href='https://wallpapercave.com/download/gta-5-4k-wallpapers-wp5334083';">
+                                Click Here
+                            </button>
                         </td>
 
                     </tr>
@@ -54,11 +56,11 @@
                             @item.Merchandise.Name
                         </td>
                         <td>
-                            @item.Merchandise.Price
+                            $@item.Merchandise.Price
                         </td>
                   
                         <td>
-                            This item is in process of being shipped. 
+                            @ViewBag.Status
                         </td>
 
                     </tr>
