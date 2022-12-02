@@ -11,6 +11,8 @@ namespace GameStore.Models
             CartMerchandise = new HashSet<CartMerchandise>();
         }
 
+        public int? GameId { get; set; }
+        [Required]
         public int MerchandiseId { get; set; }
         [Required]
         public string Name { get; set; }
@@ -19,6 +21,7 @@ namespace GameStore.Models
         [Required]
         public float Price { get; set; }
 
+        public Game Game { get; set; }
         public ICollection<CartMerchandise> CartMerchandise { get; set; }
     }
 }

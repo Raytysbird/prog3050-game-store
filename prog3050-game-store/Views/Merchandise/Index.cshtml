@@ -10,24 +10,36 @@
     }
 }
 @{
-    ViewData["Title"] = "Our Merchandise";
+    ViewData["Title"] = "Merchandise";
 }
 
-<h2>Merchandise List</h2>
+<h2>Merchandise</h2>
+
 @if (User.IsInRole("Employee"))
 {
-<a class="btnMerchandise btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
+    <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
 }
 
-<p>Below is list of the Merchandise.</p>
-<form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+<form asp-action="Index" asp-controller="Merchandise" id="frmPlatform">
     <div class="form-group">
-        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise keyword" style="width:500px;">
+        <select id="drpFields" onchange="editWhiteOut();" class="form-control" asp-items="ViewBag.GameId"><option value="">----Please Select Game----</option></select>
     </div>
-    <button type="submit" class="btn btn-primary">Search</button>
-    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
 </form>
-<table class="table" id="merchandiseList">
+
+
+
+@if(Model.Count() == 0){
+    <p>No Merchandise found</p>
+}
+else{
+    <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+        <div class="form-group">
+            <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:500px;">
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
+    </form>
+<table class="table">
     <thead>
         <tr>
             <th>
@@ -42,6 +54,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Price)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Game.Name)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -50,9 +65,6 @@
         {
             <tr>
                 <td>
-                    
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>
                 <td>
@@ -60,6 +72,9 @@
                 </td>
                 <td>
                     $@Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Game.Name)
                 </td>
                 <td>
                     @if (User.IsInRole("Employee"))
@@ -71,14 +86,12 @@
                     {
                         <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId">Merchandise Details</a>
                     }
-
-
-
-</tr>
+                </td>
+            </tr>
         }
     </tbody>
-
 </table>
+}
 
 
 <div class="container">
@@ -91,7 +104,7 @@
                     <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="1">First</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" asp-controller="MerchandiseId" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage-1)">Previous</a>
+                    <a class="page-link" asp-controller="Merchandise" asp-action="Index" asp-route-keyword="@ViewBag.Keyword" asp-route-pg="@(pager.CurrentPage-1)">Previous</a>
                 </li>
             }
             @for (var pge = pager.StartPage; pge <= pager.EndPage; pge++)
@@ -113,3 +126,47 @@
     }
 </div>
 
+
+
+<script>
+    function editWhiteOut() {
+        var url = "";
+        var id = 0;
+       
+        id = document.getElementById("drpFields").value;
+        var lc = window.location.href.split('?')[0];
+        console.log(lc);
+        url =   `${lc}?Id=${id}`;
+        window.location.href = url;
+    }
+</script>
+
+
+@*
+<script>
+    function submitPlatform() {
+
+        var data = $("#frmPlatform").serialize();
+        alert("test");
+        console.log(data);
+
+        
+        $.ajax({
+            type: 'GET',
+            data: data,
+            url: '/Merchandise/Index/',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (result) {
+                alert("test2");
+
+            },
+            error: function () {
+                console.log("fail");
+            }
+        })
+    }
+
+
+
+
+</script>*@

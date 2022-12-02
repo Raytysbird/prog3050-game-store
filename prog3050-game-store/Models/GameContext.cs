@@ -49,7 +49,7 @@ namespace GameStore.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=LAPTOP-LU81MF79;Database=GameStore;Trusted_Connection=True;");
+                optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS19;Database=Game;Trusted_Connection=True;");
             }
         }
 
@@ -507,6 +507,8 @@ namespace GameStore.Models
                     .HasMaxLength(255)
                     .IsUnicode(false);
 
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasColumnName("name")
@@ -514,6 +516,11 @@ namespace GameStore.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.Price).HasColumnName("price");
+
+                entity.HasOne(d => d.Game)
+                    .WithMany(p => p.Merchandise)
+                    .HasForeignKey(d => d.GameId)
+                    .HasConstraintName("FK__Merchandi__game___51300E55");
             });
 
             modelBuilder.Entity<Platform>(entity =>
@@ -621,12 +628,12 @@ namespace GameStore.Models
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Review__asp_user__60A75C0F");
+                    .HasConstraintName("FK__Review__asp_user__0F624AF8");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.Review)
                     .HasForeignKey(d => d.GameId)
-                    .HasConstraintName("FK__Review__game_id__619B8048");
+                    .HasConstraintName("FK__Review__game_id__1EA48E88");
             });
 
             modelBuilder.Entity<UserEvent>(entity =>
@@ -642,13 +649,13 @@ namespace GameStore.Models
                     .WithMany(p => p.UserEvent)
                     .HasForeignKey(d => d.AspUserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__asp_u__628FA481");
+                    .HasConstraintName("FK__UserEvent__asp_u__2739D489");
 
                 entity.HasOne(d => d.Event)
                     .WithMany(p => p.UserEvent)
                     .HasForeignKey(d => d.EventId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__UserEvent__event__6383C8BA");
+                    .HasConstraintName("FK__UserEvent__event__282DF8C2");
             });
 
             modelBuilder.Entity<Wishlist>(entity =>
@@ -664,7 +671,7 @@ namespace GameStore.Models
                     .WithMany(p => p.Wishlist)
                     .HasForeignKey(d => d.UserId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK__Wishlist__user_i__160F4887");
+                    .HasConstraintName("FK__Wishlist__user_i__4B7734FF");
             });
 
             modelBuilder.Entity<WishlistItem>(entity =>
