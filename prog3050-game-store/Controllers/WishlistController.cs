@@ -28,7 +28,7 @@ namespace GameStore.Controllers
         {
             var id = _userManager.GetUserId(HttpContext.User);
             var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
-           
+
             var wishListItem = _context.WishlistItem.Where(x => x.WishlistId == wishList.WishlistId).Select(x => x.GameId).ToList();
             if (wishListItem == null)
             {
@@ -51,28 +51,24 @@ namespace GameStore.Controllers
                 var worksheet = workbook.Worksheets.Add("WishList");
                 var currentRow = 1;
                 int count = 0;
+
                 worksheet.Cell(currentRow, 1).Value = "Game";
-                worksheet.Cell(currentRow, 2).Value = "Wishlist Count";
+                worksheet.Cell(currentRow, 2).Value = "Count";
 
                 var games = _context.Game;
-                var wishlist = _context.WishlistItem;
-
+                var wishlist = _context.WishlistItem.Include(x => x.Game);
                 foreach (var item in games)
                 {
-                    
-                    count = 0;
-                    currentRow++;
-                    foreach (var wish in wishlist)
+                    var wish = _context.WishlistItem.Where(x => x.GameId == item.GameId).ToList();
+                    if (wish.Count > 0)
                     {
-                        if (item.GameId==wish.GameId)
-                        {
-                            count += 1;
-                            worksheet.Cell(currentRow, 1).Value = wish.Game.Name;
-                            worksheet.Cell(currentRow, 2).Value = count;
-                        }
+                        count = wish.Count;
+                        currentRow++;
+                        worksheet.Cell(currentRow, 1).Value = item.Name;
+                        worksheet.Cell(currentRow, 2).Value = count;
+                        
                     }
                 }
-
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
@@ -112,7 +108,7 @@ namespace GameStore.Controllers
             var user_id = _userManager.GetUserId(HttpContext.User);
 
             var wishList1 = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
-            if (wishList1==null)
+            if (wishList1 == null)
             {
                 Wishlist wishlist = new Wishlist();
                 wishlist.UserId = user_id;
@@ -136,7 +132,7 @@ namespace GameStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("WishlistId,UserId")] Wishlist wishlist)
-        {            
+        {
             if (ModelState.IsValid)
             {
                 wishlist.UserId = _userManager.GetUserId(HttpContext.User);
@@ -148,7 +144,7 @@ namespace GameStore.Controllers
             return View(wishlist);
         }
 
-    
+
         public async Task<IActionResult> Delete(int id)
         {
             var user_id = _userManager.GetUserId(HttpContext.User);
