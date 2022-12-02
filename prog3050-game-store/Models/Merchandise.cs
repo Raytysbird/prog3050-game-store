@@ -10,7 +10,7 @@ namespace GameStore.Models
         {
             CartMerchandise = new HashSet<CartMerchandise>();
         }
-
+        [Display(Name = "Game")]
         public int? GameId { get; set; }
         [Required]
         public int MerchandiseId { get; set; }

@@ -32,12 +32,16 @@ namespace GameStore.Controllers
 
             var creditCardInfo = _context.CreditCardInfo.Where(x => x.UserId == id).ToList();
 
-            address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+            if (address!=null)
+            {
+                address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
+                ViewBag.Address = address;
+            }
+            if (address==null)
+            {
+                ViewBag.Address = null;
 
-            ViewBag.Address = address;
-
-            
-
+            }
             if (creditCardInfo.Count == 0)
             {
                 ViewBag.CreditCard = null;
@@ -94,8 +98,6 @@ namespace GameStore.Controllers
                 ViewBag.Status = cartStatus.FirstOrDefault();
             }
            
-
-
             if (cartGameItems!=null || cartMerchItems !=null )
             {
                 ViewBag.CartGame = cartGameItems;
@@ -147,7 +149,7 @@ namespace GameStore.Controllers
                 //var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
                 //var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
 
-                var total = 0f;
+                var total = 0d;
 
                 foreach (var item in cartGameItems)
                 {
@@ -157,7 +159,7 @@ namespace GameStore.Controllers
                         return NotFound();
                     }
 
-                    total += priceGameItem.Price;
+                    total += Math.Round(priceGameItem.Price);
                 }
 
                 foreach (var item in cartMerchItems)
@@ -168,7 +170,7 @@ namespace GameStore.Controllers
                         return NotFound();
                     }
 
-                    total += cartMerchItem.Price;
+                    total += Math.Round(cartMerchItem.Price,2);
                 }
                 //var priceMerchItem = _context.Merchandise.Where(x => x.CartId == cart.CartId).Select(x => x.Merchandise);
 

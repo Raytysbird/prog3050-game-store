@@ -46,9 +46,9 @@
 
                                 @if (ViewBag.Status != "In Process" && ViewBag.Status != "Delivered")
                                 {
-                                <td>
-                                    <a class="btn btn-danger" asp-action="Delete" asp-route-gameId="@item.Game.GameId">Remove from Cart</a><br />
-                                </td>
+                                    <td>
+                                        <a class="btn btn-danger" asp-action="Delete" asp-route-gameId="@item.Game.GameId">Remove from Cart</a><br />
+                                    </td>
                                 }
 
                             </tr>
@@ -64,22 +64,22 @@
                                 </td>
                                 @if (ViewBag.Status != "In Process" && ViewBag.Status != "Delivered")
                                 {
-                                <td>
-                                    <a class="btn btn-danger" asp-action="Delete" asp-route-merchId="@item.Merchandise.MerchandiseId">Remove from Cart</a><br />
-                                </td>
+                                    <td>
+                                        <a class="btn btn-danger" asp-action="Delete" asp-route-merchId="@item.Merchandise.MerchandiseId">Remove from Cart</a><br />
+                                    </td>
                                 }
                             </tr>
                         }
                     }
                     else
                     {
-                     
-                            <p>You don't have items in your cart. Checkout our games to add to cart.<br /><a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a> </p>
-                         
-                          
-                            <p>You don't have items in your cart. Checkout our merchandise to add to cart.<br /><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </p>
 
-                       
+                        <p>You don't have items in your cart. Checkout our games to add to cart.<br /><a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a> </p>
+
+
+                        <p>You don't have items in your cart. Checkout our merchandise to add to cart.<br /><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </p>
+
+
                     }
                 }
                 @if (ViewBag.Total != 0)
@@ -87,22 +87,22 @@
 
                     <tr>
                         <td>
-                            @{ 
-                                var SubTotal = @ViewBag.Total;
-                                var HST = @ViewBag.Total * 0.13;
-                                var Total = SubTotal + HST;
-                                    }
-                            <br><b>Subtotal:  @SubTotal</b>
-                            <br><b>HST:       @HST</b>
-                            <br><b>Total:     @Total</b>
+                            @{
+                                var SubTotal = Math.Round(@ViewBag.Total,2);
+                                var HST = Math.Round(@ViewBag.Total * 0.13,2);
+                                var Total = Math.Round(SubTotal + HST,2);
+                            }
+                            <br><b>Subtotal:  $@SubTotal</b>
+                            <br><b>HST:      $@HST</b>
+                            <br><b>Total:     $@Total</b>
                         </td>
                     </tr>
 
 
 
-                                }
+                }
             </tbody>
-            </table>
+        </table>
     </div>
 </div>
 <div class="row">
@@ -115,40 +115,38 @@
             <div class="panel-body">
                 @if (ViewBag.Address != null)
                 {
-                    
+                    <dl class="dl-horizontal">
+                        <dt>
+                            Address
+                        </dt>
+                        <dd>
+                            @ViewBag.Address.FullAddress
+                        </dd>
+                        <dt>
+                            City
+                        </dt>
+                        <dd>
+                            @ViewBag.Address.City
+                        </dd>
+                        <dt>
+                            Province
+                        </dt>
+                        <dd>
+                            @ViewBag.Address.Province
+                        </dd>
+                        <dt>
+                            Postal
+                        </dt>
+                        <dd>
+                            @ViewBag.Address.PostalCode
+                        </dd>
+                    </dl>
+                }
 
-                        <dl class="dl-horizontal">
-                            <dt>
-                                Address
-                            </dt>
-                            <dd>
-                               @ViewBag.Address.FullAddress
-                            </dd>
-                            <dt>
-                                City
-                            </dt>
-                            <dd>
-                                @ViewBag.Address.City
-                            </dd>
-                            <dt>
-                                Province
-                            </dt>
-                            <dd>
-                                @ViewBag.Address.Province
-                            </dd>
-                            <dt>
-                                Postal
-                            </dt>
-                            <dd>
-                                @ViewBag.Address.PostalCode
-                            </dd>
-                        </dl>
-                            }
 
-                        
-                        else
-                        {
-                    <p>No Mail address added.You can add it. <a class="btn btn-success" asp-action="CreateMailing" asp-controller="Address">Add Mailing address</a> </p>
+                else
+                {
+                    <p>No shipping added.You can add it. <a class="btn btn-success" asp-action="CreateShipping" asp-controller="Address">Add Shipping address</a> </p>
                 }
 
 
