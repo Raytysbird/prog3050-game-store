@@ -12,7 +12,7 @@ namespace GameStore.Models
         }
 
         public int CartId { get; set; }
-        public int CreditCardId { get; set; }
+        public int? CreditCardId { get; set; }
         public float? TotalCost { get; set; }
         public string StateOfOrder { get; set; }
         public string UserId { get; set; }

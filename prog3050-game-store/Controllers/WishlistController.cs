@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace GameStore.Controllers
 {
@@ -26,14 +28,7 @@ namespace GameStore.Controllers
         {
             var id = _userManager.GetUserId(HttpContext.User);
             var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
-           
-            //if (wishList == null)
-            //{
-            //    Wishlist wishlist = new Wishlist();
-            //    wishlist.UserId = id;
-            //    _context.Wishlist.Add(wishlist);
-            //    _context.SaveChanges();
-            //}
+
             var wishListItem = _context.WishlistItem.Where(x => x.WishlistId == wishList.WishlistId).Select(x => x.GameId).ToList();
             if (wishListItem == null)
             {
@@ -46,12 +41,46 @@ namespace GameStore.Controllers
 
                 ViewBag.WishList = gameName;
             }
-           
-            //  var gameName = _context.Game.Where(x=>x.GameId == wishList.I)
 
             return View();
         }
+        public IActionResult PrintMemberWishList()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("WishList");
+                var currentRow = 1;
+                int count = 0;
 
+                worksheet.Cell(currentRow, 1).Value = "Game";
+                worksheet.Cell(currentRow, 2).Value = "Count";
+
+                var games = _context.Game;
+                var wishlist = _context.WishlistItem.Include(x => x.Game);
+                foreach (var item in games)
+                {
+                    var wish = _context.WishlistItem.Where(x => x.GameId == item.GameId).ToList();
+                    if (wish.Count > 0)
+                    {
+                        count = wish.Count;
+                        currentRow++;
+                        worksheet.Cell(currentRow, 1).Value = item.Name;
+                        worksheet.Cell(currentRow, 2).Value = count;
+                        
+                    }
+                }
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "WishListDetails.xlsx"
+                        );
+                }
+            }
+        }
         // GET: Wishlist/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -79,7 +108,7 @@ namespace GameStore.Controllers
             var user_id = _userManager.GetUserId(HttpContext.User);
 
             var wishList1 = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
-            if (wishList1==null)
+            if (wishList1 == null)
             {
                 Wishlist wishlist = new Wishlist();
                 wishlist.UserId = user_id;
@@ -103,7 +132,7 @@ namespace GameStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("WishlistId,UserId")] Wishlist wishlist)
-        {            
+        {
             if (ModelState.IsValid)
             {
                 wishlist.UserId = _userManager.GetUserId(HttpContext.User);
@@ -115,7 +144,7 @@ namespace GameStore.Controllers
             return View(wishlist);
         }
 
-    
+
         public async Task<IActionResult> Delete(int id)
         {
             var user_id = _userManager.GetUserId(HttpContext.User);

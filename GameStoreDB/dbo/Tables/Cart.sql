@@ -1,7 +1,7 @@
 ﻿
 CREATE TABLE [dbo].[Cart] 
 (cart_id int IDENTITY NOT NULL,
-credit_card_id int NOT NULL,
+credit_card_id int NULL,
 total_cost float(15) NULL, 
 state_of_order varchar(255) NULL,
 user_id nvarchar(450) NOT NULL,

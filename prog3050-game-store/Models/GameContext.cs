@@ -239,7 +239,6 @@ namespace GameStore.Models
                 entity.HasOne(d => d.CreditCard)
                     .WithMany(p => p.Cart)
                     .HasForeignKey(d => d.CreditCardId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKCredit 786863");
 
                 entity.HasOne(d => d.User)
@@ -253,9 +252,7 @@ namespace GameStore.Models
             {
                 entity.HasKey(e => new { e.CartId, e.GameId });
 
-                entity.Property(e => e.CartId)
-                    .HasColumnName("cart_id")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.CartId).HasColumnName("cart_id");
 
                 entity.Property(e => e.GameId).HasColumnName("game_id");
 
@@ -276,9 +273,7 @@ namespace GameStore.Models
             {
                 entity.HasKey(e => new { e.CartId, e.MerchandiseId });
 
-                entity.Property(e => e.CartId)
-                    .HasColumnName("cart_id")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.CartId).HasColumnName("cart_id");
 
                 entity.Property(e => e.MerchandiseId).HasColumnName("merchandise_id");
 
@@ -577,8 +572,6 @@ namespace GameStore.Models
 
             modelBuilder.Entity<Relation>(entity =>
             {
-                entity.ToTable("relation");
-
                 entity.Property(e => e.RelationId).HasColumnName("relation_id");
 
                 entity.Property(e => e.AreFriends).HasColumnName("areFriends");
