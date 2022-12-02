@@ -82,14 +82,15 @@
         <a class="btn btn-primary" asp-controller="WishList" asp-action="Index"> Go to Wish List 💗 </a>
         <p>*Game already added to wish list*</p>
     }
-  
-
-
+    @if (ViewBag.IsInCartList == false)
+    {
         <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-gameId="@Model.GameId"> Add to Cart</a>
-    
-
-
-    </div>
+    }
+    else
+    {
+        <p>*Game already added to Cart*</p>
+    }
+</div>
 <div class="reviewContainer">
     <div>
         <h4>Customer Reviews</h4>

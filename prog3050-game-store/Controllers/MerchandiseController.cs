@@ -36,6 +36,26 @@ namespace GameStore.Controllers
         // GET: Merchandise/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var user_id = _userManager.GetUserId(HttpContext.User);
+
+            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
+
+            if (cartMerchId.Count != 0)
+            {
+                foreach (var item in cartMerchId)
+                {
+                    if (item.MerchandiseId == id)
+                    {
+                        ViewBag.IsInCartList = true;
+                    }
+
+                }
+            }
+            else
+            {
+                ViewBag.IsInCartList = false;
+            }
+
             if (id == null)
             {
                 return NotFound();

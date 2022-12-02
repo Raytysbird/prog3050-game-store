@@ -48,13 +48,14 @@
                         {
                             <li><a asp-area="" asp-controller="Game" asp-action="Index">Games</a></li>
                             <li><a asp-area="" asp-controller="Merchandise" asp-action="Index">Merchandise</a></li>
-                            <li><a asp-area="" asp-controller="FavouritePlatforms" asp-action="Index">Preferences</a></li>
-                            <li><a asp-area="" asp-controller="Event" asp-action="Index">Events</a></li>
+                            <li>@*<a asp-area="" asp-controller="FavouritePlatforms" asp-action="Index">Preferences</a>*@</li>
+                            <li>@*<a asp-area="" asp-controller="Event" asp-action="Index">Events</a>*@</li>
                             <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Manage Credit card</a></li>
                             <li><a asp-area="" asp-controller="Relation" asp-action="Index">Friends</a></li>
                             <li><a asp-area="" asp-controller="Address" asp-action="Index">Address</a></li>
                             <li><a asp-area="" asp-controller="WishList" asp-action="Index">Wish List</a></li>
                             <li><a asp-area="" asp-controller="Cart" asp-action="Index">Cart</a></li>
+                            <li><a asp-area="" asp-controller="Cart" asp-route-id= null asp-action="Purchases">Purchases</a></li>
                         }
 
                         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>
@@ -107,3 +108,16 @@
     @RenderSection("Scripts", required: false)
 </body>
 </html>
+
+<script>
+    function editWhiteOut() {
+        var url = "";
+        var id = 0;
+        id = document.getElementById("drpFields").value;
+        var lc = window.location.href.split('?')[0];
+        console.log(id);
+        console.log(lc);
+        url = `${lc}/Purchases?Id=${id}`;
+        window.location.href = url;
+    }
+</script>

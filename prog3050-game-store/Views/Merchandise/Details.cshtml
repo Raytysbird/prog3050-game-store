@@ -56,7 +56,14 @@
         <a class="btn btn-primary" asp-controller="WishList" asp-action="Index"> Go to Wish List 💗 </a>
         <p>*Merchandise already added to wish list*</p>
     }
-    <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId"> Add to Cart</a>
+    @if (ViewBag.IsInCartList == false)
+    {
+        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId"> Add to Cart</a>
+    }
+    else
+    {
+        <p>*Merchandise already added to Cart*</p>
+    }
 </div>
 
 

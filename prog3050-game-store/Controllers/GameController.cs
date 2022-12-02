@@ -157,7 +157,7 @@ namespace GameStore.Controllers
             var user_id = _userManager.GetUserId(HttpContext.User);
            // var wishListId = _context.Wishlist.FirstOrDefault(x => x.UserId == user_id);
 
-            var gameId =await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x=>x.GameId==id).ToListAsync();
+            var gameId =await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x=>x.GameId == id).ToListAsync();
             if(gameId.Count!=0)
             {
                 foreach (var item in gameId)
@@ -172,6 +172,23 @@ namespace GameStore.Controllers
             else
             {
                 ViewBag.IsInWishList = false;
+            }
+
+            var cartGameId = await _context.CartGame.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.GameId == id).ToListAsync();
+            if (cartGameId.Count != 0)
+            {
+                foreach (var item in cartGameId)
+                {
+                    if (item.GameId == id)
+                    {
+                        ViewBag.IsInCartList = true;
+                    }
+
+                }
+            }
+            else
+            {
+                ViewBag.IsInCartList = false;
             }
 
 
