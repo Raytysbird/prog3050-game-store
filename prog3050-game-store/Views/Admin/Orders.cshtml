@@ -1,0 +1,27 @@
+﻿@model IEnumerable<GameStore.Models.Cart>
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+
+}
+<h1 style="text-align:center">New Orders</h1>
+<div style="margin-top: 5em; display: grid; grid-template-columns: 1fr 1fr 1fr;">
+ @if(ViewBag.NewGames.Count >  0){
+        foreach (var item in ViewBag.NewGames)
+        {
+            <div style=" box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2); padding: 2em; border-radius: 5px; margin:1em">
+                
+                <h4>User: <span>@item.Cart.User.UserName</span></h4>
+                <h4>Items: <span>@ViewBag.Items</span></h4>
+                <h4>Total Amount: <span>@item.Cart.TotalCost</span> </h4>
+                
+                <a asp-action="ProcessOrder" asp-route-id="@item.Cart.CartId" asp-route-isProcessed=@true class="btn btn-primary">Complete Order</a>
+            </div>
+        }
+ }
+ else{
+     <h3>No new orders!!</h3>
+ }
+
+</div>
