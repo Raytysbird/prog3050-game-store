@@ -41,20 +41,6 @@ namespace GameStore.Controllers
                 address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
                 ViewBag.Address = address;
             }
-            if (address==null)
-            {
-                ViewBag.Address = null;
-
-            }
-            if (creditCardInfo.Count == 0)
-            {
-                ViewBag.CreditCard = null;
-            }
-            if (creditCardInfo.Count != 0)
-            {
-                ViewBag.CreditCard = new SelectList(creditCardInfo, "CreditCardId", "Number");
-               // ViewBag.CreditCard = creditCardInfo;
-            }
             else if (cart == null)
             {
                 Cart cartGame = new Cart();
@@ -289,9 +275,9 @@ namespace GameStore.Controllers
                 _context.Cart.Add(cartGame);
                 _context.SaveChanges();
             }
-            if (cart!=null)
+            if (cart != null)
             {
-                if (gameId!=0)
+                if (gameId != 0)
                 {
                     CartGame cartGame = new CartGame();
                     cartGame.CartId = cart.CartId;
@@ -300,7 +286,7 @@ namespace GameStore.Controllers
                     _context.SaveChanges();
 
                 }
-                if (merchId!=0)
+                if (merchId != 0)
                 {
                     CartMerchandise cartMerchandise = new CartMerchandise();
                     cartMerchandise.CartId = cart.CartId;

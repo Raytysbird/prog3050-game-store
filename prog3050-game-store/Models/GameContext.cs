@@ -678,17 +678,21 @@ namespace GameStore.Models
 
             modelBuilder.Entity<WishlistItem>(entity =>
             {
-                entity.HasKey(e => new { e.WishlistId, e.GameId });
+                entity.Property(e => e.GameId).HasColumnName("game_id");
+
+                entity.Property(e => e.MerchandiseId).HasColumnName("merchandise_id");
 
                 entity.Property(e => e.WishlistId).HasColumnName("wishlist_id");
-
-                entity.Property(e => e.GameId).HasColumnName("game_id");
 
                 entity.HasOne(d => d.Game)
                     .WithMany(p => p.WishlistItem)
                     .HasForeignKey(d => d.GameId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FKGame 754");
+
+                entity.HasOne(d => d.Merchandise)
+                    .WithMany(p => p.WishlistItem)
+                    .HasForeignKey(d => d.MerchandiseId)
+                    .HasConstraintName("merch_fk");
 
                 entity.HasOne(d => d.Wishlist)
                     .WithMany(p => p.WishlistItem)

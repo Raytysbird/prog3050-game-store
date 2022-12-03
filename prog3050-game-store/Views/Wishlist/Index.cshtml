@@ -7,42 +7,72 @@
 
 <table class="table">
     <thead>
-        @if (ViewBag.WishList.Count > 0)
+        @if (ViewBag.WishlistGame.Count > 0 || ViewBag.WishlistMerch.Count > 0)
         {
             <tr>
                 <th>
-                    Game Name
+                    Item
                 </th>
+                <th>Type</th>
                 <th></th>
             </tr>
         }
-        </thead>
+    </thead>
     <tbody>
-        @if (ViewBag.WishList.Count > 0)
+        @if (ViewBag.WishlistGame.Count > 0)
         {
-            @foreach (var item in ViewBag.WishList)
+            @foreach (var item in ViewBag.WishlistGame)
             {
                 <tr>
                     <td>
-                        @item.Name
+                        @item.Game.Name
                     </td>
-                 
+                    <td>Game</td>
+
 
                     <td>
-                        <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.GameId">Remove from Wish List</a><br />
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-game_id="@item.GameId">Remove from Wish List</a><br />
                     </td>
 
                 </tr>
             }
         }
-        else
+         
+        @if (ViewBag.WishlistMerch.Count > 0)
         {
-             <tr>
-                 <td>You don't have games in your wish list. Checkout our game list to view games and add to wish list. <a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a></td>
-                 
-             </tr>
+            @foreach (var item in ViewBag.WishlistMerch)
+            {
+                <tr>
+                    <td>
+                        @item.Merchandise.Name
+                    </td>
+                    <td>Merchandise</td>
+
+                    <td>
+                        <a class="btn btn-danger" asp-action="Delete" asp-route-merch_id="@item.MerchandiseId">Remove from Wish List</a><br />
+                    </td>
+
+                </tr>
+            }
         }
-</tbody>
+
+        @if (ViewBag.WishlistMerch.Count == 0 && ViewBag.WishlistGame.Count == 0)
+        {
+            <tr>
+                <td>You don't have Merchandise in your wish list. Checkout our game list to view games and add to wish list. <a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a></td>
+
+            </tr>
+            <tr>
+                <td>You don't have games in your wish list. Checkout our game list to view games and add to wish list. <a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a></td>
+
+            </tr>
+        }
+        else{
+            <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+            <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-size="large" data-url="https://localhost:44329/WishList" data-hashtags="ActiSoft #ConestogaVirtualStore" data-dnt="true" data-show-count="false">Tweet</a>
+        }
+
+    </tbody>
 </table>
 <div>
     <a asp-action="Index" asp-controller="Game">Back to game List</a>

@@ -34,20 +34,20 @@
     <a class="btn btn-info" asp-action="Index">Back to List</a>
     @if (ViewBag.IsInWishList == false)
     {
-        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-id="@Model.MerchandiseId"> Add to Wish List ♡ </a>
+        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-merch_id="@Model.MerchandiseId"> Add to Wish List ♡ </a>
 
     }
     else
     {
         <a class="btn btn-primary" asp-controller="WishList" asp-action="Index"> Go to Wish List 💗 </a>
-        <p>*Game already added to wish list*</p>
+        <p>Game already added to wish list</p>
     }
     @if (ViewBag.IsInCartList == false)
     {
-        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId"> Add to Cart</a>
+        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merch_id="@Model.MerchandiseId"> Add to Cart</a>
     }
     else
     {
-        <p>*Merchandise already added to Cart*</p>
+        <p>Merchandise already added to Cart</p>
     }
 </div>
