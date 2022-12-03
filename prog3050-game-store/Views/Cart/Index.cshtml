@@ -5,17 +5,17 @@
 }
 
 <h2>Cart</h2>
-@*<button onclick="window.location.href='https://wallpapercave.com/download/gta-5-4k-wallpapers-wp5334083';">
-        Click Here
-    </button>*@
-<div class="row">
-    <div class="col-md-8">
-        <table class="table">
-            <thead>
-                @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
-                {
-                    @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
-                    {
+<form asp-action="Checkout">
+
+
+    <div class="row" style="padding-bottom:20px;">
+        <div class="col-md-8">
+            @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
+            {
+                <table class="table">
+                    <thead>
+
+
                         <tr>
                             <th>
                                 Name
@@ -25,211 +25,155 @@
                             </th>
 
                         </tr>
-                    }
-                }
-
-            </thead>
-            <tbody>
-                @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
-                {
-                    @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
-                    {
-                        @foreach (var item in ViewBag.CartGame)
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.CartGame.Count > 0 || ViewBag.CartMerch.Count > 0)
                         {
-                            <tr>
-                                <td>
-                                    @item.Game.Name
-                                </td>
-                                <td>
-                                    $@item.Game.Price
-                                </td>
 
-                                @if (ViewBag.Status != "In Process" && ViewBag.Status != "Delivered")
-                                {
+                            @foreach (var item in ViewBag.CartGame)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Game.Name
+                                    </td>
+                                    <td>
+                                        $@item.Game.Price
+                                    </td>
                                     <td>
                                         <a class="btn btn-danger" asp-action="Delete" asp-route-gameId="@item.Game.GameId">Remove from Cart</a><br />
                                     </td>
-                                }
-
-                            </tr>
-                        }
-                        @foreach (var item in ViewBag.CartMerch)
-                        {
-                            <tr>
-                                <td>
-                                    @item.Merchandise.Name
-                                </td>
-                                <td>
-                                    $@item.Merchandise.Price
-                                </td>
-                                @if (ViewBag.Status != "In Process" && ViewBag.Status != "Delivered")
-                                {
+                                </tr>
+                            }
+                            @foreach (var item in ViewBag.CartMerch)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.Merchandise.Name
+                                    </td>
+                                    <td>
+                                        $@item.Merchandise.Price
+                                    </td>
                                     <td>
                                         <a class="btn btn-danger" asp-action="Delete" asp-route-merchId="@item.Merchandise.MerchandiseId">Remove from Cart</a><br />
                                     </td>
-                                }
-                            </tr>
+                                </tr>
+                            }
                         }
+                    </tbody>
+
+                </table>
+            }
+            else
+            {
+
+                <b>Your cart is empty right now. Checkout our games and merchandise!!<a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </b>
+
+            }
+            @if (ViewBag.Total != null)
+            {
+
+                <p>
+                    @{
+                        var SubTotal = Math.Round(@ViewBag.Total, 2);
+                        var HST = Math.Round(@ViewBag.Total * 0.13, 2);
+                        var Total = Math.Round(SubTotal + HST, 2);
+                        //@Model.TotalCost= Total;
+                    }
+                    <br><b>Subtotal:  $@SubTotal</b>
+                    <br><b>HST:      $@HST</b>
+                </p>
+
+
+                <p id="total"><b>Total: $@Model.TotalCost</b></p>
+                <div class="form-group" hidden>
+                    <input hidden asp-for="TotalCost" value="@Model.TotalCost" class="form-control" />
+                </div>
+                <div class="form-group" hidden>
+                    <input hidden asp-for="CartId" value="@Model.CartId" class="form-control" />
+                </div>
+            }
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Shipping Address</h3>
+                </div>
+
+                <div class="panel-body">
+                    @if (ViewBag.Address != null)
+                    {
+                        <dl class="dl-horizontal">
+                            <dt>
+                                Address
+                            </dt>
+                            <dd>
+                                @ViewBag.Address.FullAddress
+                            </dd>
+                            <dt>
+                                City
+                            </dt>
+                            <dd>
+                                @ViewBag.Address.City
+                            </dd>
+                            <dt>
+                                Province
+                            </dt>
+                            <dd>
+                                @ViewBag.Address.Province
+                            </dd>
+                            <dt>
+                                Postal
+                            </dt>
+                            <dd>
+                                @ViewBag.Address.PostalCode
+                            </dd>
+                        </dl>
+                    }
+
+
+                    else
+                    {
+                        <p>No shipping added.You can add it. <a class="btn btn-success" asp-action="CreateShipping" asp-controller="Address">Add Shipping address</a> </p>
+                    }
+
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title"> Select Credit Card for payment</h3>
+                </div>
+
+                <div class="panel-body">
+
+                    @if (ViewBag.CreditCard != null)
+                    {
+
+                        <select id="drpFields" asp-for="CreditCardId" class="form-control" asp-items="ViewBag.CreditCard"></select>
+
                     }
                     else
                     {
-
-                        <p>You don't have items in your cart. Checkout our games to add to cart.<br /><a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a> </p>
-
-
-                        <p>You don't have items in your cart. Checkout our merchandise to add to cart.<br /><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </p>
-
-
+                        <p>No creditcard added .You can add it. <a class="btn btn-success" asp-action="Create" asp-controller="CreditCardInfo">Add Credit Card</a> </p>
                     }
-                }
-                @if (ViewBag.Total != 0)
-                {
-
-                    <tr>
-                        <td>
-                            @{
-                                var SubTotal = Math.Round(@ViewBag.Total,2);
-                                var HST = Math.Round(@ViewBag.Total * 0.13,2);
-                                var Total = Math.Round(SubTotal + HST,2);
-                            }
-                            <br><b>Subtotal:  $@SubTotal</b>
-                            <br><b>HST:      $@HST</b>
-                            <br><b>Total:     $@Total</b>
-                        </td>
-                    </tr>
-
-
-
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
-<div class="row">
-    <div class="col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title">Shipping Address</h3>
-            </div>
-
-            <div class="panel-body">
-                @if (ViewBag.Address != null)
-                {
-                    <dl class="dl-horizontal">
-                        <dt>
-                            Address
-                        </dt>
-                        <dd>
-                            @ViewBag.Address.FullAddress
-                        </dd>
-                        <dt>
-                            City
-                        </dt>
-                        <dd>
-                            @ViewBag.Address.City
-                        </dd>
-                        <dt>
-                            Province
-                        </dt>
-                        <dd>
-                            @ViewBag.Address.Province
-                        </dd>
-                        <dt>
-                            Postal
-                        </dt>
-                        <dd>
-                            @ViewBag.Address.PostalCode
-                        </dd>
-                    </dl>
-                }
-
-
-                else
-                {
-                    <p>No shipping added.You can add it. <a class="btn btn-success" asp-action="CreateShipping" asp-controller="Address">Add Shipping address</a> </p>
-                }
-
-
+                </div>
             </div>
         </div>
-    </div>
-    <div class="col-md-6">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <h3 class="panel-title"> Credit Card</h3>
-            </div>
-
-            <div class="panel-body">
-
-                @if (ViewBag.CreditCard != null)
-                {
-                    <form asp-action="Index" asp-controller="CreditCardInfo" id="Number">
-                        <div class="form-group">
-                            <select id="drpFields" class="form-control" asp-items="ViewBag.CreditCard"></select>
-                        </div>
-                    </form>
-                    @*@foreach (var item in ViewBag.CreditCard)
-                        {
-                            <dl class="dl-horizontal">
-                                <dt>
-                                    Number
-                                </dt>
-                                <dd>
-                                    @item.Number
-                                </dd>
-                                <dt>
-                                    Expiry Date
-                                </dt>
-                                <dd>
-                                    @item.ExpDate
-                                </dd>
-
-                            </dl>
-                        }*@
-
-                }
-                else
-                {
-                    <p>No creditcard added .You can add it. <a class="btn btn-success" asp-action="Create" asp-controller="CreditCardInfo">Add Credit Card</a> </p>
-                }
-
-
-            </div>
-        </div>
+        <br>
     </div>
 
-    <br>
 
-</div>
-<div>
-    @if (ViewBag.CartGame != null && ViewBag.CartMerch != null)
-    {
-
-
-
-        @if (ViewBag.Address != null && ViewBag.CreditCard != null)
+    <div>
+        @if (ViewBag.CartGame != null && ViewBag.CartMerch != null && ViewBag.CreditCard != null && ViewBag.Address != null)
         {
-            @if (ViewBag.Status != "In Process")
-            {
-                <a class="btn btn-success" asp-route-id=@Model.CreditCardId asp-action="Purchases" asp-controller="Cart">Checkout</a>
+            <input type="submit" value="Checkout" class="btn btn-success" />
 
-            }
         }
+    </div>
+</form>
 
-    }
-</div>
-
-<script>
-    console.log('@Model.CreditCardId');
-    function editWhiteOut() {
-        var url = "";
-        var id = 0;
-        id = document.getElementById("drpFields").value;
-        var lc = window.location.href.split('?')[0];
-        console.log('@Model.CreditCardId');
-        console.log(lc);
-        url = `${lc}/Purchases?Id=${'@Model.CreditCardId'}`;
-        window.location.href = url;
-    }
-</script>
 

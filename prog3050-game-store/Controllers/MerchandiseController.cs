@@ -59,24 +59,7 @@ namespace GameStore.Controllers
             }
 
             return View(await _context.Merchandise.Include(x => x.Game).Where(x => x.GameId == id && x.Name.Contains(keyword)).Skip(rescSkip).Take(pager.PageSize).ToListAsync());
-            
-            //return View(merch);
-
-
-
-            
-            //if (keyword != null)
-            //{
-            //    var games = await _context.Merchandise.Skip(rescSkip).Take(pager.PageSize).Where(x => x.Name.Contains(keyword)).ToListAsync();
-            //    return View(games);
-            //}
-            //return View(await _context.Merchandise.Skip(rescSkip).Take(pager.PageSize).ToListAsync());
-
         }
-
-
-
-
         // GET: Merchandise/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -90,7 +73,7 @@ namespace GameStore.Controllers
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
             var merchId = await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
 
-            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
+            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).Where(x => x.Cart.StateOfOrder == null).ToListAsync();
 
             if (cartMerchId.Count != 0)
             {

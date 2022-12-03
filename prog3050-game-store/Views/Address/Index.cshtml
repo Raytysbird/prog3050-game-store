@@ -16,7 +16,7 @@
             </div>
 
             <div class="panel-body">
-                @if (ViewBag.MailAddress.Count != 0)
+                @if (ViewBag.MailAddress != null)
                 {
                     @foreach (var item in ViewBag.MailAddress)
                     {

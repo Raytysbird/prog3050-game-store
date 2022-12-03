@@ -1,11 +1,11 @@
 ﻿@model IEnumerable<GameStore.Models.Cart>
 
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = "Previous Purchases";
 }
 
-<h2>Cart</h2>
-
+<h2>Your purchases</h2>
+<p>Note: Games are available onli, you can download from this page. If you have ordered merchandise, it will get shipped to your shipping address.</p>
 <table class="table">
     <thead>
         @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
@@ -14,12 +14,17 @@
             {
                 <tr>
                     <th>
-                       Name
+                        Name
                     </th>
                     <th>
-                        Price
+                        Description
                     </th>
-                    
+                    <th>
+                        Type
+                    </th>
+                    <th>
+
+                    </th>
                 </tr>
             }
         }
@@ -37,14 +42,13 @@
                             @item.Game.Name
                         </td>
                         <td>
-                            $@item.Game.Price
+                            @item.Game.Description
                         </td>
-                        
-                        
                         <td>
-                            <button onclick="window.location.href='https://wallpapercave.com/download/gta-5-4k-wallpapers-wp5334083';">
-                                Click Here
-                            </button>
+                            Game
+                        </td>
+                        <td>
+                            <a asp-action="DownloadGame" asp-route-id="@item.Game.GameId">Download Game</a>
                         </td>
 
                     </tr>
@@ -56,18 +60,21 @@
                             @item.Merchandise.Name
                         </td>
                         <td>
-                            $@item.Merchandise.Price
+                            @item.Merchandise.Description
                         </td>
-                  
                         <td>
-                            @ViewBag.Status
+                            Merchandise
+                        </td>
+
+                        <td>
+                            @item.Cart.StateOfOrder
                         </td>
 
                     </tr>
                 }
             }
         }
-  
-        
+
+
     </tbody>
 </table>

@@ -24,6 +24,7 @@ namespace GameStore.Controllers
         // GET: Address
         public async Task<IActionResult> Index()
         {
+            //string u= Request.Headers["Referer"].ToString();
             string fullAddress = "";
             var currentUser = _userManager.GetUserId(HttpContext.User);
             var mailingAddress = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).Where(c=>c.IsShipping==false).ToListAsync();
@@ -41,6 +42,10 @@ namespace GameStore.Controllers
                 ViewBag.MailAddress = mailingAddress;
                 
             }
+            else
+            {
+                ViewBag.MailAddress = null;
+            }
                 
 
             var shippingAddress = await _context.Address.Include(a => a.User).Where(x => x.UserId == currentUser).Where(c => c.IsShipping == true).ToListAsync();
@@ -55,12 +60,20 @@ namespace GameStore.Controllers
                 }
                 ViewBag.ShippingAddress = shippingAddress;
             }
+            else
+            {
+                ViewBag.ShippingAddress = null;
+            }
 
 
+            //if (mailingAddress.Count == 0)
+            //{
+            //    TempData["message"] = "You have not added any address information. Please add your address!!";
+            //    return RedirectToAction("Create");
+            //}
             if (mailingAddress.Count == 0)
             {
                 TempData["message"] = "You have not added any address information. Please add your address!!";
-                return RedirectToAction("Create");
             }
             return View();
         }
@@ -93,8 +106,10 @@ namespace GameStore.Controllers
         }
         public IActionResult CreateShipping()
         {
+           
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id");
             ViewData["ProvinceCode"] = new SelectList(_context.Province.Where(x => x.CountryCode == "CA"), "ProvinceCode", "ProvinceCode");
+           
             return View();
         }
 
@@ -125,11 +140,16 @@ namespace GameStore.Controllers
         {
             if (ModelState.IsValid)
             {
+                string u = Request.Headers["Referer"].ToString();
                 var user = _userManager.GetUserId(HttpContext.User);
                 address.IsShipping = true;
                 address.UserId = user;
                 _context.Add(address);
                 await _context.SaveChangesAsync();
+                if (u.Contains("/Cart"))
+                {
+                    return RedirectToAction("Index", "Cart");
+                }
                 return RedirectToAction("Index");
             }
             ViewData["UserId"] = new SelectList(_context.AspNetUsers, "Id", "Id", address.UserId);

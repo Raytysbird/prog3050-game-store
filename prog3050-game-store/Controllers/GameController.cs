@@ -174,7 +174,7 @@ namespace GameStore.Controllers
                 ViewBag.IsInWishList = false;
             }
 
-            var cartGameId = await _context.CartGame.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.GameId == id).ToListAsync();
+            var cartGameId = await _context.CartGame.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.GameId == id).Where(x=>x.Cart.StateOfOrder==null).ToListAsync();
             if (cartGameId.Count != 0)
             {
                 foreach (var item in cartGameId)

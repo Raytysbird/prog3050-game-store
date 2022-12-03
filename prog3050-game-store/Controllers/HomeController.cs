@@ -15,7 +15,7 @@ namespace GameStore.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly GameContext _context;
-        public HomeController(GameContext context,UserManager<User> userManager)
+        public HomeController(GameContext context, UserManager<User> userManager)
         {
             _userManager = userManager;
             _context = context;
@@ -24,10 +24,9 @@ namespace GameStore.Controllers
         {
             var id = _userManager.GetUserId(HttpContext.User);
             ViewBag.UserId = _userManager.GetUserId(HttpContext.User);
-            if (id!=null)
+            if (id != null)
             {
                 var wishList = _context.Wishlist.FirstOrDefault(x => x.UserId == id);
-
                 if (wishList == null)
                 {
                     Wishlist wishlist = new Wishlist();
@@ -35,6 +34,22 @@ namespace GameStore.Controllers
                     _context.Wishlist.Add(wishlist);
                     _context.SaveChanges();
                 }
+                var cart = _context.Cart.Where(x => x.UserId == id).Where(x=>x.StateOfOrder==null).ToList();
+                if (cart != null)
+                {
+                    if (cart.Count<=0)
+                    {
+                        Cart cartGame = new Cart();
+                        cartGame.UserId = id;
+                        cartGame.TotalCost = 0;
+                        cartGame.CreditCardId = null;
+                        cartGame.StateOfOrder = null;
+                        _context.Cart.Add(cartGame);
+                        _context.SaveChanges();
+                    }
+                   
+                }
+                
             }
            
             return View();
@@ -46,7 +61,7 @@ namespace GameStore.Controllers
 
             return View();
         }
-       
+
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
