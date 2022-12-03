@@ -4,8 +4,8 @@
     ViewData["Title"] = "Previous Purchases";
 }
 
-<h2>Your previous purchases</h2>
-
+<h2>Your purchases</h2>
+<p>Note: Games are available onli, you can download from this page. If you have ordered merchandise, it will get shipped to your shipping address.</p>
 <table class="table">
     <thead>
         @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
@@ -67,7 +67,7 @@
                         </td>
 
                         <td>
-                            @ViewBag.Status
+                            @item.Cart.StateOfOrder
                         </td>
 
                     </tr>

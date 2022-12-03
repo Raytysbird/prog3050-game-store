@@ -73,7 +73,7 @@ namespace GameStore.Controllers
                 .FirstOrDefaultAsync(m => m.MerchandiseId == id);
             var merchId = await _context.WishlistItem.Include(x => x.Wishlist).Where(x => x.Wishlist.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
 
-            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).ToListAsync();
+            var cartMerchId = await _context.CartMerchandise.Include(x => x.Cart).Where(x => x.Cart.UserId == user_id).Where(x => x.MerchandiseId == id).Where(x => x.Cart.StateOfOrder == null).ToListAsync();
 
             if (cartMerchId.Count != 0)
             {
