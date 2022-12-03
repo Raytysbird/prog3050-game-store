@@ -1,10 +1,10 @@
 ﻿@model IEnumerable<GameStore.Models.Cart>
 
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = "Previous Purchases";
 }
 
-<h2>Cart</h2>
+<h2>Your previous purchases</h2>
 
 <table class="table">
     <thead>
@@ -14,12 +14,17 @@
             {
                 <tr>
                     <th>
-                       Name
+                        Name
                     </th>
                     <th>
-                        Price
+                        Description
                     </th>
-                    
+                    <th>
+                        Type
+                    </th>
+                    <th>
+
+                    </th>
                 </tr>
             }
         }
@@ -37,14 +42,13 @@
                             @item.Game.Name
                         </td>
                         <td>
-                            $@item.Game.Price
+                            @item.Game.Description
                         </td>
-                        
-                        
                         <td>
-                            <button onclick="window.location.href='https://wallpapercave.com/download/gta-5-4k-wallpapers-wp5334083';">
-                                Click Here
-                            </button>
+                            Game
+                        </td>
+                        <td>
+                            <a asp-action="DownloadGame" asp-route-id="@item.Game.GameId">Download Game</a>
                         </td>
 
                     </tr>
@@ -56,9 +60,12 @@
                             @item.Merchandise.Name
                         </td>
                         <td>
-                            $@item.Merchandise.Price
+                            @item.Merchandise.Description
                         </td>
-                  
+                        <td>
+                            Merchandise
+                        </td>
+
                         <td>
                             @ViewBag.Status
                         </td>
@@ -67,7 +74,7 @@
                 }
             }
         }
-  
-        
+
+
     </tbody>
 </table>

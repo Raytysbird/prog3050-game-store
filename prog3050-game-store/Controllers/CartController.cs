@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using GameStore.Models;
 using Microsoft.AspNetCore.Identity;
+using ClosedXML.Excel;
+using System.IO;
 
 namespace GameStore.Controllers
 {
@@ -24,13 +26,15 @@ namespace GameStore.Controllers
         // GET: Cart
         public async Task<IActionResult> Index()
         {
+
+            var total = 0f;
             var id = _userManager.GetUserId(HttpContext.User);
-
             var cart = _context.Cart.FirstOrDefault(x => x.UserId == id);
-
             var address = _context.Address.Where(x => x.UserId == id && x.IsShipping == true).FirstOrDefault();
-
             var creditCardInfo = _context.CreditCardInfo.Where(x => x.UserId == id).ToList();
+            var cartModel = _context.Cart.Include(x => x.User).Where(x => x.UserId == id).Include(x => x.CreditCard).FirstOrDefault();
+
+            cartModel.TotalCost = (float)Math.Round(total + (0.13f * total), 2);
 
             if (address!=null)
             {
@@ -67,7 +71,7 @@ namespace GameStore.Controllers
             var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
             var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
 
-            var total = 0f;
+           
 
             foreach (var item in cartGameItems)
             {
@@ -98,133 +102,121 @@ namespace GameStore.Controllers
                 ViewBag.Status = cartStatus.FirstOrDefault();
             }
            
-            if (cartGameItems!=null || cartMerchItems !=null )
+            if (cartGameItems.Count>0 || cartMerchItems.Count>0 )
             {
                 ViewBag.CartGame = cartGameItems;
                 ViewBag.CartMerch = cartMerchItems;
                 ViewBag.Total = total;
-                
-
             }
-            var cartModel = _context.Cart.Include(x=> x.User).Where(x => x.UserId == id).Include(x=> x.CreditCard).FirstOrDefault();
-
             return View(cartModel);
         }
-        public async Task<IActionResult> Purchases(int? id)
+        public IActionResult DownloadGame(int id)
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Games");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "Name";
+                worksheet.Cell(currentRow, 2).Value = "Description";
+                worksheet.Cell(currentRow, 3).Value = "Price";
+
+                var games = _context.Game.FirstOrDefault(x=>x.GameId==id);
+               
+                    currentRow++;
+                    count++;
+                    worksheet.Cell(currentRow, 1).Value = games.Name;
+                    worksheet.Cell(currentRow, 2).Value = games.Description;
+                    worksheet.Cell(currentRow, 3).Value = games.Price;
+             
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "GameDetails.xlsx"
+                        );
+                }
+
+            }
+
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Checkout(Cart carts)
         {
             var user_id = _userManager.GetUserId(HttpContext.User);
-            if (id != null)
+            if (ModelState.IsValid)
             {
+                carts.StateOfOrder = "In Process";
+                carts.UserId = user_id;
+                _context.Update(carts);
+
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Purchases");
                 
 
-                var cart = _context.Cart.Where(x =>x.UserId == user_id).FirstOrDefault();
-                if (cart.StateOfOrder == null)
-                {
-                    cart.StateOfOrder = "In Process";
-                    _context.Cart.Update(cart);
-                    _context.SaveChanges();
-                }
-                //else if (cart.StateOfOrder == "Delivered")
+                //if (user_id != null)
                 //{
-                //    _context.CartGame.ToList();
-                //    Cart cartGame = new Cart();
-                //    cartGame.UserId = user_id;
-                //    cartGame.TotalCost = 0;
-                //    cartGame.CreditCardId = null;
-                //    cartGame.StateOfOrder = null;
-                //    _context.Cart.Add(cartGame);
-                //    _context.SaveChanges();
-                //    TempData["message"] = "No Item added to Cart Right now";
-                //    ViewBag.Cart = null;
-                //    return View("Index");
-                //}
-
-                var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
-                var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
-
-                var creditCardInfos = _context.CreditCardInfo.Where(x => x.CreditCardId == id).FirstOrDefault();
 
 
-
-                //var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
-                //var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
-
-                var total = 0d;
-
-                foreach (var item in cartGameItems)
-                {
-                    var priceGameItem = await _context.Game.FindAsync(item.GameId);
-                    if (priceGameItem == null)
-                    {
-                        return NotFound();
-                    }
-
-                    total += Math.Round(priceGameItem.Price);
-                }
-
-                foreach (var item in cartMerchItems)
-                {
-                    var cartMerchItem = await _context.Merchandise.FindAsync(item.MerchandiseId);
-                    if (cartMerchItem == null)
-                    {
-                        return NotFound();
-                    }
-
-                    total += Math.Round(cartMerchItem.Price,2);
-                }
-                //var priceMerchItem = _context.Merchandise.Where(x => x.CartId == cart.CartId).Select(x => x.Merchandise);
-
-
-
-                //if (cartGameItems != null || cartMerchItems != null)
-                //{
-                    ViewBag.CartGame = cartGameItems;
-                    ViewBag.CartMerch = cartMerchItems;
-                    ViewBag.Total = total;
-
-                //}
-
-
-
-
-                //foreach (var item in creditCardInfos)
-                //{
-                //    var creditCardNumber = await _context.CreditCardInfo.FindAsync(item.CreditCardId);
-                //    if (creditCardNumber == null)
+                //    var cart = _context.Cart.Where(x =>x.UserId == user_id).FirstOrDefault();
+                //    if (cart.StateOfOrder == null)
                 //    {
-                //        return NotFound();
+                //        cart.StateOfOrder = "In Process";
+                //        _context.Cart.Update(cart);
+                //        _context.SaveChanges();
                 //    }
 
+                //    var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
+                //    var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
+                //    //var creditCardInfos = _context.CreditCardInfo.Where(x => x.CreditCardId == id).FirstOrDefault();
+                //    var total = 0d;
+                //    foreach (var item in cartGameItems)
+                //    {
+                //        var priceGameItem = await _context.Game.FindAsync(item.GameId);
+                //        if (priceGameItem == null)
+                //        {
+                //            return NotFound();
+                //        }
+
+                //        total += Math.Round(priceGameItem.Price);
+                //    }
+
+                //    foreach (var item in cartMerchItems)
+                //    {
+                //        var cartMerchItem = await _context.Merchandise.FindAsync(item.MerchandiseId);
+                //        if (cartMerchItem == null)
+                //        {
+                //            return NotFound();
+                //        }
+
+                //        total += Math.Round(cartMerchItem.Price,2);
+                //    }
+                //        ViewBag.CartGame = cartGameItems;
+                //        ViewBag.CartMerch = cartMerchItems;
+                //        ViewBag.Total = total;
+
+                //    TempData["message"] = "Thank you for placing an order";
+                //    return View();
                 //}
 
-                //if (cartGameItems.Count != 0 || cartMerchItems.Count != 0)
+                //var cartStatus = _context.Cart.Where(x => x.UserId == user_id).Select(x => x.StateOfOrder);
+                //if (cartStatus != null)
                 //{
-                //    ViewBag.CartGame = cartGameItems;
-                //    ViewBag.CartMerch = cartMerchItems;
+                //    ViewBag.Status = cartStatus.FirstOrDefault();
+                //    if (cartStatus.FirstOrDefault() != "In Process" && cartStatus.FirstOrDefault() != "Delivered")
+                //    {
+                //        TempData["message"] = "Order In Process";
+
+                //    }
                 //}
 
-                ViewBag.Status = _context.Cart.Where(x => x.UserId == user_id).FirstOrDefault().StateOfOrder;
-
-
-
-                TempData["message"] = "Thank you for placing an order";
-                return View();
-
-
-            }
-
-            var cartStatus = _context.Cart.Where(x => x.UserId == user_id).Select(x => x.StateOfOrder);
-            if (cartStatus != null)
-            {
-                ViewBag.Status = cartStatus.FirstOrDefault();
-                if (cartStatus.FirstOrDefault() != "In Process" && cartStatus.FirstOrDefault() != "Delivered")
-                {
-                    TempData["message"] = "Order In Process";
-
-                }
-            }
-
-            return View("Purchases");
+               
 
 
 
@@ -235,10 +227,29 @@ namespace GameStore.Controllers
 
         }
 
+        public async Task<IActionResult> Purchases()
+        {
+            var user_id = _userManager.GetUserId(HttpContext.User);
+            var cart = _context.Cart.Where(x => x.UserId == user_id).Where(x=>x.StateOfOrder!=null).FirstOrDefault();
+            if (cart==null)
+            {
+                TempData["message"] = "You don't have any purchases with us yet. Please checkout our Games and Merchandise inventory!!";
+                return View();
+            }
+            else
+            {
+                var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
+                var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
+                ViewBag.Status = cart.StateOfOrder;
+                ViewBag.CartGame = cartGameItems;
+                ViewBag.CartMerch = cartMerchItems;
+                return View();
+            }
+        }
+        
 
-
-        // GET: Cart/Details/5
-        public async Task<IActionResult> Details(int? id)
+            // GET: Cart/Details/5
+            public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -258,6 +269,7 @@ namespace GameStore.Controllers
         }
 
         // GET: Cart/Create/
+
         public IActionResult Create(int gameId,int merchId)
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
