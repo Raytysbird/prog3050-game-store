@@ -19,7 +19,30 @@
 {
     <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
 }
+<div class="row">
+    <div class="col-lg-5">
+        <div class="input-group">
+            <form class="navbar-form navbar-left" asp-action="Index" asp-controller="Merchandise" id="frmPlatform">
+                <div class="form-group">
+                    <select id="drpFields" onchange="editWhiteOut();" class="form-control" asp-items="ViewBag.GameId"><option value="">----Please Select Game----</option></select>
+                </div>
+                <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Filter</a>
+            </form>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+    <div class="col-lg-5">
+        <div class="input-group">
+            <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
+                <div class="form-group">
+                    <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:245px;">
+                    <button type="submit" id="btnSearch" class="btn btn-primary">Search</button>
+                    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
 
+                </div>
+            </form>
+        </div><!-- /input-group -->
+    </div><!-- /.col-lg-6 -->
+</div>
 
 
 
@@ -29,81 +52,59 @@
 {
     <p>No Merchandise found. </p>
 }
-else{
-    <div class="row">
-        <div class="col-lg-5">
-            <div class="input-group">
-                <form class="navbar-form navbar-left" asp-action="Index" asp-controller="Merchandise" id="frmPlatform">
-                    <div class="form-group">
-                        <select id="drpFields" onchange="editWhiteOut();" class="form-control" asp-items="ViewBag.GameId"><option value="">----Please Select Game----</option></select>
-                    </div>
-                    <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Filter</a>
-                </form>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-        <div class="col-lg-5">
-            <div class="input-group">
-                <form class="navbar-form navbar-left" role="search" method="get" asp-action="Index">
-                    <div class="form-group">
-                        <input type="text" name="keyword" class="form-control" value="@ViewBag.Keyword" placeholder="Enter Merchandise" style="width:245px;">
-                        <button type="submit" id="btnSearch" class="btn btn-primary">Search</button>
-                        <a class="btn btn-primary" asp-action="Index" asp-route-keyword="">Clear Search</a>
+else
+{
 
-                    </div>
-                </form>
-            </div><!-- /input-group -->
-        </div><!-- /.col-lg-6 -->
-    </div>
-<table class="table">
-    <thead>
-        <tr>
-         
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Game.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Description)
-                </td>
-                <td>
-                    $@Html.DisplayFor(modelItem => item.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Game.Name)
-                </td>
-                <td>
-                    @if (User.IsInRole("Employee"))
-                    {
-                        <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.MerchandiseId">Edit Merchandise</a>
-                        <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.MerchandiseId">Delete Merchandise</a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId">Merchandise Details</a>
-                    }
-                </td>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Description)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Game.Name)
+                </th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Description)
+                    </td>
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.Price)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Game.Name)
+                    </td>
+                    <td>
+                        @if (User.IsInRole("Employee"))
+                        {
+                            <a class="btn btn-info" asp-action="Edit" asp-route-id="@item.MerchandiseId">Edit Merchandise</a>
+                            <a class="btn btn-info" asp-action="Delete" asp-route-id="@item.MerchandiseId">Delete Merchandise</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId">Merchandise Details</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
 
 
@@ -159,8 +160,8 @@ else{
         width: 250px;
     }
 
-    #btnSearch{
-        padding-left:10px;
+    #btnSearch {
+        padding-left: 10px;
     }
 </style>
 @*

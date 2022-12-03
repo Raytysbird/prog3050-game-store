@@ -34,12 +34,26 @@ namespace GameStore.Controllers
             var creditCardInfo = _context.CreditCardInfo.Where(x => x.UserId == id).ToList();
             var cartModel = _context.Cart.Include(x => x.User).Where(x => x.UserId == id).Include(x => x.CreditCard).FirstOrDefault();
 
-            cartModel.TotalCost = (float)Math.Round(total + (0.13f * total), 2);
+            
 
-            if (address!=null)
+            if (address != null)
             {
                 address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
                 ViewBag.Address = address;
+            }
+            if (address == null)
+            {
+                ViewBag.Address = null;
+
+            }
+            if (creditCardInfo.Count == 0)
+            {
+                ViewBag.CreditCard = null;
+            }
+            if (creditCardInfo.Count != 0)
+            {
+                ViewBag.CreditCard = new SelectList(creditCardInfo, "CreditCardId", "Number");
+                // ViewBag.CreditCard = creditCardInfo;
             }
             else if (cart == null)
             {
@@ -57,7 +71,7 @@ namespace GameStore.Controllers
             var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
             var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
 
-           
+
 
             foreach (var item in cartGameItems)
             {
@@ -82,18 +96,19 @@ namespace GameStore.Controllers
             }
             //var priceMerchItem = _context.Merchandise.Where(x => x.CartId == cart.CartId).Select(x => x.Merchandise);
 
-            var cartStatus = _context.Cart.Where(x => x.UserId == id).Select(x=> x.StateOfOrder);
-            if(cartStatus != null)
+            var cartStatus = _context.Cart.Where(x => x.UserId == id).Select(x => x.StateOfOrder);
+            if (cartStatus != null)
             {
                 ViewBag.Status = cartStatus.FirstOrDefault();
             }
-           
-            if (cartGameItems.Count>0 || cartMerchItems.Count>0 )
+
+            if (cartGameItems.Count > 0 || cartMerchItems.Count > 0)
             {
                 ViewBag.CartGame = cartGameItems;
                 ViewBag.CartMerch = cartMerchItems;
                 ViewBag.Total = total;
             }
+            cartModel.TotalCost = (float)Math.Round(total + (0.13f * total), 2);
             return View(cartModel);
         }
         public IActionResult DownloadGame(int id)
@@ -107,14 +122,14 @@ namespace GameStore.Controllers
                 worksheet.Cell(currentRow, 2).Value = "Description";
                 worksheet.Cell(currentRow, 3).Value = "Price";
 
-                var games = _context.Game.FirstOrDefault(x=>x.GameId==id);
-               
-                    currentRow++;
-                    count++;
-                    worksheet.Cell(currentRow, 1).Value = games.Name;
-                    worksheet.Cell(currentRow, 2).Value = games.Description;
-                    worksheet.Cell(currentRow, 3).Value = games.Price;
-             
+                var games = _context.Game.FirstOrDefault(x => x.GameId == id);
+
+                currentRow++;
+                count++;
+                worksheet.Cell(currentRow, 1).Value = games.Name;
+                worksheet.Cell(currentRow, 2).Value = games.Description;
+                worksheet.Cell(currentRow, 3).Value = games.Price;
+
 
                 using (var stream = new MemoryStream())
                 {
@@ -144,65 +159,65 @@ namespace GameStore.Controllers
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction("Purchases");
-                
-
-                //if (user_id != null)
-                //{
 
 
-                //    var cart = _context.Cart.Where(x =>x.UserId == user_id).FirstOrDefault();
-                //    if (cart.StateOfOrder == null)
-                //    {
-                //        cart.StateOfOrder = "In Process";
-                //        _context.Cart.Update(cart);
-                //        _context.SaveChanges();
-                //    }
+            //if (user_id != null)
+            //{
 
-                //    var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
-                //    var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
-                //    //var creditCardInfos = _context.CreditCardInfo.Where(x => x.CreditCardId == id).FirstOrDefault();
-                //    var total = 0d;
-                //    foreach (var item in cartGameItems)
-                //    {
-                //        var priceGameItem = await _context.Game.FindAsync(item.GameId);
-                //        if (priceGameItem == null)
-                //        {
-                //            return NotFound();
-                //        }
 
-                //        total += Math.Round(priceGameItem.Price);
-                //    }
+            //    var cart = _context.Cart.Where(x =>x.UserId == user_id).FirstOrDefault();
+            //    if (cart.StateOfOrder == null)
+            //    {
+            //        cart.StateOfOrder = "In Process";
+            //        _context.Cart.Update(cart);
+            //        _context.SaveChanges();
+            //    }
 
-                //    foreach (var item in cartMerchItems)
-                //    {
-                //        var cartMerchItem = await _context.Merchandise.FindAsync(item.MerchandiseId);
-                //        if (cartMerchItem == null)
-                //        {
-                //            return NotFound();
-                //        }
+            //    var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
+            //    var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
+            //    //var creditCardInfos = _context.CreditCardInfo.Where(x => x.CreditCardId == id).FirstOrDefault();
+            //    var total = 0d;
+            //    foreach (var item in cartGameItems)
+            //    {
+            //        var priceGameItem = await _context.Game.FindAsync(item.GameId);
+            //        if (priceGameItem == null)
+            //        {
+            //            return NotFound();
+            //        }
 
-                //        total += Math.Round(cartMerchItem.Price,2);
-                //    }
-                //        ViewBag.CartGame = cartGameItems;
-                //        ViewBag.CartMerch = cartMerchItems;
-                //        ViewBag.Total = total;
+            //        total += Math.Round(priceGameItem.Price);
+            //    }
 
-                //    TempData["message"] = "Thank you for placing an order";
-                //    return View();
-                //}
+            //    foreach (var item in cartMerchItems)
+            //    {
+            //        var cartMerchItem = await _context.Merchandise.FindAsync(item.MerchandiseId);
+            //        if (cartMerchItem == null)
+            //        {
+            //            return NotFound();
+            //        }
 
-                //var cartStatus = _context.Cart.Where(x => x.UserId == user_id).Select(x => x.StateOfOrder);
-                //if (cartStatus != null)
-                //{
-                //    ViewBag.Status = cartStatus.FirstOrDefault();
-                //    if (cartStatus.FirstOrDefault() != "In Process" && cartStatus.FirstOrDefault() != "Delivered")
-                //    {
-                //        TempData["message"] = "Order In Process";
+            //        total += Math.Round(cartMerchItem.Price,2);
+            //    }
+            //        ViewBag.CartGame = cartGameItems;
+            //        ViewBag.CartMerch = cartMerchItems;
+            //        ViewBag.Total = total;
 
-                //    }
-                //}
+            //    TempData["message"] = "Thank you for placing an order";
+            //    return View();
+            //}
 
-               
+            //var cartStatus = _context.Cart.Where(x => x.UserId == user_id).Select(x => x.StateOfOrder);
+            //if (cartStatus != null)
+            //{
+            //    ViewBag.Status = cartStatus.FirstOrDefault();
+            //    if (cartStatus.FirstOrDefault() != "In Process" && cartStatus.FirstOrDefault() != "Delivered")
+            //    {
+            //        TempData["message"] = "Order In Process";
+
+            //    }
+            //}
+
+
 
 
 
@@ -216,8 +231,8 @@ namespace GameStore.Controllers
         public async Task<IActionResult> Purchases()
         {
             var user_id = _userManager.GetUserId(HttpContext.User);
-            var cart = _context.Cart.Where(x => x.UserId == user_id).Where(x=>x.StateOfOrder!=null).FirstOrDefault();
-            if (cart==null)
+            var cart = _context.Cart.Where(x => x.UserId == user_id).Where(x => x.StateOfOrder != null).FirstOrDefault();
+            if (cart == null)
             {
                 TempData["message"] = "You don't have any purchases with us yet. Please checkout our Games and Merchandise inventory!!";
                 return View();
@@ -232,10 +247,10 @@ namespace GameStore.Controllers
                 return View();
             }
         }
-        
 
-            // GET: Cart/Details/5
-            public async Task<IActionResult> Details(int? id)
+
+        // GET: Cart/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
@@ -256,7 +271,7 @@ namespace GameStore.Controllers
 
         // GET: Cart/Create/
 
-        public IActionResult Create(int gameId,int merchId)
+        public IActionResult Create(int gameId, int merchId)
         {
             ViewData["UserId"] = _userManager.GetUserId(HttpContext.User);
 
@@ -264,7 +279,7 @@ namespace GameStore.Controllers
 
             var cart = _context.Cart.FirstOrDefault(x => x.UserId == user_id);
             var creditCardInfo = _context.CreditCardInfo.FirstOrDefault(x => x.UserId == user_id);
-           
+
             if (cart == null)
             {
                 Cart cartGame = new Cart();
