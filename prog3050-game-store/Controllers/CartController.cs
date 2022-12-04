@@ -118,6 +118,70 @@ namespace GameStore.Controllers
             }
 
         }
+        public IActionResult Sales()
+        {
+            using (var workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.Worksheets.Add("Games");
+                var currentRow = 1;
+                int count = 0;
+                worksheet.Cell(currentRow, 1).Value = "Item Number";
+                worksheet.Cell(currentRow, 2).Value = "Name";
+                worksheet.Cell(currentRow, 3).Value = "Description";
+                worksheet.Cell(currentRow, 4).Value = "Price";
+                worksheet.Cell(currentRow, 5).Value = "Quantity";
+                worksheet.Cell(currentRow, 6).Value = "Total";
+
+
+                var games = _context.CartGame.Include(x => x.Cart).Include(x => x.Cart.User).Include(x => x.Game).Where(x => x.Cart.StateOfOrder!=null).OrderBy(x=>x.GameId).ToList();
+                var merch = _context.CartMerchandise.Include(x => x.Cart).Include(x => x.Cart.User).Include(x => x.Merchandise).Where(x => x.Cart.StateOfOrder !=null).ToList();
+
+                for (int i = 0; i <games.Count; )
+                {
+                    var gameSales = _context.CartGame.Include(x => x.Cart).Where(x => x.GameId == games[i].GameId).Where(x=>x.Cart.StateOfOrder!=null).ToList();
+                    if (gameSales.Count > 0)
+                    {
+                        currentRow++;
+                        worksheet.Cell(currentRow, 1).Value = games[i].GameId;
+                        worksheet.Cell(currentRow, 2).Value = games[i].Game.Name;
+                        worksheet.Cell(currentRow, 3).Value = games[i].Game.Description;
+                        worksheet.Cell(currentRow, 4).Value = games[i].Game.Price;
+                        worksheet.Cell(currentRow, 5).Value = gameSales.Count;
+                        worksheet.Cell(currentRow, 6).Value = gameSales.Count * games[i].Game.Price;
+                        i = i + gameSales.Count;
+                    }
+                }
+
+                for (int i = 0; i < merch.Count;)
+                {
+                    var merchSales = _context.CartMerchandise.Include(x => x.Cart).Where(x => x.MerchandiseId == merch[i].MerchandiseId).Where(x => x.Cart.StateOfOrder != null).ToList();
+                    if (merchSales.Count > 0)
+                    {
+                        currentRow++;
+                        worksheet.Cell(currentRow, 1).Value = merch[i].MerchandiseId;
+                        worksheet.Cell(currentRow, 2).Value = merch[i].Merchandise.Name;
+                        worksheet.Cell(currentRow, 3).Value = merch[i].Merchandise.Description;
+                        worksheet.Cell(currentRow, 4).Value = merch[i].Merchandise.Price;
+                        worksheet.Cell(currentRow, 5).Value = merchSales.Count;
+                        worksheet.Cell(currentRow, 6).Value = merchSales.Count * games[i].Game.Price;
+                        i = i + merchSales.Count;
+                    }
+                }
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    var content = stream.ToArray();
+                    return File(
+                        content,
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        "SalesReport.xlsx"
+                        );
+                }
+
+            }
+
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Checkout(Cart carts)
