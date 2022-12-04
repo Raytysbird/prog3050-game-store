@@ -16,13 +16,13 @@
                 <h4>Title: <span>@item.Title</span></h4>
                 <h4>Description: </h4>
                 <p>@item.Review1</p>
-                <a asp-action="CheckReview" asp-route-id="@item.ReviewId" asp-route-isDeclined=@false class="btn btn-primary">Approve</a>
+                <a asp-action="CheckReview" asp-route-id="@item.ReviewId" asp-route-isDeclined=@false class="btn btn-primary approve_review">Approve</a>
                 <a asp-action="CheckReview" asp-route-id="@item.ReviewId" asp-route-isDeclined=@true class="btn btn-danger">Remove</a>
             </div>
         }
  }
  else{
-     <h3>No Reviews pending</h3>
+     <h3 id="no_reviews">No Reviews pending</h3>
  }
 
 </div>

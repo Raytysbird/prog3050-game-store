@@ -30,9 +30,20 @@ namespace GameStore.Controllers
             var total = 0f;
             var id = _userManager.GetUserId(HttpContext.User);
             var cart = _context.Cart.Where(x => x.UserId == id).FirstOrDefault(x => x.StateOfOrder == null);
+            if (cart == null)
+            {
+                cart = new Cart();
+                cart.UserId = id;
+                cart.TotalCost = 0;
+                cart.CreditCard = null;
+                cart.CartMerchandise = null;
+                _context.Cart.Add(cart);
+                _context.SaveChanges();
+            }
             var address = _context.Address.Where(x => x.UserId == id && x.IsShipping == true).FirstOrDefault();
             var creditCardInfo = _context.CreditCardInfo.Where(x => x.UserId == id).ToList();
             var cartModel = _context.Cart.Include(x => x.User).Where(x => x.UserId == id).Include(x => x.CreditCard).FirstOrDefault(x => x.StateOfOrder == null);
+
             if (address != null)
             {
                 address.FullAddress = string.Join(",", new string[] { address.StreetAddress, address.Building, address.AptNumber, address.UnitNumber }.Where(c => !string.IsNullOrEmpty(c)));
@@ -51,6 +62,7 @@ namespace GameStore.Controllers
             {
                 ViewBag.CreditCard = new SelectList(creditCardInfo, "CreditCardId", "Number");
             }
+
             var cartGameItems = _context.CartGame.Where(x => x.CartId == cart.CartId).Include(x => x.Game).ToList();
             var cartMerchItems = _context.CartMerchandise.Where(x => x.CartId == cart.CartId).Include(x => x.Merchandise).ToList();
 
@@ -81,7 +93,8 @@ namespace GameStore.Controllers
                 ViewBag.CartMerch = cartMerchItems;
                 ViewBag.Total = total;
             }
-            cartModel.TotalCost = (float)Math.Round(total + (0.13f * total), 2);
+
+            cartModel.TotalCost = total == 0 ? 0 : (float)Math.Round(total + (0.13f * total), 2);
             return View(cartModel);
         }
         public IActionResult DownloadGame(int id)
@@ -264,25 +277,23 @@ namespace GameStore.Controllers
                 _context.Cart.Add(cartGame);
                 _context.SaveChanges();
             }
-            if (cart != null)
-            {
-                if (gameId != 0)
-                {
-                    CartGame cartGame = new CartGame();
-                    cartGame.CartId = cart.CartId;
-                    cartGame.GameId = gameId;
-                    _context.CartGame.Add(cartGame);
-                    _context.SaveChanges();
 
-                }
-                if (merchId != 0)
-                {
-                    CartMerchandise cartMerchandise = new CartMerchandise();
-                    cartMerchandise.CartId = cart.CartId;
-                    cartMerchandise.MerchandiseId = merchId;
-                    _context.CartMerchandise.Add(cartMerchandise);
-                    _context.SaveChanges();
-                }
+            if (gameId != 0)
+            {
+                CartGame cartGame = new CartGame();
+                cartGame.CartId = cart.CartId;
+                cartGame.GameId = gameId;
+                _context.CartGame.Add(cartGame);
+                _context.SaveChanges();
+
+            }
+            if (merchId != 0)
+            {
+                CartMerchandise cartMerchandise = new CartMerchandise();
+                cartMerchandise.CartId = cart.CartId;
+                cartMerchandise.MerchandiseId = merchId;
+                _context.CartMerchandise.Add(cartMerchandise);
+                _context.SaveChanges();
             }
             TempData["message"] = "Item Added to Cart!";
             return RedirectToAction("Index");

@@ -16,12 +16,12 @@
                 <h4>Items: <span>@ViewBag.Items</span></h4>
                 <h4>Total Amount: <span>@item.Cart.TotalCost</span> </h4>
                 
-                <a asp-action="ProcessOrder" asp-route-id="@item.Cart.CartId" asp-route-isProcessed=@true class="btn btn-primary">Complete Order</a>
+                <a asp-action="ProcessOrder" asp-route-id="@item.Cart.CartId" asp-route-isProcessed=@true class="btn btn-primary complete_order">Complete Order</a>
             </div>
         }
  }
  else{
-     <h3>No new orders!!</h3>
+     <h3 id="no_orders">No new orders!!</h3>
  }
 
 </div>

@@ -34,7 +34,7 @@
     <a class="btn btn-info" asp-action="Index">Back to List</a>
     @if (ViewBag.IsInWishList == false)
     {
-        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-merch_id="@Model.MerchandiseId"> Add to Wish List ♡ </a>
+        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-merch_id="@Model.MerchandiseId" id="addtowishlist"> Add to Wish List ♡ </a>
 
     }
     else

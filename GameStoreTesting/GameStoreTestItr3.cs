@@ -117,8 +117,135 @@ namespace GameStoreTesting
             //Assert
             Assert.AreEqual(expected, actual);
         }
+        //download test
+
+        [Test]
+        public void AllowsDownloadAfterPurchase()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "Download Game";
+
+            //Act
+            login();
+
+            GetHref("nav_purchases");
 
 
+            String actual = driver.FindElement(By.ClassName("download_game")).GetAttribute(innerText);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Wishlist
+        [Test]
+        public void AddGameToWishlist()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "Mario";
+
+            //Act
+            login();
+
+            GetHref("nav_games");
+            driver.Url = driver.FindElement(By.ClassName("game_details")).GetAttribute("href");
+            GetHref("addtowishlist");
+            GetHref("nav_wishlist");
+
+
+            String actual = GetInnerText("Mario");
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void AddMerchToWishlist()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "MyEvent";
+
+            //Act
+            login();
+
+            GetHref("nav_merch");
+            driver.Url = driver.FindElement(By.ClassName("merch_details")).GetAttribute("href");
+            GetHref("addtowishlist");
+            GetHref("nav_wishlist");
+
+
+            String actual = GetInnerText("MyEvent");
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Admin Panel tests
+        [Test]
+        public void completeOrder()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "No new orders!!";
+
+            //Act
+            loginAsAdmin();
+
+            GetHref("adminPanel");
+            GetHref("new_orders");
+            driver.Url = driver.FindElement(By.ClassName("complete_order")).GetAttribute("href");
+
+
+            String actual = GetInnerText("no_orders");
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void ApproveReview()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "No Reviews pending";
+
+            //Act
+            loginAsAdmin();
+
+            GetHref("adminPanel");
+            GetHref("approve_reviews");
+            driver.Url = driver.FindElement(By.ClassName("approve_review")).GetAttribute("href");
+
+
+            String actual = GetInnerText("no_reviews");
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
+
+        //Report Test
+        [Test]
+        public void AllReportsAvailable()
+        {
+            //Arrange
+            driver.Url = "https://localhost:44329/Identity/Account/Login";
+
+            String expected = "Game List Game Details Member List Member Details Wish List Sales Details";
+
+            //Act
+            loginAsAdmin();
+
+            GetHref("adminPanel");
+            GetHref("view_reports");
+
+
+            String actual = driver.FindElement(By.ClassName("buttonContainer")).GetAttribute(innerText);
+            //Assert
+            Assert.AreEqual(expected, actual);
+        }
 
 
         [TearDown]

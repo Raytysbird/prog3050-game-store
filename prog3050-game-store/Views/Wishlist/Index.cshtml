@@ -24,7 +24,7 @@
             @foreach (var item in ViewBag.WishlistGame)
             {
                 <tr>
-                    <td>
+                    <td id="@item.Game.Name">
                         @item.Game.Name
                     </td>
                     <td>Game</td>
@@ -43,7 +43,7 @@
             @foreach (var item in ViewBag.WishlistMerch)
             {
                 <tr>
-                    <td>
+                    <td id="@item.Merchandise.Name">
                         @item.Merchandise.Name
                     </td>
                     <td>Merchandise</td>
