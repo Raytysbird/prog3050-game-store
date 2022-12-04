@@ -24,12 +24,12 @@
         <h1>Admin Panel</h1>
     </div>
     <div class="buttonContainer">
-        <a class="btnGame btn btn-success" asp-area="" asp-controller="Game" asp-action="Index">Manage Games</a>
-        <a class="btnEvent btn btn-primary" asp-area="" asp-controller="Event" asp-action="Index"> Manage Events</a>
-        <a class="btnEvent btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Index"> Manage Merchandise</a>
-        <a asp-action="Review" class="btnReview btn btn-info">Approve Reviews</a>
-        <a asp-action="Orders" class="btnReview btn btn-info">New Orders</a>
-        <a class="btnReport btn btn-warning" asp-area="" asp-controller="Admin" asp-action="Reports">View Reports</a>
+        <a class="btnGame btn btn-success" asp-area="" asp-controller="Game" asp-action="Index" id="manage_games">Manage Games</a>
+        <a class="btnEvent btn btn-primary" asp-area="" asp-controller="Event" asp-action="Index" id="manage_events"> Manage Events</a>
+        <a class="btnEvent btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Index" id="manage_merch"> Manage Merchandise</a>
+        <a asp-action="Review" class="btnReview btn btn-info" id="approve_reviews">Approve Reviews</a>
+        <a asp-action="Orders" class="btnReview btn btn-info" id="new_orders">New Orders</a>
+        <a class="btnReport btn btn-warning" asp-area="" asp-controller="Admin" asp-action="Reports" id="view_reports">View Reports</a>
     </div>
 </div>
 

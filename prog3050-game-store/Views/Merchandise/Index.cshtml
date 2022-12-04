@@ -17,7 +17,7 @@
 
 @if (User.IsInRole("Employee"))
 {
-    <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create">Add New Merchandise</a>
+    <a class="btnGame btn btn-success" asp-area="" asp-controller="Merchandise" asp-action="Create" id="create_merch">Add New Merchandise</a>
 }
 <div class="row">
     <div class="col-lg-5">
@@ -78,7 +78,7 @@ else
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>
+                    <td id="@Html.DisplayFor(modelItem => item.Name)">
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
@@ -98,7 +98,7 @@ else
                         }
                         else
                         {
-                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId">Merchandise Details</a>
+                            <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MerchandiseId" id="@Html.DisplayFor(modelItem => item.Name)_details">Merchandise Details</a>
                         }
                     </td>
                 </tr>

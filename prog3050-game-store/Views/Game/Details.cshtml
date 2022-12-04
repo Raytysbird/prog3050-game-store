@@ -74,7 +74,7 @@
     <a class="btn btn-success" asp-controller="Reviews" asp-action="Create" asp-route-id="@Model.GameId">Add Review</a>
     @if (ViewBag.IsInWishList == false)
     {
-        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-game_id="@Model.GameId"> Add to Wish List ♡ </a>
+        <a class="btn btn-primary" asp-controller="WishList" asp-action="Create" asp-route-game_id="@Model.GameId" id="addtowishlist"> Add to Wish List ♡ </a>
 
     }
     else
@@ -85,7 +85,7 @@
 
     @if (ViewBag.IsInCartList == false)
     {
-        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-gameId="@Model.GameId"> Add to Cart</a>
+        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-gameId="@Model.GameId" id="addtocart"> Add to Cart</a>
     }
     else
     {

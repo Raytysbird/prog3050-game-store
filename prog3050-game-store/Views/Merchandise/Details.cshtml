@@ -44,7 +44,7 @@
     }
     @if (ViewBag.IsInCartList == false)
     {
-        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId"> Add to Cart</a>
+        <a class="btn btn-primary" asp-controller="Cart" asp-action="Create" asp-route-merchId="@Model.MerchandiseId" id="addtocart"> Add to Cart</a>
     }
     else
     {

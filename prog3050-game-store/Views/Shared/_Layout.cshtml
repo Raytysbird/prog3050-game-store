@@ -42,20 +42,20 @@
 
                         if (User.IsInRole("Employee"))
                         {
-                            <li><a asp-area="" asp-controller="Admin" asp-action="Index">Admin Pannel</a></li>
+                            <li><a asp-area="" asp-controller="Admin" asp-action="Index" id="adminPanel">Admin Pannel</a></li>
                         }
                         else
                         {
-                            <li><a asp-area="" asp-controller="Game" asp-action="Index">Games</a></li>
-                            <li><a asp-area="" asp-controller="Merchandise" asp-action="Index">Merchandise</a></li>
+                            <li><a asp-area="" asp-controller="Game" asp-action="Index" id="nav_games">Games</a></li>
+                            <li><a asp-area="" asp-controller="Merchandise" asp-action="Index" id="nav_merch">Merchandise</a></li>
                             <li>@*<a asp-area="" asp-controller="FavouritePlatforms" asp-action="Index">Preferences</a>*@</li>
                             <li>@*<a asp-area="" asp-controller="Event" asp-action="Index">Events</a>*@</li>
-                            <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index">Manage Credit card</a></li>
-                            <li><a asp-area="" asp-controller="Relation" asp-action="Index">Friends</a></li>
-                            <li><a asp-area="" asp-controller="Address" asp-action="Index">Address</a></li>
-                            <li><a asp-area="" asp-controller="WishList" asp-action="Index">Wish List</a></li>
-                            <li><a asp-area="" asp-controller="Cart" asp-action="Index">Cart</a></li>
-                            <li><a asp-area="" asp-controller="Cart" asp-route-id= null asp-action="Purchases">Purchases</a></li>
+                            <li><a asp-area="" asp-controller="CreditCardInfo" asp-action="Index" id="nav_credit_card">Manage Credit card</a></li>
+                            <li><a asp-area="" asp-controller="Relation" asp-action="Index" id="nav_friends">Friends</a></li>
+                            <li><a asp-area="" asp-controller="Address" asp-action="Index" id="nav_address">Address</a></li>
+                            <li><a asp-area="" asp-controller="WishList" asp-action="Index" id="nav_wishlist">Wish List</a></li>
+                            <li><a asp-area="" asp-controller="Cart" asp-action="Index" id="nav_cart">Cart</a></li>
+                            <li><a asp-area="" asp-controller="Cart" asp-route-id= null asp-action="Purchases" id="nav_purchases">Purchases</a></li>
                         }
 
                         <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact Us</a></li>

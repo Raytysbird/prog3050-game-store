@@ -6,8 +6,6 @@
 
 <h2>Cart</h2>
 <form asp-action="Checkout">
-
-
     <div class="row" style="padding-bottom:20px;">
         <div class="col-md-8">
             @if (ViewBag.CartGame != null || ViewBag.CartMerch != null)
@@ -33,7 +31,7 @@
                             @foreach (var item in ViewBag.CartGame)
                             {
                                 <tr>
-                                    <td>
+                                    <td id="@item.Game.Name">
                                         @item.Game.Name
                                     </td>
                                     <td>
@@ -47,7 +45,7 @@
                             @foreach (var item in ViewBag.CartMerch)
                             {
                                 <tr>
-                                    <td>
+                                    <td id="@item.Merchandise.Name">
                                         @item.Merchandise.Name
                                     </td>
                                     <td>
@@ -66,7 +64,7 @@
             else
             {
 
-                <b>Your cart is empty right now. Checkout our games and merchandise!!<a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </b>
+                <b id="empty_cart">Your cart is empty right now. Checkout our games and merchandise!!<a asp-controller="Game" asp-action="Index" class="btn btn-success">View games</a><a asp-controller="Merchandise" asp-action="Index" class="btn btn-success">View Merchandise</a> </b>
 
             }
             @if (ViewBag.Total != null)
