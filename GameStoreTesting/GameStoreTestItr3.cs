@@ -124,7 +124,7 @@ namespace GameStoreTesting
         [TearDown]
         public void closeBrowser()
         {
-            //driver.Close();
+            driver.Close();
         }
 
         private void GetHref(string id)
