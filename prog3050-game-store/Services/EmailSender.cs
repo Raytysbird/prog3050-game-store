@@ -20,7 +20,7 @@ namespace GameStore.Services
                 EnableSsl = true,
                 DeliveryMethod = SmtpDeliveryMethod.Network,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential("jaskarankang4@outlook.com", "199strope")
+                Credentials = new NetworkCredential("jaskarankang4@outlook.com", "")
             };
 
             return client.SendMailAsync("jaskarankang4@outlook.com", email, subject, htmlMessage);
